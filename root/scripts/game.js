@@ -13,13 +13,15 @@ var player = {
     height: 20,
     vel_x: 0,
     vel_y: 0,
-    speed: 10,
+    speed: 20,
 }
 console.log(width, height)
 
 var friction = 0.8;
 var gravity = 0.8;
 var keys = [];
+
+var platform_height = 10
 
 // Key listeners
 $(document).keydown(function(e){
@@ -35,28 +37,28 @@ $(document).keyup(function(e){
 var levels= {
     1: [
         {
-            x: 0,
-            y: 0,
-            width: 10,
-            height: height,
-        },
-        {
-            x: 0,
-            y: height - 2,
-            width: width,
-            height: 50,
-        },
-        {
-            x: width - 10,
-            y: 0,
-            width: 50,
-            height: height,
-        },
-        {
-            x: 200,
+            x: 100,
             y: 100,
+            width: 400,
+            height: platform_height,
+        },
+        {
+            x: 300,
+            y: 400,
             width: 200,
-            height: 25,
+            height: platform_height,
+        },
+        {
+            x: 600,
+            y: 300,
+            width: 200,
+            height: platform_height,
+        },
+        {
+            x: 900,
+            y: 200,
+            width: 200,
+            height: platform_height,
         },
     ]
 }
@@ -89,14 +91,12 @@ function render(){
 
     if (on_platform()){
         player.vel_y = 0;
-        console.log('on_platform', on_platform());
         // note could remove this duplicate call
         player.y = on_platform() - player.height;// - 1
 
         if (keys[38] || keys[0]) {
             // up arrow or space
-            console.log('jumping')
-            player.vel_y = -player.speed;
+            player.vel_y = - 15;
         }
     }else{
         player.vel_y += gravity;
@@ -116,7 +116,8 @@ function render(){
         player.y = 0;
     }
     if (player.y >= height){
-        player.y = height - 1;
+        game_over();
+        return
     }
 
     ctx.clearRect(0,0,width,height);
@@ -129,11 +130,41 @@ function render(){
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     })
 
+    scroll_world();
+
+    if(get_on_canvas_platforms().length == 0){
+        console.log("completed level")
+    }
+
     requestAnimationFrame(render);
 }
 
+function game_over(){
+    console.log("game over")
+    ctx.fillRect(0, 0, 200, 200);
+}
+
+function scroll_world(){
+    levels[level].map(function(platform){
+        platform.x = platform.x - 5;
+    })
+}
+
+function get_on_canvas_platforms(){
+    return levels[level].filter(function(platform){
+        if(
+            platform.x + platform.width > 0 &&
+            platform.x < width
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    })
+}
+
 function on_platform(){
-    var platform_heights = levels[level].map(function(platform){
+    var platform_heights = get_on_canvas_platforms().map(function(platform){
         //console.log(platform)
         if(
             player.x + player.width > platform.x &&
