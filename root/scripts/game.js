@@ -8,11 +8,12 @@ var height = canvas.height;
 
 var player = {
     x: width/2,
-    y: height/2,
+    y: 32,
+    width: 20,
+    height: 20,
     vel_x: 0,
     vel_y: 0,
     speed: 10,
-    //jumping: false,
 }
 console.log(width, height)
 
@@ -50,7 +51,13 @@ var levels= {
             y: 0,
             width: 50,
             height: height,
-        }
+        },
+        {
+            x: 200,
+            y: 100,
+            width: 200,
+            height: 25,
+        },
     ]
 }
 
@@ -59,13 +66,6 @@ var level = 1;
 
 function render(){
 
-    if (keys[38] || keys[0]) {
-        // up arrow or space
-        if(!player.jumping){
-            //player.jumping = true;
-            player.vel_y = -player.speed*2;
-        }
-    }
 
     if (keys[39]) {
         // right arrow
@@ -83,33 +83,45 @@ function render(){
 
     if (keys[40]) {
         // down arrow
+        player.vel_y = +player.speed;
     }
 
-    player.vel_x *= friction;
 
-    //player.vel_y += gravity;
+    if (on_platform()){
+        player.vel_y = 0;
+        console.log('on_platform', on_platform());
+        // note could remove this duplicate call
+        player.y = on_platform() - player.height;// - 1
+
+        if (keys[38] || keys[0]) {
+            // up arrow or space
+            console.log('jumping')
+            player.vel_y = -player.speed;
+        }
+    }else{
+        player.vel_y += gravity;
+    }
+    player.vel_x *= friction;
 
     player.x += player.vel_x;
     player.y += player.vel_y;
 
     if (player.x >= width) {
-        player.x = width-player.width;
-    } else if (player.x <= 0) {
+        player.x = width;
+    }
+    if (player.x <= 0) {
         player.x = 0;
     }
-
-    if(player.y >= height){
-        player.y = height;
-        //player.jumping = false;
+    if (player.y <= 0){
+        player.y = 0;
     }
-
-    if (detect_colission()){
-        console.log('COLLISION');
+    if (player.y >= height){
+        player.y = height - 1;
     }
 
     ctx.clearRect(0,0,width,height);
     ctx.fillStyle = "red";
-    ctx.fillRect(player.x, player.y, 20, 20);
+    ctx.fillRect(player.x, player.y, player.width, player.height);
     //console.log('working', player)
 
     levels[level].map(function(platform){
@@ -119,6 +131,34 @@ function render(){
 
     requestAnimationFrame(render);
 }
+
+function on_platform(){
+    var platform_heights = levels[level].map(function(platform){
+        //console.log(platform)
+        if(
+            player.x + player.width > platform.x &&
+            player.x < platform.x + platform.width &&
+            player.y + player.height > platform.y &&
+            player.y + player.height < platform.y + platform.height
+        ){
+            return platform.y;
+        }
+        return false;
+    })
+
+    // platform heights is a list of false / top height of platforms that the player is on
+    // There should only be one number, but just in case the lowest is returned
+    platform_heights = platform_heights.filter(function(e){
+        return (typeof(e) != "boolean")
+    })
+
+    if(platform_heights.length >= 1){
+        return Math.min.apply(Math, platform_heights);
+    }else{
+        return false;
+    }
+}
+
 
 function detect_colission(){
     /*
