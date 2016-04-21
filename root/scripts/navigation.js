@@ -4,8 +4,15 @@
  */
 
 var content = $('#content');
-var nav = $('nav');
+var nav = $('#nav');
+var page_folder = 'pages/';
 
-$('nav').click(function(button){
+$(nav).click(function(event){
+    var button = event.target;
+    var page = $(button).attr('content');
 
+    $(content).children().remove();
+    $(content).load(page_folder + page);
 });
+
+console.log('Navigation working');
