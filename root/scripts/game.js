@@ -61,8 +61,8 @@ function initialise(){
     min_platform_width = 50;
     max_platform_width = 250;
     max_platform_height_difference = 100;
-    max_platform_y = 100;
-    platform_seperation_base_multiplier = 60;
+    max_platform_y = 200;
+    platform_seperation_base_multiplier = 100;
 
     scroll_speed_multiplier = 5;
 
@@ -76,9 +76,45 @@ function initialise(){
     points_colour = "white";
     text_colour = "white";
     platform_colour = "white";
-    player_colour = "red";
+    player_colour = "black";
+
 
     game_running = false;
+
+    powerup_chance = 10;
+    max_powerup_time = 10;
+    powerup_active = false;
+    powerup_started_time = 0;
+
+    powerup_types = {
+        gravity:{
+            label: "Low Gravity",
+            colour: "blue",
+            func: apply_gravity,
+            width: 30,
+            height: 30
+        },
+        points_multiplier:{
+            label: "Points Multiplier",
+            colour: "red",
+            func: apply_points_multiplier,
+            width: 20,
+            height: 20
+        },
+    }
+
+    powerup_types_keys = Object.keys(powerup_types);
+
+    // Initial powerups
+    powerups = [
+        {
+            x: 400,
+            y: 50,
+            type: 'gravity',
+            factor: 0.3,
+            time: 5,
+        },
+    ]
 
     // Initial platforms
     platforms = [
@@ -111,6 +147,7 @@ function initialise(){
 
 function start_game(){
     initialise();
+    game_running = true;
     run_game();
 }
 
@@ -150,6 +187,17 @@ function run_game(){
     buffer_new_platforms();
     render_platforms();
 
+    scroll_powerups();
+    remove_elapsed_powerups();
+    buffer_new_powerups();
+    if(powerup_active){
+        render_powerup_timer();
+        check_powerup_expired();
+    }else{
+        apply_powerup();
+        render_powerups();
+    }
+
     ctx.fillStyle = player_colour;
     ctx.fillRect(player.x, player.y, player.width, player.height);
 
@@ -157,6 +205,118 @@ function run_game(){
     render_points();
 
     requestAnimationFrame(run_game);
+}
+
+function buffer_new_powerups(){
+    // 1 in powerup_chance chance each frame a new powerup is spawned
+    var dice_roll = Math.round(Math.random() * powerup_chance);
+    if(dice_roll == 1){
+        powerups.push(
+            {
+                x: 300 + Math.random() * width - 350,
+                y: -50,
+                type: powerup_types_keys[Math.round(Math.random() * (powerup_types_keys.length - 1))],
+                time: Math.round(Math.random() * max_powerup_time),
+                factor: Math.round(2 + Math.random() * 10),
+            }
+        )
+    }
+}
+
+function remove_elapsed_powerups(){
+    powerups.filter(function(powerup){
+        return powerup.y < height;
+    })
+}
+
+function apply_gravity(factor){
+    if(factor){
+        gravity = factor/10;
+    }else{
+        gravity = 0.8;
+    }
+}
+
+function apply_points_multiplier(factor){
+    if(factor){
+        points_multiplier = factor;
+    }else{
+        points_multiplier = 1;
+    }
+
+}
+
+function get_colliding_powerup(){
+    var colliding_powerups = powerups.filter(function(powerup){
+        if(
+            player.x + player.width/2 > powerup.x &&
+            player.x + player.width/2 < powerup.x + powerup_types[powerup.type].width &&
+            player.y + player.height/2 > powerup.y &&
+            player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    })
+    if (colliding_powerups.length == 0){
+        return false;
+    }else{
+        return colliding_powerups[0];
+    }
+
+}
+
+function check_powerup_expired(){
+    var current_time = new Date().getTime();
+    if(powerup_started_time + powerup_active.time * 1000 < current_time){
+        powerup_types[powerup_active.type].func();
+        powerup_active = false;
+    }
+
+}
+
+function render_powerup_timer(){
+    var current_time = new Date().getTime();
+    var time = Math.round( (powerup_started_time + (powerup_active.time*1000) - current_time) /1000 );
+
+    ctx.font="20px Lucida Console";
+    ctx.fillStyle = points_colour;
+    ctx.textAlign="end";
+    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
+    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
+    ctx.fillText("Time Left: " + time, width, 200);
+}
+
+function apply_powerup(){
+    var powerup = get_colliding_powerup();
+    if(! powerup){
+        return
+    }
+    powerup_active = powerup;
+    powerup_started_time = new Date().getTime();
+
+    // Call powerup type function with factor to apply the powerup
+    powerup_types[powerup.type].func(powerup.factor);
+}
+
+function scroll_powerups(){
+    powerups = powerups.map(function(powerup){
+        powerup.y = powerup.y + 0.5;
+        return powerup;
+    })
+}
+
+function render_powerups(){
+    powerups.map(function(powerup){
+        ctx.fillStyle = powerup_types[powerup.type].colour;
+        ctx.fillRect(
+            powerup.x,
+            powerup.y,
+            powerup_types[powerup.type].width,
+            powerup_types[powerup.type].height
+        );
+    })
 }
 
 function buffer_new_platforms(){
@@ -213,9 +373,7 @@ function buffer_new_platforms(){
     var rightmost_platform = get_rightmost_platform();
 
     if (is_coord_visible(rightmost_platform)){
-
         add_new_platform(rightmost_platform[0], rightmost_platform[1]);
-
     }
 
 }
