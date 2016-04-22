@@ -21,18 +21,22 @@ var friction = 0.8;
 var gravity = 0.8;
 var keys = [];
 
-var platform_height = 10
+var platform_height = 20;
 
-// Key listeners
-$(document).keydown(function(e){
-    //console.log('keydown', e.keyCode)
-    keys[e.keyCode] = true;
-})
-$(document).keyup(function(e){
-    //console.log('keyup', e.keyCode)
-    keys[e.keyCode] = false;
-})
+var scroll_speed_multiplier = 5;
 
+// In miliseconds
+var start_time = new Date().getTime();
+var elapsed_time = 0;
+var last_elapsed_time = 0;
+
+var points = 0;
+var points_multiplier = 1;
+var points_colour = "white";
+
+var platform_colour = "white";
+
+// Initial platforms
 var platforms = [
     {
         x: 100,
@@ -60,38 +64,23 @@ var platforms = [
     },
 ]
 
-var scroll_speed_multiplier = 5;
 
-// In miliseconds
-var start_time = new Date().getTime();
-var elapsed_time = 0;
-
+// Key listeners
+$(document).keydown(function(e){
+    //console.log('keydown', e.keyCode)
+    keys[e.keyCode] = true;
+})
+$(document).keyup(function(e){
+    //console.log('keyup', e.keyCode)
+    keys[e.keyCode] = false;
+})
 
 
 function render(){
 
     update_elapsed_time();
 
-
-    if (keys[39]) {
-        // right arrow
-        if (player.vel_x < player.speed) {
-            player.vel_x++;
-        }
-    }
-
-    if (keys[37]) {
-        // left arrow
-        if (player.vel_x > -player.speed) {
-            player.vel_x--;
-        }
-    }
-
-    if (keys[40]) {
-        // down arrow
-        player.vel_y = +player.speed;
-    }
-
+    update_player_from_input();
 
     if (on_platform()){
         player.vel_y = 0;
@@ -110,6 +99,50 @@ function render(){
     player.x += player.vel_x;
     player.y += player.vel_y;
 
+
+    if (is_player_dead()){
+        game_over();
+        // Exit the main render loop
+        return
+    }
+
+    ctx.clearRect(0,0,width,height);
+
+    scroll_world();
+    remove_elapsed_platforms();
+    render_platforms();
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    update_points();
+    render_points();
+
+    requestAnimationFrame(render);
+}
+
+function update_player_from_input(){
+    if (keys[39]) {
+        // right arrow
+        if (player.vel_x < player.speed) {
+            player.vel_x++;
+        }
+    }
+
+    if (keys[37]) {
+        // left arrow
+        if (player.vel_x > -player.speed) {
+            player.vel_x--;
+        }
+    }
+
+    if (keys[40]) {
+        // down arrow
+        player.vel_y++;
+    }
+}
+
+function keep_player_on_canvas(){
     if (player.x >= width) {
         player.x = width;
     }
@@ -119,32 +152,37 @@ function render(){
     if (player.y <= 0){
         player.y = 0;
     }
-    if (player.y >= height){
-        game_over();
-        return
-    }
 
-    ctx.clearRect(0,0,width,height);
-    ctx.fillStyle = "red";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-    //console.log('working', player)
+}
 
+function is_player_dead(){
+    return player.y >= height;
+}
+
+
+function render_platforms(){
     platforms.map(function(platform){
-        ctx.fillStyle = "white";
+        ctx.fillStyle = platform_colour;
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     })
+}
 
-    scroll_world();
+function update_points(){
+    var time_difference = elapsed_time - last_elapsed_time;
+    points = points + ( (time_difference / 10) * points_multiplier );
+    points = parseInt(points);
+}
 
-    //if(get_on_canvas_platforms().length == 0){
-        //console.log("completed level")
-    //}
-
-    requestAnimationFrame(render);
+function render_points(){
+    ctx.font="20px Lucida Console";
+    ctx.fillStyle = points_colour;
+    ctx.textAlign="end";
+    ctx.fillText(points, width, 30);
 }
 
 function update_elapsed_time(){
     var time_now = new Date().getTime();
+    last_elapsed_time = elapsed_time;
     elapsed_time = time_now - start_time;
 }
 
@@ -155,7 +193,13 @@ function game_over(){
 
 function scroll_world(){
     platforms.map(function(platform){
-        platform.x = platform.x - scroll_speed_multiplier;
+        platform.x = platform.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
+    })
+}
+
+function remove_elapsed_platforms(){
+    platforms = platforms.filter(function(platform){
+        return platform.x + platform.width > 0
     })
 }
 
