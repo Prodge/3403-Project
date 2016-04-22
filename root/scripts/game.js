@@ -81,7 +81,7 @@ function initialise(){
 
     game_running = false;
 
-    powerup_chance = 10;
+    powerup_chance = 1000;
     max_powerup_time = 10;
     powerup_active = false;
     powerup_started_time = 0;
@@ -111,7 +111,7 @@ function initialise(){
             x: 400,
             y: 50,
             type: 'gravity',
-            factor: 0.3,
+            factor: 5,
             time: 5,
         },
     ]
@@ -217,7 +217,7 @@ function buffer_new_powerups(){
                 y: -50,
                 type: powerup_types_keys[Math.round(Math.random() * (powerup_types_keys.length - 1))],
                 time: Math.round(Math.random() * max_powerup_time),
-                factor: Math.round(2 + Math.random() * 10),
+                factor: Math.round(2 + (Math.random() * 10)),
             }
         )
     }
@@ -283,9 +283,9 @@ function render_powerup_timer(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
-    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
-    ctx.fillText("Time Left: " + time, width, 200);
+    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 50);
+    ctx.fillText("Multiplier: " + powerup_active.factor, width, 80);
+    ctx.fillText("Time Left: " + time, width, 110);
 }
 
 function apply_powerup(){
