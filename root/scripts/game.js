@@ -15,17 +15,20 @@ var player = {
     vel_y: 0,
     speed: 20,
 }
-console.log(width, height)
 
 var friction = 0.8;
 var gravity = 0.8;
 var keys = [];
 
 var platform_height = 20;
+var min_platform_width = 50;
+var max_platform_width = 250;
+var max_platform_height_difference = 100;
+var max_platform_y = 100;
+var platform_seperation_base_multiplier = 60;
 
 var scroll_speed_multiplier = 5;
 
-// In miliseconds
 var start_time = new Date().getTime();
 var elapsed_time = 0;
 var last_elapsed_time = 0;
@@ -76,7 +79,7 @@ $(document).keyup(function(e){
 })
 
 
-function render(){
+function run_game(){
 
     update_elapsed_time();
 
@@ -84,9 +87,7 @@ function render(){
 
     if (on_platform()){
         player.vel_y = 0;
-        // note could remove this duplicate call
-        player.y = on_platform() - player.height;// - 1
-
+        player.y = on_platform() - player.height;
         if (keys[38] || keys[0]) {
             // up arrow or space
             player.vel_y = - 15;
@@ -110,6 +111,7 @@ function render(){
 
     scroll_world();
     remove_elapsed_platforms();
+    buffer_new_platforms();
     render_platforms();
 
     ctx.fillStyle = "red";
@@ -118,7 +120,68 @@ function render(){
     update_points();
     render_points();
 
-    requestAnimationFrame(render);
+    requestAnimationFrame(run_game);
+}
+
+function buffer_new_platforms(){
+    /*
+     * Random platform generation based on a set of rules
+     */
+
+    function get_rightmost_platform(){
+        // Returns the coords of the top right corner of the rightmost platform
+        var top_right_corners = platforms.map(function(platform){
+            return [platform.x + platform.width, platform.y]
+        })
+        top_right_corners.sort(function(a, b){
+            return b[0] - a[0];
+        })
+        return top_right_corners[0];
+    }
+
+    function is_coord_visible(coord){
+        return coord[0] < width && coord[0] > 0;
+    }
+
+    function add_new_platform(rightmost_x, rightmost_y){
+        // Generates a new platform that the player can jump to given the current rightmost platform
+
+        // The horisontal to the new platform from the last platform
+        // Becomes larger with time, as scrolling is faster
+        var x_distance = Math.random() * (platform_seperation_base_multiplier * (1 + elapsed_time / 10000));
+
+        // The height difference between the current and the next platform
+        var y_difference = Math.random() * max_platform_height_difference;
+        // Randomly make negative
+        y_difference = y_difference * (Math.round(Math.random()) * 2 - 1);
+
+        var y = rightmost_y + y_difference;
+        // Assert 'y' is within canvas
+        if(y < max_platform_y){
+            y = max_platform_y;
+        }
+        if(y > height - platform_height){
+            y = height - platform_height;
+        }
+
+        var width = min_platform_width + (Math.random() * (max_platform_width - min_platform_width));
+
+        platforms.push({
+            x: rightmost_x + x_distance,
+            y: y,
+            width: width,
+            height: platform_height,
+        })
+    }
+
+    var rightmost_platform = get_rightmost_platform();
+
+    if (is_coord_visible(rightmost_platform)){
+
+        add_new_platform(rightmost_platform[0], rightmost_platform[1]);
+
+    }
+
 }
 
 function update_player_from_input(){
@@ -249,13 +312,6 @@ function detect_colission(){
      * Returns true if there is a collision between the player and any of the platforms
      */
 
-    //function isIntersecting(p1, p2, p3, p4) {
-        //function CCW(p1, p2, p3) {
-                //return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
-            //}
-        //return (CCW(p1, p3, p4) != CCW(p2, p3, p4)) && (CCW(p1, p2, p3) != CCW(p1, p2, p4));
-    //}
-
     function intersects(a,b,c,d,p,q,r,s) {
       var det, gamma, lambda;
       det = (c - a) * (s - q) - (r - p) * (d - b);
@@ -340,5 +396,3 @@ function detect_colission(){
         })
     })
 }
-
-render();
