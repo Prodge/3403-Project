@@ -33,40 +33,44 @@ $(document).keyup(function(e){
     keys[e.keyCode] = false;
 })
 
-// Levels
-var levels= {
-    1: [
-        {
-            x: 100,
-            y: 100,
-            width: 400,
-            height: platform_height,
-        },
-        {
-            x: 300,
-            y: 400,
-            width: 200,
-            height: platform_height,
-        },
-        {
-            x: 600,
-            y: 300,
-            width: 200,
-            height: platform_height,
-        },
-        {
-            x: 900,
-            y: 200,
-            width: 200,
-            height: platform_height,
-        },
-    ]
-}
+var platforms = [
+    {
+        x: 100,
+        y: 100,
+        width: 400,
+        height: platform_height,
+    },
+    {
+        x: 300,
+        y: 400,
+        width: 200,
+        height: platform_height,
+    },
+    {
+        x: 600,
+        y: 300,
+        width: 200,
+        height: platform_height,
+    },
+    {
+        x: 900,
+        y: 200,
+        width: 200,
+        height: platform_height,
+    },
+]
 
-var level = 1;
+var scroll_speed_multiplier = 5;
+
+// In miliseconds
+var start_time = new Date().getTime();
+var elapsed_time = 0;
+
 
 
 function render(){
+
+    update_elapsed_time();
 
 
     if (keys[39]) {
@@ -125,18 +129,23 @@ function render(){
     ctx.fillRect(player.x, player.y, player.width, player.height);
     //console.log('working', player)
 
-    levels[level].map(function(platform){
+    platforms.map(function(platform){
         ctx.fillStyle = "white";
         ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
     })
 
     scroll_world();
 
-    if(get_on_canvas_platforms().length == 0){
-        console.log("completed level")
-    }
+    //if(get_on_canvas_platforms().length == 0){
+        //console.log("completed level")
+    //}
 
     requestAnimationFrame(render);
+}
+
+function update_elapsed_time(){
+    var time_now = new Date().getTime();
+    elapsed_time = time_now - start_time;
 }
 
 function game_over(){
@@ -145,13 +154,13 @@ function game_over(){
 }
 
 function scroll_world(){
-    levels[level].map(function(platform){
-        platform.x = platform.x - 5;
+    platforms.map(function(platform){
+        platform.x = platform.x - scroll_speed_multiplier;
     })
 }
 
 function get_on_canvas_platforms(){
-    return levels[level].filter(function(platform){
+    return platforms.filter(function(platform){
         if(
             platform.x + platform.width > 0 &&
             platform.x < width
@@ -251,7 +260,7 @@ function detect_colission(){
 
     var platform_line_segments = [];
     // Build a list of all platform line segments
-    levels[level].some(function(platform){
+    platforms.some(function(platform){
         platform_line_segments.concat(
             get_line_segments(
                 platform.x,
