@@ -392,11 +392,6 @@ function update_player_from_input(){
             player.vel_x--;
         }
     }
-
-    if (keys[40]) {
-        // down arrow
-        player.vel_y++;
-    }
 }
 
 function keep_player_on_canvas(){
