@@ -23,4 +23,3 @@ $(nav).click(function(event){
     }
 });
 
-console.log('Navigation working');

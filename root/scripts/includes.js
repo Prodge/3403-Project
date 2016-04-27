@@ -10,4 +10,3 @@ $("#footer").load(page_elements_dir + "footer.html");
 $("#content").load('pages/game.html');
 $(content).trigger("gameLoad");
 
-console.log('Includes working');
