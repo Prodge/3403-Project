@@ -12,6 +12,8 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width;
 var height = canvas.height;
 
+var player_standing = document.getElementById("player_standing");
+
 initialise();
 draw_initial_screen();
 
@@ -64,7 +66,7 @@ function initialise(){
     max_platform_y = 200;
     platform_seperation_base_multiplier = 100;
 
-    scroll_speed_multiplier = 5;
+    scroll_speed_multiplier = 2;
 
     start_time = new Date().getTime();
     elapsed_time = 0;
@@ -198,8 +200,7 @@ function run_game(){
         render_powerups();
     }
 
-    ctx.fillStyle = player_colour;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
 
     update_points();
     render_points();
