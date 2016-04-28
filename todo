@@ -1,9 +1,0 @@
-- Things dropping
-    - reduce gravity
-    - slow down speed
-    - points multiplier
- - Gets slowly faster over time
- - Randomly generate platforms
-    - remove from list when its off screen
-    - Add to list when the end of a platform haz been reached
-    - within a jumpable height

@@ -13,6 +13,10 @@ var width = canvas.width;
 var height = canvas.height;
 
 var player_standing = document.getElementById("player_standing");
+var player_jumping = document.getElementById("player_jumping");
+var player_running_left = document.getElementById("player_running_left");
+var player_running_right = document.getElementById("player_running_right");
+var high_score = 0;
 
 initialise();
 draw_initial_screen();
@@ -47,8 +51,8 @@ function initialise(){
     player = {
         x: width/2,
         y: 32,
-        width: 20,
-        height: 20,
+        width: 40,
+        height: 40,
         vel_x: 0,
         vel_y: 0,
         speed: 20,
@@ -75,6 +79,7 @@ function initialise(){
     points = 0;
     points_multiplier = 1;
 
+    background_color = "#00CCCC";
     points_colour = "white";
     text_colour = "white";
     platform_colour = "white";
@@ -182,7 +187,12 @@ function run_game(){
         return
     }
 
-    ctx.clearRect(0,0,width,height);
+    ctx.fillStyle = background_color;
+    for (var row = 0; row < 7; row++){
+        for (var column = 0; column < 5; column++){
+            ctx.fillRect(row*100, column*100, 100, 100);
+        }
+    }
 
     scroll_world();
     remove_elapsed_platforms();
@@ -200,12 +210,24 @@ function run_game(){
         render_powerups();
     }
 
-    ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
+    render_player();
 
     update_points();
     render_points();
 
     requestAnimationFrame(run_game);
+}
+
+function render_player(){
+    if (player.vel_y != 0){
+        ctx.drawImage(player_jumping, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) > 0){
+        ctx.drawImage(player_running_right, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) < 0){
+        ctx.drawImage(player_running_left, player.x, player.y, player.width, player.height);
+    }else{
+        ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
+    }
 }
 
 function buffer_new_powerups(){
@@ -284,9 +306,9 @@ function render_powerup_timer(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
-    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 50);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 80);
-    ctx.fillText("Time Left: " + time, width, 110);
+    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
+    ctx.fillText("Multiplier: " + powerup_active.factor, width, 90);
+    ctx.fillText("Time Left: " + time, width, 120);
 }
 
 function apply_powerup(){
@@ -432,8 +454,10 @@ function update_points(){
 function render_points(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
+    ctx.textAlign="start";
+    ctx.fillText("High Score: " + high_score, 0, 30);
     ctx.textAlign="end";
-    ctx.fillText(points, width, 30);
+    ctx.fillText("Current Score: " + points, width, 30);
 }
 
 function update_elapsed_time(){
@@ -455,6 +479,8 @@ function game_over(){
 
     ctx.font="15px Lucida Console";
     ctx.fillText('Press "Space" to try again!', width/2, height - height/4);
+
+    high_score = points;
 }
 
 function scroll_world(){
