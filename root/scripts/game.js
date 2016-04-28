@@ -12,6 +12,8 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width;
 var height = canvas.height;
 
+var high_score = 0;
+
 initialise();
 draw_initial_screen();
 
@@ -283,9 +285,9 @@ function render_powerup_timer(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
-    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 50);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 80);
-    ctx.fillText("Time Left: " + time, width, 110);
+    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
+    ctx.fillText("Multiplier: " + powerup_active.factor, width, 90);
+    ctx.fillText("Time Left: " + time, width, 120);
 }
 
 function apply_powerup(){
@@ -431,8 +433,10 @@ function update_points(){
 function render_points(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
+    ctx.textAlign="start";
+    ctx.fillText("High Score: " + high_score, 0, 30);
     ctx.textAlign="end";
-    ctx.fillText(points, width, 30);
+    ctx.fillText("Current Score: " + points, width, 30);
 }
 
 function update_elapsed_time(){
@@ -454,6 +458,8 @@ function game_over(){
 
     ctx.font="15px Lucida Console";
     ctx.fillText('Press "Space" to try again!', width/2, height - height/4);
+
+    high_score = points;
 }
 
 function scroll_world(){
