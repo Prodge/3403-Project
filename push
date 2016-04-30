@@ -25,6 +25,12 @@ ssh root@188.166.233.19 << EOF
     # Pull any updates
     su mean
     cd ~/$USER
+    if [ "$BRANCH" != "master" ]
+    then
+        git checkout master
+        git branch -D $BRANCH
+        git checkout -b $BRANCH
+    fi
     git pull origin $BRANCH
 
     # Run node sever in background
