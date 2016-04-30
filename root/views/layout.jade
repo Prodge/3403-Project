@@ -1,8 +1,9 @@
 doctype html
 html(lang="en")
   head
-    title= title
     link(rel='stylesheet', href='/style/main.css')
+    block title
+      title= title
   body
     block content
       p There is no content here
