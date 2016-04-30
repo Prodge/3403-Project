@@ -417,7 +417,7 @@ function keep_player_on_canvas(){
         player.x = width;
     }
     if (player.x <= 0) {
-        //player.x = 0;
+        player.x = 0;
     }
     if (player.y <= 0){
         player.y = 0;
