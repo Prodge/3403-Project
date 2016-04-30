@@ -85,7 +85,6 @@ function initialise(){
     platform_colour = "white";
     player_colour = "black";
 
-
     game_running = false;
 
     powerup_chance = 1000;
@@ -163,6 +162,9 @@ function run_game(){
      * The main loop for the game
      */
 
+    ctx.fillStyle = background_color;
+    ctx.fillRect(0,0,width,height);
+
     update_elapsed_time();
 
     update_player_from_input();
@@ -185,13 +187,6 @@ function run_game(){
     if (is_player_dead()){
         game_over();
         return
-    }
-
-    ctx.fillStyle = background_color;
-    for (var row = 0; row < 7; row++){
-        for (var column = 0; column < 5; column++){
-            ctx.fillRect(row*100, column*100, 100, 100);
-        }
     }
 
     scroll_world();
@@ -219,14 +214,14 @@ function run_game(){
 }
 
 function render_player(){
-    if (player.vel_y != 0){
+    if (Math.floor(player.vel_y) != 0){
         ctx.drawImage(player_jumping, player.x, player.y, player.width, player.height);
-    }else if (Math.round(player.vel_x) > 0){
-        ctx.drawImage(player_running_right, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) === 0){
+        ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
     }else if (Math.round(player.vel_x) < 0){
         ctx.drawImage(player_running_left, player.x, player.y, player.width, player.height);
-    }else{
-        ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) > 0){
+        ctx.drawImage(player_running_right, player.x, player.y, player.width, player.height);
     }
 }
 
@@ -422,7 +417,7 @@ function keep_player_on_canvas(){
         player.x = width;
     }
     if (player.x <= 0) {
-        player.x = 0;
+        //player.x = 0;
     }
     if (player.y <= 0){
         player.y = 0;
