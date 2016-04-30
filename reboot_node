@@ -1,4 +1,4 @@
-# Run as: reboot_node {username}
+# Run as: sh reboot_node {username}
 
 USER=$1
 

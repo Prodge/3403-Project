@@ -1,4 +1,4 @@
-# Run as: push {username} {branch_name}
+# Run as: sh push {username} {branch_name}
 # This script will push the local branch to github, pull the changes on the server and restart the node instance
 
 USER=$1
