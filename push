@@ -25,11 +25,11 @@ ssh root@188.166.233.19 << EOF
     # Pull any updates
     su mean
     cd ~/$USER
-    rm stdout.txt stderr.txt
     git pull origin $BRANCH
 
     # Run node sever in background
     cd root
+    rm stdout.txt stderr.txt
     PORT=$PORT node app.js > stdout.txt 2> stderr.txt &
 
     # End Session
