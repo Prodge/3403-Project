@@ -1,0 +1,38 @@
+# Run as: push {username} {branch_name}
+# This script will push the local branch to github, pull the changes on the server and restart the node instance
+
+USER=$1
+BRANCH=$2
+
+PORT=3000
+
+if [ "$USER" == "tim" ]
+then
+    PORT=3002
+fi
+if [ "$USER" == "wimo" ]
+then
+    PORT=3001
+fi
+
+
+git push origin $BRANCH
+
+ssh root@188.166.233.19 << EOF
+    # Kill current node process
+    fuser -k -n tcp $PORT
+
+    # Pull any updates
+    su mean
+    cd ~/$USER
+    rm stdout.txt stderr.txt
+    git pull origin $BRANCH
+
+    # Run node sever in background
+    cd root
+    PORT=$PORT node app.js > stdout.txt 2> stderr.txt &
+
+    # End Session
+    exit
+
+EOF
