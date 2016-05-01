@@ -162,6 +162,7 @@ function run_game(){
      * The main loop for the game
      */
 
+    ctx.clearRect(0,0,width, height);
     ctx.fillStyle = background_color;
     ctx.fillRect(0,0,width,height);
 
