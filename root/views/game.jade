@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h3= title
+    #game_resources(hidden='hidden')
+	img#player_standing(src='images/standing.png')
+	img#player_jumping(src='images/jumping.png')
+	img#player_running_left(src='images/running_left.png')
+	img#player_running_right(src='images/running_right.png')
+	canvas#game_canvas(width='700px', height='500px')
+	script(src='scripts/game.js')
