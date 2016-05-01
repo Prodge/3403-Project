@@ -28,6 +28,7 @@ ssh root@188.166.233.19 << EOF
     if [ "$BRANCH" != "master" ]
     then
         git checkout master
+        git pull origin master
         git branch -D $BRANCH
         git checkout -b $BRANCH
     fi
