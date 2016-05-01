@@ -114,8 +114,8 @@ function initialise(){
     // Initial powerups
     powerups = [
         {
-            x: 400,
-            y: 50,
+            x: 200,
+            y: 70,
             type: 'gravity',
             factor: 5,
             time: 5,
@@ -198,20 +198,23 @@ function run_game(){
     scroll_powerups();
     remove_elapsed_powerups();
     buffer_new_powerups();
+    apply_powerup();
+    render_powerups();
     if(powerup_active){
         render_powerup_timer();
         check_powerup_expired();
-    }else{
-        apply_powerup();
-        render_powerups();
     }
 
     render_player();
 
     update_points();
     render_points();
-
+    
     requestAnimationFrame(run_game);
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function render_player(){
@@ -228,13 +231,15 @@ function render_player(){
 
 function buffer_new_powerups(){
     // 1 in powerup_chance chance each frame a new powerup is spawned
-    var dice_roll = Math.round(Math.random() * powerup_chance);
-    if(dice_roll == 1){
+    var dice_roll = getRandomInt(1,powerup_chance);
+    if(dice_roll === 1){
+        var rnd_platform = platforms[getRandomInt(2,platforms.length-1)];
+        var rnd_type = powerup_types_keys[getRandomInt(0, powerup_types_keys.length-1)];
         powerups.push(
             {
-                x: 300 + Math.random() * width - 350,
-                y: -50,
-                type: powerup_types_keys[Math.round(Math.random() * (powerup_types_keys.length - 1))],
+                x: getRandomInt(rnd_platform.x, (rnd_platform.x+rnd_platform.width)-powerup_types[rnd_type].width),
+                y: rnd_platform.y - powerup_types[rnd_type].height,
+                type: rnd_type,
                 time: Math.round(Math.random() * max_powerup_time),
                 factor: Math.round(2 + (Math.random() * 10)),
             }
@@ -243,9 +248,9 @@ function buffer_new_powerups(){
 }
 
 function remove_elapsed_powerups(){
-    powerups.filter(function(powerup){
-        return powerup.y < height;
-    })
+    powerups = powerups.filter(function(powerup){
+        return powerup.x > 0;
+    });
 }
 
 function apply_gravity(factor){
@@ -266,24 +271,18 @@ function apply_points_multiplier(factor){
 }
 
 function get_colliding_powerup(){
-    var colliding_powerups = powerups.filter(function(powerup){
+    for (var i=0; i<powerups.length; i++){
+        powerup = powerups[i];
         if(
             player.x + player.width/2 > powerup.x &&
             player.x + player.width/2 < powerup.x + powerup_types[powerup.type].width &&
             player.y + player.height/2 > powerup.y &&
             player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
         ){
-            return true;
-        }else{
-            return false;
+            return i;
         }
-    })
-    if (colliding_powerups.length == 0){
-        return false;
-    }else{
-        return colliding_powerups[0];
     }
-
+    return -1;
 }
 
 function check_powerup_expired(){
@@ -308,10 +307,13 @@ function render_powerup_timer(){
 }
 
 function apply_powerup(){
-    var powerup = get_colliding_powerup();
-    if(! powerup){
+    var powerupid = get_colliding_powerup();
+    if(powerupid === -1){
         return
     }
+    var powerup = powerups[powerupid];
+    powerups.splice(powerupid,1);
+
     powerup_active = powerup;
     powerup_started_time = new Date().getTime();
 
@@ -320,9 +322,8 @@ function apply_powerup(){
 }
 
 function scroll_powerups(){
-    powerups = powerups.map(function(powerup){
-        powerup.y = powerup.y + 0.5;
-        return powerup;
+    powerups.map(function(powerup){
+        powerup.x = powerup.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
     })
 }
 
