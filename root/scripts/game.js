@@ -12,6 +12,10 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width;
 var height = canvas.height;
 
+var player_standing = document.getElementById("player_standing");
+var player_jumping = document.getElementById("player_jumping");
+var player_running_left = document.getElementById("player_running_left");
+var player_running_right = document.getElementById("player_running_right");
 var high_score = 0;
 
 initialise();
@@ -47,8 +51,8 @@ function initialise(){
     player = {
         x: width/2,
         y: 32,
-        width: 20,
-        height: 20,
+        width: 40,
+        height: 40,
         vel_x: 0,
         vel_y: 0,
         speed: 20,
@@ -75,11 +79,11 @@ function initialise(){
     points = 0;
     points_multiplier = 1;
 
+    background_color = "#00CCCC";
     points_colour = "white";
     text_colour = "white";
     platform_colour = "white";
     player_colour = "black";
-
 
     game_running = false;
 
@@ -158,6 +162,10 @@ function run_game(){
      * The main loop for the game
      */
 
+    ctx.clearRect(0,0,width, height);
+    ctx.fillStyle = background_color;
+    ctx.fillRect(0,0,width,height);
+
     update_elapsed_time();
 
     update_player_from_input();
@@ -182,8 +190,6 @@ function run_game(){
         return
     }
 
-    ctx.clearRect(0,0,width,height);
-
     scroll_world();
     remove_elapsed_platforms();
     buffer_new_platforms();
@@ -198,9 +204,8 @@ function run_game(){
         render_powerup_timer();
         check_powerup_expired();
     }
-    
-    ctx.fillStyle = player_colour;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    render_player();
 
     update_points();
     render_points();
@@ -210,6 +215,18 @@ function run_game(){
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function render_player(){
+    if (Math.floor(player.vel_y) != 0){
+        ctx.drawImage(player_jumping, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) === 0){
+        ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) < 0){
+        ctx.drawImage(player_running_left, player.x, player.y, player.width, player.height);
+    }else if (Math.round(player.vel_x) > 0){
+        ctx.drawImage(player_running_right, player.x, player.y, player.width, player.height);
+    }
 }
 
 function buffer_new_powerups(){
@@ -231,11 +248,9 @@ function buffer_new_powerups(){
 }
 
 function remove_elapsed_powerups(){
-    for (var i=0; i<powerups.length; i++){
-        if (powerups[i].x < 0){
-            powerups.splice(i,1);
-        }
-    }
+    powerups = powerups.filter(function(powerup){
+        return powerup.x > 0;
+    });
 }
 
 function apply_gravity(factor){
