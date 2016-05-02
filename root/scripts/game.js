@@ -95,10 +95,11 @@ function initialise(){
 
     game_running = false;
 
-    powerup_chance = 1000;
-    max_powerup_time = 10;
+    max_powerup_time = 6;
     powerup_active = false;
     powerup_started_time = 0;
+    previous_scroll_speed = scroll_speed_base;
+    num_times = 0;
 
     powerup_types = {
         gravity:{
@@ -106,14 +107,16 @@ function initialise(){
             colour: "blue",
             func: apply_gravity,
             width: 30,
-            height: 30
+            height: 30,
+            factor: 0.5
         },
         points_multiplier:{
             label: "Points Multiplier",
             colour: "red",
             func: apply_points_multiplier,
             width: 20,
-            height: 20
+            height: 20,
+            factor: 3
         },
     }
 
@@ -217,7 +220,9 @@ function run_game(){
 
     update_points();
     render_points();
-    
+   
+    document.getElementById("num_times").innerHTML = gravity;
+
     requestAnimationFrame(run_game);
 }
 
@@ -238,20 +243,23 @@ function render_player(){
 }
 
 function buffer_new_powerups(){
-    // 1 in powerup_chance chance each frame a new powerup is spawned
-    var dice_roll = getRandomInt(1,powerup_chance);
-    if(dice_roll === 1){
-        var rnd_platform = platforms[getRandomInt(2,platforms.length-1)];
+    //every 8 secs a powerup is generated and by time it increases(make it)
+    var current_scroll_speed = scroll_speed_base + elapsed_time/scroll_speed_update_time;
+    if ((previous_scroll_speed+0.3)<current_scroll_speed){
+        num_times++;
+        var rnd_platform = platforms[platforms.length-1];
         var rnd_type = powerup_types_keys[getRandomInt(0, powerup_types_keys.length-1)];
+        console.log(powerup_types[rnd_type].factor);
         powerups.push(
             {
                 x: getRandomInt(rnd_platform.x, (rnd_platform.x+rnd_platform.width)-powerup_types[rnd_type].width),
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
-                time: Math.round(Math.random() * max_powerup_time),
-                factor: Math.round(2 + (Math.random() * 10)),
+                time: getRandomInt(3, max_powerup_time),
+                factor: powerup_types[rnd_type].factor,
             }
         )
+        previous_scroll_speed = current_scroll_speed;
     }
 }
 
@@ -263,7 +271,7 @@ function remove_elapsed_powerups(){
 
 function apply_gravity(factor){
     if(factor){
-        gravity = factor/10;
+        gravity = factor;
     }else{
         gravity = 0.8;
     }
