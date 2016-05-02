@@ -99,7 +99,7 @@ function initialise(){
     powerup_active = false;
     powerup_started_time = 0;
     previous_scroll_speed = scroll_speed_base;
-    num_times = 0;
+    next_powerup_in = 0.24;
 
     powerup_types = {
         gravity:{
@@ -221,8 +221,6 @@ function run_game(){
     update_points();
     render_points();
    
-    document.getElementById("num_times").innerHTML = gravity;
-
     requestAnimationFrame(run_game);
 }
 
@@ -243,13 +241,12 @@ function render_player(){
 }
 
 function buffer_new_powerups(){
-    //every 8 secs a powerup is generated and by time it increases(make it)
+    //from every 6.4 secs a powerup is generated and 
+    //the next powerup generated will be 0.6sec later of the previous powerup
     var current_scroll_speed = scroll_speed_base + elapsed_time/scroll_speed_update_time;
-    if ((previous_scroll_speed+0.3)<current_scroll_speed){
-        num_times++;
+    if ((previous_scroll_speed+next_powerup_in)<current_scroll_speed){
         var rnd_platform = platforms[platforms.length-1];
         var rnd_type = powerup_types_keys[getRandomInt(0, powerup_types_keys.length-1)];
-        console.log(powerup_types[rnd_type].factor);
         powerups.push(
             {
                 x: getRandomInt(rnd_platform.x, (rnd_platform.x+rnd_platform.width)-powerup_types[rnd_type].width),
@@ -259,6 +256,7 @@ function buffer_new_powerups(){
                 factor: powerup_types[rnd_type].factor,
             }
         )
+        next_powerup_in += 0.02;
         previous_scroll_speed = current_scroll_speed;
     }
 }
