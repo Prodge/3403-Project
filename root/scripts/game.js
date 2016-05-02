@@ -64,13 +64,19 @@ function initialise(){
     keys = [];
 
     platform_height = 20;
-    min_platform_width = 50;
-    max_platform_width = 250;
+    min_platform_width = 75;
+    max_platform_width = 200;
     max_platform_height_difference = 100;
     max_platform_y = 200;
-    platform_seperation_base_multiplier = 100;
 
-    scroll_speed_multiplier = 2;
+    platform_seperation_base_multiplier = 50;
+    max_platform_seperation = 300;
+    current_turn = 0;
+    min_seperation = 100;
+    max_seperation = min_seperation;
+
+    scroll_speed_multiplier = 3;
+    max_scroll_speed = 8
 
     start_time = new Date().getTime();
     elapsed_time = 0;
@@ -322,9 +328,14 @@ function apply_powerup(){
 }
 
 function scroll_powerups(){
+    var current_speed =  scroll_speed_multiplier + elapsed_time/7500;
+    if (current_speed > max_scroll_speed){
+        current_speed = max_scroll_speed;
+    }
     powerups.map(function(powerup){
-        powerup.x = powerup.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
+        powerup.x = powerup.x - current_speed;
     })
+    document.getElementById("scroll_powerups").innerHTML = current_speed;
 }
 
 function render_powerups(){
@@ -364,7 +375,16 @@ function buffer_new_platforms(){
 
         // The horisontal to the new platform from the last platform
         // Becomes larger with time, as scrolling is faster
-        var x_distance = Math.random() * (platform_seperation_base_multiplier * (1 + elapsed_time / 10000));
+        
+        if (max_seperation < max_platform_seperation && Math.floor(elapsed_time/10000) > current_turn){
+            current_turn = Math.floor(elapsed_time/10000);
+            min_seperation = max_seperation;
+            max_seperation = (current_turn+2) * platform_seperation_base_multiplier;
+        }        
+        x_distance = getRandomInt(min_seperation, max_seperation);
+        document.getElementById("min_sep").innerHTML = min_seperation;
+        document.getElementById("max_sep").innerHTML = max_seperation;
+        document.getElementById("x_dist").innerHTML = x_distance;
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
@@ -481,9 +501,14 @@ function game_over(){
 }
 
 function scroll_world(){
+    var current_speed =  scroll_speed_multiplier + elapsed_time/7500;
+    if (current_speed > max_scroll_speed){
+        current_speed = max_scroll_speed;
+    }
     platforms.map(function(platform){
-        platform.x = platform.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
+        platform.x = platform.x - current_speed;
     })
+    document.getElementById("scroll_world").innerHTML = current_speed;
 }
 
 function remove_elapsed_platforms(){
