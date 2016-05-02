@@ -253,7 +253,6 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(3, max_powerup_time),
-                factor: powerup_types[rnd_type].factor,
             }
         )
         next_powerup_in += 0.02;
@@ -316,7 +315,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 90);
+    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor, width, 90);
     ctx.fillText("Time Left: " + time, width, 120);
 }
 
@@ -332,7 +331,7 @@ function apply_powerup(){
     powerup_started_time = new Date().getTime();
 
     // Call powerup type function with factor to apply the powerup
-    powerup_types[powerup.type].func(powerup.factor);
+    powerup_types[powerup.type].func(powerup_types[powerup.type].factor);
 }
 
 function scroll_powerups(){
