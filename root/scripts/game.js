@@ -100,6 +100,7 @@ function initialise(){
     powerup_started_time = 0;
     previous_scroll_speed = scroll_speed_base;
     next_powerup_in = 0.24;
+    powerup_pocket = false;
 
     powerup_types = {
         gravity:{
@@ -292,10 +293,12 @@ function get_colliding_powerup(){
             player.y + player.height/2 > powerup.y &&
             player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
         ){
-            return i;
+            powerup_pocket = powerups[i];
+            powerups.splice(powerups[i],1);
+            return true;
         }
     }
-    return -1;
+    return false;
 }
 
 function check_powerup_expired(){
@@ -314,24 +317,25 @@ function render_powerup_timer(){
     ctx.font="20px Lucida Console";
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
-    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
-    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor, width, 90);
-    ctx.fillText("Time Left: " + time, width, 120);
+    ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
+    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor, width, 120);
+    ctx.fillText("Time Left: " + time, width, 150);
 }
 
 function apply_powerup(){
     var powerupid = get_colliding_powerup();
-    if(powerupid === -1){
+    if(!powerupid && !powerup_pocket){
         return
     }
-    var powerup = powerups[powerupid];
-    powerups.splice(powerupid,1);
+    //if powerup collected is activated then
+    if (keys[65]){
+        powerup_active = powerup_pocket;
+        powerup_started_time = new Date().getTime();
 
-    powerup_active = powerup;
-    powerup_started_time = new Date().getTime();
-
-    // Call powerup type function with factor to apply the powerup
-    powerup_types[powerup.type].func(powerup_types[powerup.type].factor);
+        // Call powerup type function with factor to apply the powerup
+        powerup_types[powerup_pocket.type].func(powerup_types[powerup_pocket.type].factor);
+        powerup_pocket = false;
+    }
 }
 
 function scroll_powerups(){
@@ -481,6 +485,11 @@ function render_points(){
     ctx.fillText("High Score: " + high_score, 0, 30);
     ctx.textAlign="end";
     ctx.fillText("Current Score: " + points, width, 30);
+    if (!powerup_pocket){
+        ctx.fillText("Powerup Pocket: None", width, 60);
+    }else{
+        ctx.fillText("Powerup Pocket: " + powerup_types[powerup_pocket.type].label, width, 60);
+    }
 }
 
 function update_elapsed_time(){
