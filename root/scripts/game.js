@@ -107,8 +107,8 @@ function initialise(){
             label: "Low Gravity",
             colour: "blue",
             func: apply_gravity,
-            width: 30,
-            height: 30
+            width: 20,
+            height: 20
         },
         points_multiplier:{
             label: "Points Multiplier",
@@ -117,6 +117,13 @@ function initialise(){
             width: 20,
             height: 20
         },
+        random:{
+            label: "Mystery powerup",
+            colour: "black",
+            func: apply_random,
+            width: 20,
+            height: 20
+        }
     }
 
     powerup_types_keys = Object.keys(powerup_types);
@@ -281,7 +288,18 @@ function apply_points_multiplier(factor){
     }else{
         points_multiplier = 1;
     }
+}
 
+function apply_random(factor){
+    //factor is rounded an reduced by 1 to confirm with array
+    //if not in array then generate a random number in the array
+    //excluding the last element because it's the random one
+    if ((Math.round(factor)-1) < (powerup_types_keys.length-1)){
+        powerup_active.type = powerup_types_keys[Math.round(factor)-1];
+    }else{
+        powerup_active.type = powerup_types_keys[getRandomInt(0, powerup_types_keys.length-2)];
+    }
+    powerup_types[powerup_active.type].func(powerup_active.factor);
 }
 
 function get_colliding_powerup(){
