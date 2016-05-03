@@ -109,7 +109,7 @@ function initialise(){
             func: apply_gravity,
             width: 30,
             height: 30,
-            factor: 0.5
+            factor: createRangeArray(0.5, 0.7, 9).reverse()
         },
         points_multiplier:{
             label: "Points Multiplier",
@@ -117,7 +117,7 @@ function initialise(){
             func: apply_points_multiplier,
             width: 20,
             height: 20,
-            factor: 3
+            factor: createRangeArray(2, 10, 9)
         },
     }
 
@@ -203,11 +203,11 @@ function run_game(){
     }
 
     scroll_world();
+
     remove_elapsed_platforms();
     buffer_new_platforms();
     render_platforms();
 
-    scroll_powerups();
     remove_elapsed_powerups();
     buffer_new_powerups();
     apply_powerup();
@@ -227,6 +227,15 @@ function run_game(){
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createRangeArray(min, max, length){
+    var dif = (max - min) / (length - 1);
+    var factor_array = [min];
+    for (var i=1; i<length; i++){
+        factor_array.push(factor_array[i-1]+dif);
+    }
+    return factor_array;
 }
 
 function render_player(){
@@ -254,6 +263,7 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(3, max_powerup_time),
+                factor_id: getRandomInt(0,8)
             }
         )
         next_powerup_in += 0.02;
@@ -319,7 +329,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor, width, 120);
+    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor[powerup_active.factor_id], width, 120);
     ctx.fillText("Time Left: " + time, width, 150);
 }
 
@@ -333,19 +343,9 @@ function apply_powerup(){
         powerup_started_time = new Date().getTime();
 
         // Call powerup type function with factor to apply the powerup
-        powerup_types[powerup_collected.type].func(powerup_types[powerup_collected.type].factor);
+        powerup_types[powerup_collected.type].func(powerup_types[powerup_collected.type].factor[powerup_active.factor_id]);
         powerup_collected = false;
     }
-}
-
-function scroll_powerups(){
-    var current_speed =  scroll_speed_base + elapsed_time/scroll_speed_update_time;
-    if (current_speed > max_scroll_speed){
-        current_speed = max_scroll_speed;
-    }
-    powerups.map(function(powerup){
-        powerup.x = powerup.x - current_speed;
-    })
 }
 
 function render_powerups(){
@@ -522,6 +522,9 @@ function scroll_world(){
     }
     platforms.map(function(platform){
         platform.x = platform.x - current_speed;
+    })
+    powerups.map(function(powerup){
+        powerup.x = powerup.x - current_speed;
     })
 }
 
