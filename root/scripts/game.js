@@ -17,7 +17,7 @@ var characters = [];
 function initialiseCharacterImages(){
     var character_names = ["al", "tim", "wimo"];
     var movements = ["standing", "jumping", "running_left", "running_right"];
-    for (var i=0; i<1; i++){
+    for (var i=0; i<character_names.length; i++){
         var dict = {};
         for (var j=0; j<movements.length; j++){
             dict[movements[j]] = document.getElementById(character_names[i] + "_" + movements[j]);
@@ -70,7 +70,7 @@ function initialise(){
         vel_x: 0,
         vel_y: 0,
         speed: 20,
-        character: 0
+        character: 1
     }
 
     friction = 0.8;
