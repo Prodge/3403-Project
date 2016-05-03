@@ -199,11 +199,11 @@ function run_game(){
     }
 
     scroll_world();
+
     remove_elapsed_platforms();
     buffer_new_platforms();
     render_platforms();
 
-    scroll_powerups();
     remove_elapsed_powerups();
     buffer_new_powerups();
     apply_powerup();
@@ -327,16 +327,6 @@ function apply_powerup(){
 
     // Call powerup type function with factor to apply the powerup
     powerup_types[powerup.type].func(powerup.factor);
-}
-
-function scroll_powerups(){
-    var current_speed =  scroll_speed_base + elapsed_time/scroll_speed_update_time;
-    if (current_speed > max_scroll_speed){
-        current_speed = max_scroll_speed;
-    }
-    powerups.map(function(powerup){
-        powerup.x = powerup.x - current_speed;
-    })
 }
 
 function render_powerups(){
@@ -508,6 +498,9 @@ function scroll_world(){
     }
     platforms.map(function(platform){
         platform.x = platform.x - current_speed;
+    })
+    powerups.map(function(powerup){
+        powerup.x = powerup.x - current_speed;
     })
 }
 
