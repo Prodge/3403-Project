@@ -7,19 +7,21 @@
  */
 
 
-var canvas = document.getElementById('game_canvas');
-var ctx = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
+$(document).ready(function () {
+    var canvas = document.getElementById('game_canvas');
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width;
+    var height = canvas.height;
 
-var player_standing = document.getElementById("player_standing");
-var player_jumping = document.getElementById("player_jumping");
-var player_running_left = document.getElementById("player_running_left");
-var player_running_right = document.getElementById("player_running_right");
-var high_score = 0;
+    var player_standing = document.getElementById("player_standing");
+    var player_jumping = document.getElementById("player_jumping");
+    var player_running_left = document.getElementById("player_running_left");
+    var player_running_right = document.getElementById("player_running_right");
+    var high_score = 0;
 
-initialise();
-draw_initial_screen();
+    initialise();
+    draw_initial_screen();
+})
 
 // Key listeners
 $(document).keydown(function(e){
