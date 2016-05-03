@@ -108,7 +108,7 @@ function initialise(){
             func: apply_gravity,
             width: 30,
             height: 30,
-            factor: createRangeArray(0.5, 0.7, 9)
+            factor: createRangeArray(0.5, 0.7, 9).reverse()
         },
         points_multiplier:{
             label: "Points Multiplier",
