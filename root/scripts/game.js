@@ -25,10 +25,10 @@ function initialiseCharacterImages(){
         }
         characters.push(dict);
     }
-    console.log(characters);
 }
 
 var high_score = 0;
+var character_chosen = 0;
 
 initialiseCharacterImages();
 initialise();
@@ -40,8 +40,9 @@ $(document).keydown(function(e){
 })
 $(document).keyup(function(e){
     keys[e.keyCode] = false;
-
-    if (! game_running && e.keyCode == 32){
+    var key_to_character = { 49:0, 50:1, 51:2 };
+    if (! game_running && (e.keyCode == 49 || e.keyCode == 50 || e.keyCode == 51)){
+        character_chosen = key_to_character[e.keyCode];
         start_game();
     }
 })
@@ -54,7 +55,9 @@ function draw_initial_screen(){
     ctx.fillText('Action Box', width/2, height/4);
 
     ctx.font="20px Lucida Console";
-    ctx.fillText('Press "Space" to start!', width/2, height/2);
+    ctx.fillText('Press "1" to start with character AL!', width/2, height/2);
+    ctx.fillText('Press "2" to start with character TIM!', width/2, height/2+30);
+    ctx.fillText('Press "3" to start with character WIMO!', width/2, height/2+60);
 }
 
 function initialise(){
@@ -70,7 +73,7 @@ function initialise(){
         vel_x: 0,
         vel_y: 0,
         speed: 20,
-        character: 1
+        character: character_chosen
     }
 
     friction = 0.8;
@@ -545,7 +548,9 @@ function game_over(){
     ctx.fillText('You scored ' + points + " Points!", width/2, height/2);
 
     ctx.font="15px Lucida Console";
-    ctx.fillText('Press "Space" to try again!', width/2, height - height/4);
+    ctx.fillText('Press "1" to start with character AL!', width/2, height - height/4);
+    ctx.fillText('Press "2" to start with character TIM!', width/2, height - height/4+20);
+    ctx.fillText('Press "3" to start with character WIMO!', width/2, height - height/4+40);
 
     high_score = points;
 }
