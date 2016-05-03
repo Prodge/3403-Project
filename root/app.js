@@ -2,14 +2,17 @@
 /**
  * Module dependencies.
  */
+console.log('Starting Server Init')
 
 var express = require('express')
   , routes = require('./routes')
+  , game = require('./routes/game')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
 
 var app = express();
+
 
 var Mongoose = require('mongoose');
 var db = Mongoose.createConnection('localhost', 'mytestapp');
@@ -30,8 +33,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+
 app.get('/', routes.index);
-app.get('/play', routes.game);
+app.get('/play', game.index);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
