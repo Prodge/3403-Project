@@ -64,13 +64,21 @@ function initialise(){
     keys = [];
 
     platform_height = 20;
-    min_platform_width = 50;
-    max_platform_width = 250;
+    min_platform_width = 75;
+    max_platform_width = 200;
     max_platform_height_difference = 100;
     max_platform_y = 200;
-    platform_seperation_base_multiplier = 100;
 
-    scroll_speed_multiplier = 2;
+    platform_seperation_base_multiplier = 50;
+    max_platform_seperation = 300;
+    current_platform_seperation_level = 0;
+    current_min_platform_seperation = 50;
+    current_max_platform_seperation = current_min_platform_seperation;
+    platform_seperation_update_time = 30000;
+
+    scroll_speed_base = 2;
+    max_scroll_speed = 8
+    scroll_speed_update_time = 27500;
 
     start_time = new Date().getTime();
     elapsed_time = 0;
@@ -191,11 +199,11 @@ function run_game(){
     }
 
     scroll_world();
+
     remove_elapsed_platforms();
     buffer_new_platforms();
     render_platforms();
 
-    scroll_powerups();
     remove_elapsed_powerups();
     buffer_new_powerups();
     apply_powerup();
@@ -321,12 +329,6 @@ function apply_powerup(){
     powerup_types[powerup.type].func(powerup.factor);
 }
 
-function scroll_powerups(){
-    powerups.map(function(powerup){
-        powerup.x = powerup.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
-    })
-}
-
 function render_powerups(){
     powerups.map(function(powerup){
         ctx.fillStyle = powerup_types[powerup.type].colour;
@@ -362,9 +364,18 @@ function buffer_new_platforms(){
     function add_new_platform(rightmost_x, rightmost_y){
         // Generates a new platform that the player can jump to given the current rightmost platform
 
-        // The horisontal to the new platform from the last platform
-        // Becomes larger with time, as scrolling is faster
-        var x_distance = Math.random() * (platform_seperation_base_multiplier * (1 + elapsed_time / 10000));
+        //Checks whether the current max seperation has not reached the maximum
+        //and whether 30s has elapsed to increase the seperation limits
+        //If then a new seperation level is set and the min and max are set
+        if( 
+            current_max_platform_seperation < max_platform_seperation && 
+            Math.floor(elapsed_time/platform_seperation_update_time) > current_platform_seperation_level
+        ){
+            current_platform_seperation_level = Math.floor(elapsed_time/platform_seperation_update_time);
+            current_min_platform_seperation = current_max_platform_seperation;
+            current_max_platform_seperation = (current_platform_seperation_level+1) * platform_seperation_base_multiplier;
+        }        
+        x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
@@ -481,8 +492,15 @@ function game_over(){
 }
 
 function scroll_world(){
+    var current_speed =  scroll_speed_base + elapsed_time/scroll_speed_update_time;
+    if (current_speed > max_scroll_speed){
+        current_speed = max_scroll_speed;
+    }
     platforms.map(function(platform){
-        platform.x = platform.x - (scroll_speed_multiplier * (elapsed_time / 10000) );
+        platform.x = platform.x - current_speed;
+    })
+    powerups.map(function(powerup){
+        powerup.x = powerup.x - current_speed;
     })
 }
 
