@@ -12,12 +12,25 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width;
 var height = canvas.height;
 
-var player_standing = document.getElementById("player_standing");
-var player_jumping = document.getElementById("player_jumping");
-var player_running_left = document.getElementById("player_running_left");
-var player_running_right = document.getElementById("player_running_right");
+var characters = [];
+
+function initialiseCharacterImages(){
+    var character_names = ["al", "tim", "wimo"];
+    var movements = ["standing", "jumping", "running_left", "running_right"];
+    for (var i=0; i<1; i++){
+        var dict = {};
+        for (var j=0; j<movements.length; j++){
+            dict[movements[j]] = document.getElementById(character_names[i] + "_" + movements[j]);
+            dict[movements[j]+"_powerup"] = document.getElementById(character_names[i] + "_" + movements[j] + "_powerup");
+        }
+        characters.push(dict);
+    }
+    console.log(characters);
+}
+
 var high_score = 0;
 
+initialiseCharacterImages();
 initialise();
 draw_initial_screen();
 
@@ -48,6 +61,7 @@ function initialise(){
     /*
      * Initialises game variables to global scope
      */
+
     player = {
         x: width/2,
         y: 32,
@@ -56,6 +70,7 @@ function initialise(){
         vel_x: 0,
         vel_y: 0,
         speed: 20,
+        character: 0
     }
 
     friction = 0.8;
@@ -235,14 +250,18 @@ function getRandomInt(min, max) {
 }
 
 function render_player(){
+    var powerup_tag = "";
+    if (powerup_active){
+        powerup_tag = "_powerup";
+    }
     if (Math.floor(player.vel_y) != 0){
-        ctx.drawImage(player_jumping, player.x, player.y, player.width, player.height);
+        ctx.drawImage(characters[player.character]["jumping"+powerup_tag], player.x, player.y, player.width, player.height);
     }else if (Math.round(player.vel_x) === 0){
-        ctx.drawImage(player_standing, player.x, player.y, player.width, player.height);
+        ctx.drawImage(characters[player.character]["standing"+powerup_tag], player.x, player.y, player.width, player.height);
     }else if (Math.round(player.vel_x) < 0){
-        ctx.drawImage(player_running_left, player.x, player.y, player.width, player.height);
+        ctx.drawImage(characters[player.character]["running_left"+powerup_tag], player.x, player.y, player.width, player.height);
     }else if (Math.round(player.vel_x) > 0){
-        ctx.drawImage(player_running_right, player.x, player.y, player.width, player.height);
+        ctx.drawImage(characters[player.character]["running_right"+powerup_tag], player.x, player.y, player.width, player.height);
     }
 }
 
