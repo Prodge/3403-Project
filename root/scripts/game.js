@@ -108,16 +108,14 @@ function initialise(){
             colour: "blue",
             func: apply_gravity,
             width: 30,
-            height: 30,
-            factor: createRangeArray(0.5, 0.7, 9).reverse()
+            height: 30
         },
         points_multiplier:{
             label: "Points Multiplier",
             colour: "red",
             func: apply_points_multiplier,
             width: 20,
-            height: 20,
-            factor: createRangeArray(2, 10, 9)
+            height: 20
         },
     }
 
@@ -229,15 +227,6 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function createRangeArray(min, max, length){
-    var dif = (max - min) / (length - 1);
-    var factor_array = [min];
-    for (var i=1; i<length; i++){
-        factor_array.push(factor_array[i-1]+dif);
-    }
-    return factor_array;
-}
-
 function render_player(){
     if (Math.floor(player.vel_y) != 0){
         ctx.drawImage(player_jumping, player.x, player.y, player.width, player.height);
@@ -263,7 +252,7 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(3, max_powerup_time),
-                factor_id: getRandomInt(0,8)
+                factor: Math.random()*9+1 
             }
         )
         next_powerup_in += 0.02;
@@ -279,7 +268,8 @@ function remove_elapsed_powerups(){
 
 function apply_gravity(factor){
     if(factor){
-        gravity = factor;
+        var dif = 0.8 - 0.5;
+        gravity = 0.8 - ((dif * factor)/10);
     }else{
         gravity = 0.8;
     }
@@ -329,7 +319,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor[powerup_active.factor_id], width, 120);
+    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
     ctx.fillText("Time Left: " + time, width, 150);
 }
 
@@ -343,7 +333,7 @@ function apply_powerup(){
         powerup_started_time = new Date().getTime();
 
         // Call powerup type function with factor to apply the powerup
-        powerup_types[powerup_collected.type].func(powerup_types[powerup_collected.type].factor[powerup_active.factor_id]);
+        powerup_types[powerup.type].func(powerup_active.factor);
         powerup_collected = false;
     }
 }
