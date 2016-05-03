@@ -100,7 +100,7 @@ function initialise(){
     powerup_started_time = 0;
     previous_scroll_speed = scroll_speed_base;
     next_powerup_in = 0.24;
-    powerup_pocket = false;
+    powerup_collected = false;
 
     powerup_types = {
         gravity:{
@@ -221,7 +221,7 @@ function run_game(){
 
     update_points();
     render_points();
-   
+
     requestAnimationFrame(run_game);
 }
 
@@ -293,7 +293,8 @@ function get_colliding_powerup(){
             player.y + player.height/2 > powerup.y &&
             player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
         ){
-            powerup_pocket = powerups[i];
+            //every powerup collected replaces the previous powerup
+            powerup_collected = powerups[i];
             powerups.splice(powerups[i],1);
             return true;
         }
@@ -323,18 +324,17 @@ function render_powerup_timer(){
 }
 
 function apply_powerup(){
-    var powerupid = get_colliding_powerup();
-    if(!powerupid && !powerup_pocket){
+    if(!get_colliding_powerup() && !powerup_collected){
         return
     }
     //if powerup collected is activated then
     if (keys[65]){
-        powerup_active = powerup_pocket;
+        powerup_active = powerup_collected;
         powerup_started_time = new Date().getTime();
 
         // Call powerup type function with factor to apply the powerup
-        powerup_types[powerup_pocket.type].func(powerup_types[powerup_pocket.type].factor);
-        powerup_pocket = false;
+        powerup_types[powerup_collected.type].func(powerup_types[powerup_collected.type].factor);
+        powerup_collected = false;
     }
 }
 
@@ -485,10 +485,10 @@ function render_points(){
     ctx.fillText("High Score: " + high_score, 0, 30);
     ctx.textAlign="end";
     ctx.fillText("Current Score: " + points, width, 30);
-    if (!powerup_pocket){
-        ctx.fillText("Powerup Pocket: None", width, 60);
+    if (!powerup_collected){
+        ctx.fillText("Powerup Collected: None", width, 60);
     }else{
-        ctx.fillText("Powerup Pocket: " + powerup_types[powerup_pocket.type].label, width, 60);
+        ctx.fillText("Powerup Collected: " + powerup_types[powerup_collected.type].label, width, 60);
     }
 }
 
