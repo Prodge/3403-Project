@@ -108,7 +108,7 @@ function initialise(){
             func: apply_gravity,
             width: 30,
             height: 30,
-            factor: 0.5
+            factor: createRangeArray(0.5, 0.7, 9)
         },
         points_multiplier:{
             label: "Points Multiplier",
@@ -116,7 +116,7 @@ function initialise(){
             func: apply_points_multiplier,
             width: 20,
             height: 20,
-            factor: 3
+            factor: createRangeArray(2, 10, 9)
         },
     }
 
@@ -220,12 +220,21 @@ function run_game(){
 
     update_points();
     render_points();
-   
+
     requestAnimationFrame(run_game);
 }
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createRangeArray(min, max, length){
+    var dif = (max - min) / (length - 1);
+    var factor_array = [min];
+    for (var i=1; i<length; i++){
+        factor_array.push(factor_array[i-1]+dif);
+    }
+    return factor_array;
 }
 
 function render_player(){
@@ -253,6 +262,7 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(3, max_powerup_time),
+                factor_id: getRandomInt(0,8)
             }
         )
         next_powerup_in += 0.02;
@@ -315,7 +325,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 60);
-    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor, width, 90);
+    ctx.fillText("Multiplier: " + powerup_types[powerup_active.type].factor[powerup_active.factor_id], width, 90);
     ctx.fillText("Time Left: " + time, width, 120);
 }
 
@@ -331,7 +341,7 @@ function apply_powerup(){
     powerup_started_time = new Date().getTime();
 
     // Call powerup type function with factor to apply the powerup
-    powerup_types[powerup.type].func(powerup_types[powerup.type].factor);
+    powerup_types[powerup.type].func(powerup_types[powerup.type].factor[powerup_active.factor_id]);
 }
 
 function render_powerups(){
