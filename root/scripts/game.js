@@ -347,6 +347,12 @@ function render_powerups(){
             powerup_types[powerup.type].width,
             powerup_types[powerup.type].height
         );
+        ctx.fillStyle = "white";
+        ctx.font="12px Lucida Console";
+        ctx.fillText("Factor: " + powerup.factor,
+                     powerup.x,
+                     powerup.y+(powerup_types[powerup.type].height/2)
+        );        
     })
 }
 
