@@ -14,10 +14,10 @@ html(lang="en")
         block nav
           center
             nav
-              button#home_page(content='game.html') Play
-              button(content='instructions.html') Instructions
-              button(content='theme.html') Theme
-              button(content='author.html') Author
+              a.button(href='/play') Play
+              a.button(href='/instructions') Instructions
+              a.button(href='/author') Author
+              a.button(href='/theme') Theme
       #content
         block content
           p There is no content here

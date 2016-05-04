@@ -11,7 +11,8 @@ body{
     margin: auto;
     padding: 10px;
 }
-#nav button {
+
+a.button {
     display: inline-block;
     cursor: pointer;
     border-style: solid;
@@ -28,12 +29,19 @@ body{
     text-decoration: none;
     margin: 5px;
 }
+
 p h3 {
     color: #eee;
 }
+
 #footer {
     color: #ccc;
 }
+
 #footer #last-modified {
     float: right;
+}
+
+#th {
+ float: left;
 }
