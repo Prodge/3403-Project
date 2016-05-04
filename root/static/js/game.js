@@ -17,6 +17,8 @@ $(document).load(function(e){
     character_chosen = 0;
     isPaused = false;
 
+    keys = [];
+
     initialiseCharacterImages();
     initialise();
     draw_initial_screen();
@@ -92,8 +94,6 @@ function initialise(){
 
     friction = 0.8;
     gravity = 0.8;
-
-    keys = [];
 
     platform_height = 20;
     min_platform_width = 75;
