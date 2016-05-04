@@ -18,6 +18,8 @@ var player_running_left = document.getElementById("player_running_left");
 var player_running_right = document.getElementById("player_running_right");
 var high_score = 0;
 
+var isPaused = false;
+
 initialise();
 draw_initial_screen();
 
@@ -30,6 +32,16 @@ $(document).keyup(function(e){
 
     if (! game_running && e.keyCode == 32){
         start_game();
+    }
+
+    if (game_running && e.keyCode == 66){
+        isPaused = !isPaused;
+        if (!isPaused){
+            pause_end_time = new Date().getTime();
+            time_offset += pause_end_time - pause_start_time;
+            powerup_started_time += pause_end_time - pause_start_time;
+        }
+
     }
 })
 
@@ -48,6 +60,8 @@ function initialise(){
     /*
      * Initialises game variables to global scope
      */
+    isPaused = false;
+
     player = {
         x: width/2,
         y: 32,
@@ -94,6 +108,9 @@ function initialise(){
     player_colour = "black";
 
     game_running = false;
+    time_offset = 0;
+    pause_start_time = 0;
+    pause_end_time = 0;
 
     max_powerup_time = 6;
     powerup_active = false;
@@ -174,7 +191,30 @@ function start_game(){
     run_game();
 }
 
+function render_pause_screen(){
+    ctx.fillStyle= "#b0c2f7";
+    ctx.globalAlpha=0.5; // Half opacity
+    ctx.fillRect(0,0,width,height);
+    ctx.fillStyle = text_colour;
+    ctx.textAlign="center";
+    ctx.font="20px Lucida Console";
+    ctx.fillText('Press "B" to resume', width/2, height/2);
+}
+
 function run_game(){
+    if (isPaused){
+        render_pause_screen();
+    }else{
+        game_loop();
+        pause_start_time = new Date().getTime();
+    }
+    document.getElementById("ep_time").innerHTML = elapsed_time + "   " + last_elapsed_time;
+    if (game_running){
+        myReq = requestAnimationFrame(run_game);
+    }
+}
+
+function game_loop(){
     /*
      * The main loop for the game
      */
@@ -227,7 +267,6 @@ function run_game(){
     update_points();
     render_points();
 
-    requestAnimationFrame(run_game);
 }
 
 function getRandomInt(min, max) {
@@ -411,6 +450,7 @@ function buffer_new_platforms(){
             current_max_platform_seperation = (current_platform_seperation_level+1) * platform_seperation_base_multiplier;
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
+        document.getElementById("platform_sep").innerHTML = current_min_platform_seperation + " " + current_max_platform_seperation;
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
@@ -511,7 +551,7 @@ function render_points(){
 function update_elapsed_time(){
     var time_now = new Date().getTime();
     last_elapsed_time = elapsed_time;
-    elapsed_time = time_now - start_time;
+    elapsed_time = time_now - start_time - time_offset;
 }
 
 function game_over(){
@@ -529,6 +569,8 @@ function game_over(){
     ctx.fillText('Press "Space" to try again!', width/2, height - height/4);
 
     high_score = points;
+
+    cancelAnimationFrame(myReq);
 }
 
 function scroll_world(){
@@ -542,6 +584,7 @@ function scroll_world(){
     powerups.map(function(powerup){
         powerup.x = powerup.x - current_speed;
     })
+    document.getElementById("speed").innerHTML = current_speed;
 }
 
 function remove_elapsed_platforms(){
