@@ -6,14 +6,26 @@
  *
  */
 
-var canvas = document.getElementById('game_canvas');
-var ctx = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
+// Canvas Props
+$(window).load(function(){
+    canvas = document.getElementById('game_canvas');
+    ctx = canvas.getContext('2d');
+    width = canvas.width;
+    height = canvas.height;
 
-var characters = [];
+    high_score = 0;
+    character_chosen = 0;
+    isPaused = false;
+
+    keys = [];
+
+    initialiseCharacterImages();
+    initialise();
+    draw_initial_screen();
+})
 
 function initialiseCharacterImages(){
+    characters = [];
     var character_names = ["al", "tim", "wimo"];
     var movements = ["standing", "jumping", "running_left", "running_right"];
     for (var i=0; i<character_names.length; i++){
@@ -25,14 +37,6 @@ function initialiseCharacterImages(){
         characters.push(dict);
     }
 }
-
-var high_score = 0;
-var character_chosen = 0;
-var isPaused = false;
-
-initialiseCharacterImages();
-initialise();
-draw_initial_screen();
 
 // Key listeners
 $(document).keydown(function(e){
@@ -97,8 +101,6 @@ function initialise(){
 
     friction = 0.8;
     gravity = 0.8;
-
-    keys = [];
 
     platform_height = 20;
     min_platform_width = 75;
@@ -309,7 +311,7 @@ function render_player(){
 }
 
 function buffer_new_powerups(){
-    //from every 6.4 secs a powerup is generated and 
+    //from every 6.4 secs a powerup is generated and
     //the next powerup generated will be 0.6sec later of the previous powerup
     var current_scroll_speed = scroll_speed_base + elapsed_time/scroll_speed_update_time;
     if ((previous_scroll_speed+next_powerup_in)<current_scroll_speed){
@@ -321,7 +323,7 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(3, max_powerup_time),
-                factor: Math.random()*9+1 
+                factor: Math.random()*9+1
             }
         )
         next_powerup_in += 0.02;
@@ -434,7 +436,7 @@ function render_powerups(){
             powerup.factor.toFixed(1),
             powerup.x+(powerup_types[powerup.type].width/2),
             powerup.y+(powerup_types[powerup.type].height/2)
-        );        
+        );
     })
 }
 
@@ -464,14 +466,14 @@ function buffer_new_platforms(){
         //Checks whether the current max seperation has not reached the maximum
         //and whether 30s has elapsed to increase the seperation limits
         //If then a new seperation level is set and the min and max are set
-        if( 
-            current_max_platform_seperation < max_platform_seperation && 
+        if(
+            current_max_platform_seperation < max_platform_seperation &&
             Math.floor(elapsed_time/platform_seperation_update_time) > current_platform_seperation_level
         ){
             current_platform_seperation_level = Math.floor(elapsed_time/platform_seperation_update_time);
             current_min_platform_seperation = current_max_platform_seperation;
             current_max_platform_seperation = (current_platform_seperation_level+1) * platform_seperation_base_multiplier;
-        }        
+        }
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
 
         // The height difference between the current and the next platform
