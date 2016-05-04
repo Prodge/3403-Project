@@ -37,7 +37,7 @@ ssh root@188.166.233.19 << EOF
     # Run node sever in background
     cd root
     rm stdout.txt stderr.txt
-    PORT=$PORT node app.js > stdout.txt 2> stderr.txt &
+    PORT=$PORT node server.js > stdout.txt 2> stderr.txt &
 
     # End Session
     exit
