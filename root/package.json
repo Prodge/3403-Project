@@ -1,5 +1,5 @@
 {
-  "name": "application-name",
+  "name": "action-box",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,13 @@
   "dependencies": {
     "express": "3.2.3",
     "jade": "*",
-    "mongodb" : ">=0.9.6-7",
-    "mongoose" : ">=3.6"
+    "mongodb": ">=0.9.6-7",
+    mongoose: >=3.6,
+    "bcrypt": "^0.8.5",
+    "body-parser": "~1.9.2",
+    "jwt-simple": "^0.3.1",
+    "morgan": "~1.5.0",
+    "passport": "^0.3.0",
+    "passport-jwt": "^1.2.1,"
   }
 }
