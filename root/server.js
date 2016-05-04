@@ -2,6 +2,7 @@ console.log('Starting Server Init')
 
 var express     = require('express')
 var routes      = require('./routes')
+var user_api    = require('./routes/user')
 var http        = require('http')
 var path        = require('path');
 var app         = express();
@@ -51,22 +52,7 @@ require('./config/passport')(passport);
 // bundle our routes
 //var apiRoutes = express.Router();
 
-app.post('/api/signup', function(req, res) {
-    if (!req.body.name || !req.body.password) {
-        res.json({success: false, msg: 'Please pass name and password.'});
-    } else {
-        var newUser = new User({
-            name: req.body.name,
-            password: req.body.password
-        });
-        newUser.save(function(err) {
-            if (err) {
-                return res.json({success: false, msg: 'Username already exists.'});
-            }
-            res.json({success: true, msg: 'Successful created new user.'});
-        });
-    }
-});
+app.post('/api/signup', user_api.signup);
 
 app.post('/api/authenticate', function(req, res) {
     // Return the user an authentication token for thier session
@@ -82,7 +68,7 @@ app.post('/api/authenticate', function(req, res) {
                     var token = jwt.encode(user, config.secret);
                     res.json({success: true, token: 'JWT ' + token});
                 } else {
-                      res.send({success: false, msg: 'Authentication failed. Wrong password.'});
+                    res.send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
             });
         }
@@ -98,9 +84,9 @@ app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), func
         }, function(err, user) {
             if (err) throw err;
             if (!user) {
-              return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+                return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
             } else {
-              res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
+                res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
             }
         });
     } else {
@@ -126,6 +112,6 @@ getToken = function (headers) {
 //app.use('/api', apiRoutes);
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + app.get('port'));
 });
 
