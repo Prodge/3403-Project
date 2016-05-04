@@ -8,7 +8,6 @@
 
 // Canvas Props
 $(window).load(function(){
-    console.log('heoeuoeuoeu')
     canvas = document.getElementById('game_canvas');
     ctx = canvas.getContext('2d');
     width = canvas.width;
@@ -62,6 +61,13 @@ $(document).keyup(function(e){
         }
     }
 })
+
+$(window).blur(function() {
+    if (game_running){
+        isPaused = true;
+        render_pause_screen();
+    }
+});
 
 function draw_initial_screen(){
     ctx.fillStyle = text_colour;
@@ -395,7 +401,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
+    ctx.fillText("Multiplier: " + powerup_active.factor.toFixed(1), width, 120);
     ctx.fillText("Time Left: " + time, width, 150);
 }
 
