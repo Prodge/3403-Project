@@ -272,6 +272,8 @@ function game_loop(){
     player.x += player.vel_x;
     player.y += player.vel_y;
 
+    keep_player_on_canvas();
+
     if (is_player_dead()){
         game_over();
         return
