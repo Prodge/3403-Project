@@ -111,12 +111,12 @@ function initialise(){
     max_platform_height_difference = 100;
     max_platform_y = 200;
 
-    platform_seperation_base_multiplier = 55;
+    platform_seperation_base_multiplier = 50;
     platform_seperation_update_time = 30000;
     max_platform_seperation = 300;
     current_platform_seperation_level = 0;
     next_platform_seperation_time = platform_seperation_update_time;
-    current_min_platform_seperation = 55;
+    current_min_platform_seperation = 0;
     current_max_platform_seperation = current_min_platform_seperation;
 
     scroll_speed_base = 2;
@@ -480,7 +480,6 @@ function buffer_new_platforms(){
         if(current_max_platform_seperation < max_platform_seperation &&  elapsed_time > next_platform_seperation_time){
             next_platform_seperation_time += platform_seperation_update_time;
             current_min_platform_seperation = current_max_platform_seperation;
-            //current_max_platform_seperation = Math.floor(next_platform_seperation_time/platform_seperation_update_time) * platform_seperation_base_multiplier;
             current_max_platform_seperation += platform_seperation_base_multiplier;
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
