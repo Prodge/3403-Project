@@ -8,6 +8,7 @@
 
 // Canvas Props
 $(document).load(function(e){
+    console.log('heoeuoeuoeu')
     canvas = document.getElementById('game_canvas');
     ctx = canvas.getContext('2d');
     width = canvas.width;
