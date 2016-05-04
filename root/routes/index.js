@@ -14,7 +14,7 @@ exports.index = function(req, res){
 };
 
 exports.instructions = function(req, res){
-  res.render('index', {
+  res.render('instructions', {
     title : "Instructions",
   })
 };
