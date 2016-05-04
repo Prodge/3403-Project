@@ -35,7 +35,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/instructions', routes.instructions);
-app.get('/theme', routes.tructions);
+app.get('/theme', routes.theme);
 app.get('/play', routes.game);
 app.get('/author', routes.author);
 app.get('/users', user.list);
