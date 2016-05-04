@@ -2,7 +2,6 @@ console.log('Starting Server Init')
 
 var express     = require('express')
 var routes      = require('./routes')
-var user        = require('./routes/user')
 var http        = require('http')
 var path        = require('path');
 var app         = express();
@@ -44,7 +43,34 @@ app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
 app.get('/play', routes.game);
 app.get('/author', routes.author);
-app.get('/users', user.list);
+
+mongoose.connect(config.database);
+
+require('./config/passport')(passport);
+
+// bundle our routes
+var apiRoutes = express.Router();
+
+app.post('/signup', function(req, res) {
+    if (!req.body.name || !req.body.password) {
+        res.json({success: false, msg: 'Please pass name and password.'});
+    } else {
+        var newUser = new User({
+            name: req.body.name,
+            password: req.body.password
+        });
+        // save the user
+        newUser.save(function(err) {
+            if (err) {
+                return res.json({success: false, msg: 'Username already exists.'});
+            }
+            res.json({success: true, msg: 'Successful created new user.'});
+        });
+    }
+});
+
+// connect the api routes under /api/*
+//app.use('/api', apiRoutes);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
