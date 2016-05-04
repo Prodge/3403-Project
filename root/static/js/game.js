@@ -272,6 +272,8 @@ function game_loop(){
     player.x += player.vel_x;
     player.y += player.vel_y;
 
+    keep_player_on_canvas();
+
     if (is_player_dead()){
         game_over();
         return
@@ -536,8 +538,8 @@ function update_player_from_input(){
 }
 
 function keep_player_on_canvas(){
-    if (player.x >= width) {
-        player.x = width;
+    if (player.x >= (width-player.width)) {
+        player.x = width-player.width;
     }
     if (player.x <= 0) {
         player.x = 0;
