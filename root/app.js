@@ -6,7 +6,6 @@ console.log('Starting Server Init')
 
 var express = require('express')
   , routes = require('./routes')
-  , game = require('./routes/game')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
@@ -36,8 +35,9 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/instructions', routes.instructions);
-app.get('/theme', routes.theme);
-app.get('/play', game.index);
+app.get('/theme', routes.tructions);
+app.get('/play', routes.game);
+app.get('/author', routes.author);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
