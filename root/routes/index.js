@@ -30,3 +30,9 @@ exports.game = function(req, res){
     title : "Play Action Box",
   })
 };
+
+exports.author = function(req, res){
+  res.render('author', {
+    title : "Authors",
+  })
+};
