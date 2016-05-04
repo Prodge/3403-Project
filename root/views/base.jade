@@ -1,5 +1,6 @@
 doctype html
 html(lang="en")
+
   head
     script(src='/js/vendor/jquery/jquery.js')
     link(rel='stylesheet', href='/css/main.css')
@@ -11,7 +12,15 @@ html(lang="en")
     #wrapper
       #nav
         block nav
+          center
+            nav
+              button#home_page(content='game.html') Play
+              button(content='instructions.html') Instructions
+              button(content='theme.html') Theme
+              button(content='author.html') Author
       #content
         block content
           p There is no content here
       #footer
+        block footer
+
