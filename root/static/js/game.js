@@ -538,8 +538,8 @@ function update_player_from_input(){
 }
 
 function keep_player_on_canvas(){
-    if (player.x >= width) {
-        player.x = width;
+    if (player.x >= (width-player.width)) {
+        player.x = width-player.width;
     }
     if (player.x <= 0) {
         player.x = 0;
