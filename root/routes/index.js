@@ -14,11 +14,13 @@ exports.index = function(req, res){
 };
 
 exports.instructions = function(req, res){
-  console.log("----------------req")
-  console.log(req)
-  console.log("----------------res")
-  console.log(res)
   res.render('instructions', {
     title : "Instructions",
+  })
+};
+
+exports.theme = function(req, res){
+  res.render('theme', {
+    title : "Theme",
   })
 };
