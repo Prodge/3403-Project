@@ -480,7 +480,8 @@ function buffer_new_platforms(){
         if(current_max_platform_seperation < max_platform_seperation &&  elapsed_time > next_platform_seperation_time){
             next_platform_seperation_time += platform_seperation_update_time;
             current_min_platform_seperation = current_max_platform_seperation;
-            current_max_platform_seperation = Math.floor(next_platform_seperation_time/platform_seperation_update_time) * platform_seperation_base_multiplier;
+            //current_max_platform_seperation = Math.floor(next_platform_seperation_time/platform_seperation_update_time) * platform_seperation_base_multiplier;
+            current_max_platform_seperation += platform_seperation_base_multiplier;
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
         document.getElementById("min_sep").innerHTML = current_min_platform_seperation;
