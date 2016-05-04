@@ -7,8 +7,6 @@ block extrahead
 block content
     h3= title
     #game_resources(hidden='hidden')
-        img#al_standing(src='/images/game/player/al_standing.png')
-        img#al_jumping(src='/images/game/player/al_jumping.png')
-        img#al_running_left(src='/images/game/player/al_running_left.png')
-        img#al_running_right(src='/images/game/player/al_running_right.png')
+      for image in images
+        img(id= image)(src='/images/game/#{image}.png')
     canvas#game_canvas(width='700px', height='500px')
