@@ -6,7 +6,6 @@
  *
  */
 
-
 var canvas = document.getElementById('game_canvas');
 var ctx = canvas.getContext('2d');
 var width = canvas.width;
@@ -58,6 +57,13 @@ $(document).keyup(function(e){
         }
     }
 })
+
+$(window).blur(function() {
+    if (game_running){
+        isPaused = true;
+        render_pause_screen();
+    }
+});
 
 function draw_initial_screen(){
     ctx.fillStyle = text_colour;
