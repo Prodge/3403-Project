@@ -2,6 +2,7 @@
 /**
  * Module dependencies.
  */
+console.log('Starting Server Init')
 
 var express = require('express')
   , routes = require('./routes')
@@ -10,6 +11,7 @@ var express = require('express')
   , path = require('path');
 
 var app = express();
+
 
 var Mongoose = require('mongoose');
 var db = Mongoose.createConnection('localhost', 'mytestapp');
@@ -23,14 +25,19 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+
 app.get('/', routes.index);
+app.get('/instructions', routes.instructions);
+app.get('/theme', routes.tructions);
+app.get('/play', routes.game);
+app.get('/author', routes.author);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){

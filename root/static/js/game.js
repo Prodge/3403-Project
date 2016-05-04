@@ -33,7 +33,6 @@ var character_chosen = 0;
 initialiseCharacterImages();
 initialise();
 draw_initial_screen();
-
 // Key listeners
 $(document).keydown(function(e){
     keys[e.keyCode] = true;
