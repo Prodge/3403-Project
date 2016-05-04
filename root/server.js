@@ -68,7 +68,7 @@ app.post('/api/signup', function(req, res) {
     }
 });
 
-apiRoutes.post('/authenticate', function(req, res) {
+app.post('/api/authenticate', function(req, res) {
     // Return the user an authentication token for thier session
     User.findOne({
         name: req.body.name
