@@ -29,5 +29,11 @@ button {
     text-decoration : none;
 }
 p h3 {
-    color: #eee
+    color: #eee;
+}
+#footer {
+    color: #333;
+}
+#footer #last-modified {
+    float: right;
 }
