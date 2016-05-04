@@ -476,16 +476,16 @@ function buffer_new_platforms(){
 
         //Checks whether the current max seperation has not reached the maximum
         //and whether 30s has elapsed to increase the seperation limits
-        //If then a new seperation level is set and the min and max are set
+        //If then the next platform seperation update time is set and the min and max are set
         if(current_max_platform_seperation < max_platform_seperation &&  elapsed_time > next_platform_seperation_time){
             next_platform_seperation_time += platform_seperation_update_time;
             current_min_platform_seperation = current_max_platform_seperation;
             current_max_platform_seperation += platform_seperation_base_multiplier;
+            if (current_max_platform_seperation > max_platform_seperation){
+                current_max_platform_seperation = max_platform_seperation;
+            }
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
-        document.getElementById("min_sep").innerHTML = current_min_platform_seperation;
-        document.getElementById("max_sep").innerHTML = current_max_platform_seperation;
-        document.getElementById("ep_time").innerHTML = x_distance + "  " + elapsed_time;
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
