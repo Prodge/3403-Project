@@ -399,7 +399,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
+    ctx.fillText("Multiplier: " + powerup_active.factor.toFixed(1), width, 120);
     ctx.fillText("Time Left: " + time, width, 150);
 }
 
