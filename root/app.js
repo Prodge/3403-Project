@@ -33,7 +33,7 @@ if ('development' == app.get('env')) {
 }
 
 
-app.get('/', routes.index);
+app.get('/', routes.game);
 app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
 app.get('/play', routes.game);
