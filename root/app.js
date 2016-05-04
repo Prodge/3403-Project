@@ -35,6 +35,7 @@ if ('development' == app.get('env')) {
 
 
 app.get('/', routes.index);
+app.get('/instructions', routes.instructions);
 app.get('/play', game.index);
 app.get('/users', user.list);
 
