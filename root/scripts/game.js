@@ -29,6 +29,7 @@ function initialiseCharacterImages(){
 
 var high_score = 0;
 var character_chosen = 0;
+var isPaused = false;
 
 initialiseCharacterImages();
 initialise();
@@ -44,6 +45,17 @@ $(document).keyup(function(e){
     if (! game_running && (e.keyCode == 49 || e.keyCode == 50 || e.keyCode == 51)){
         character_chosen = key_to_character[e.keyCode];
         start_game();
+    }
+
+    if (game_running && e.keyCode == 66){
+        isPaused = !isPaused;
+        if (isPaused){
+            render_pause_screen();
+        }else{
+            pause_end_time = new Date().getTime();
+            time_offset += pause_end_time - pause_start_time;
+            powerup_started_time += pause_end_time - pause_start_time;
+        }
     }
 })
 
@@ -64,6 +76,7 @@ function initialise(){
     /*
      * Initialises game variables to global scope
      */
+    isPaused = false;
 
     player = {
         x: width/2,
@@ -112,6 +125,9 @@ function initialise(){
     player_colour = "black";
 
     game_running = false;
+    time_offset = 0;
+    pause_start_time = 0;
+    pause_end_time = 0;
 
     max_powerup_time = 6;
     powerup_active = false;
@@ -192,7 +208,26 @@ function start_game(){
     run_game();
 }
 
+function render_pause_screen(){
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0,0,width, height);
+    ctx.fillStyle = text_colour;
+    ctx.textAlign="center";
+    ctx.font="20px Lucida Console";
+    ctx.fillText('Press "B" to resume', width/2, height/2);
+}
+
 function run_game(){
+    if (!isPaused){
+        game_loop();
+        pause_start_time = new Date().getTime();
+    }
+    if (game_running){
+        myReq = requestAnimationFrame(run_game);
+    }
+}
+
+function game_loop(){
     /*
      * The main loop for the game
      */
@@ -245,7 +280,6 @@ function run_game(){
     update_points();
     render_points();
 
-    requestAnimationFrame(run_game);
 }
 
 function getRandomInt(min, max) {
@@ -533,7 +567,7 @@ function render_points(){
 function update_elapsed_time(){
     var time_now = new Date().getTime();
     last_elapsed_time = elapsed_time;
-    elapsed_time = time_now - start_time;
+    elapsed_time = time_now - start_time - time_offset;
 }
 
 function game_over(){
@@ -553,6 +587,8 @@ function game_over(){
     ctx.fillText('Press "3" to start with character WIMO!', width/2, height - height/4+40);
 
     high_score = points;
+
+    cancelAnimationFrame(myReq);
 }
 
 function scroll_world(){
