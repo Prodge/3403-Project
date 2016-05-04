@@ -14,7 +14,9 @@ exports.index = function(req, res){
 };
 
 exports.instructions = function(req, res){
+  console.log("----------------req")
   console.log(req)
+  console.log("----------------res")
   console.log(res)
   res.render('instructions', {
     title : "Instructions",
