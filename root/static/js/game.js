@@ -7,7 +7,7 @@
  */
 
 // Canvas Props
-$(document).load(function(e){
+$(window).load(function())
     console.log('heoeuoeuoeu')
     canvas = document.getElementById('game_canvas');
     ctx = canvas.getContext('2d');
