@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+
+  head
+    script(src='/js/vendor/jquery/jquery.js')
+    link(rel='stylesheet', href='/css/main.css')
+    block extrahead
+
+    title= title
+
+  body
+    #wrapper
+      #nav
+        block nav
+          center
+            nav
+              a.button(href='/play') Play
+              a.button(href='/instructions') Instructions
+              a.button(href='/author') Author
+              a.button(href='/theme') Theme
+      #content
+        block content
+          p There is no content here
+      #footer
+        block footer
+          hr
+          p
+            span#authors By Tim Metcalf and Don Wimodya Athukorala
+            span#last-modified Last modified 22nd Apr.
+          p#Date
+          script.
+            var today = new Date();
+            document.getElementById('Date').innerHTML = today.toDateString();
+
+

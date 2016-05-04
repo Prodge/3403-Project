@@ -6,14 +6,26 @@
  *
  */
 
-var canvas = document.getElementById('game_canvas');
-var ctx = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
+// Canvas Props
+$(window).load(function(){
+    canvas = document.getElementById('game_canvas');
+    ctx = canvas.getContext('2d');
+    width = canvas.width;
+    height = canvas.height;
 
-var characters = [];
+    high_score = 0;
+    character_chosen = 0;
+    isPaused = false;
+
+    keys = [];
+
+    initialiseCharacterImages();
+    initialise();
+    draw_initial_screen();
+})
 
 function initialiseCharacterImages(){
+    characters = [];
     var character_names = ["al", "tim", "wimo"];
     var movements = ["standing", "jumping", "running_left", "running_right"];
     for (var i=0; i<character_names.length; i++){
@@ -25,14 +37,6 @@ function initialiseCharacterImages(){
         characters.push(dict);
     }
 }
-
-var high_score = 0;
-var character_chosen = 0;
-var isPaused = false;
-
-initialiseCharacterImages();
-initialise();
-draw_initial_screen();
 
 // Key listeners
 $(document).keydown(function(e){
@@ -100,8 +104,6 @@ function initialise(){
     base_friction = 0.8;
     friction = base_friction;
     gravity = base_gravity;
-
-    keys = [];
 
     platform_height = 20;
     min_platform_width = 75;
@@ -410,7 +412,7 @@ function render_powerup_timer(){
     ctx.fillStyle = points_colour;
     ctx.textAlign="end";
     ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-    ctx.fillText("Multiplier: " + powerup_active.factor, width, 120);
+    ctx.fillText("Multiplier: " + powerup_active.factor.toFixed(1), width, 120);
     ctx.fillText("Time Left: " + time, width, 150);
 }
 
@@ -445,7 +447,7 @@ function render_powerups(){
             powerup.factor.toFixed(1),
             powerup.x+(powerup_types[powerup.type].width/2),
             powerup.y+(powerup_types[powerup.type].height/2)
-        );        
+        );
     })
 }
 
