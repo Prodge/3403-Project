@@ -95,8 +95,11 @@ function initialise(){
         character: character_chosen
     }
 
-    friction = 0.8;
-    gravity = 0.8;
+    base_gravity = 0.8;
+    base_gravity_min = 0.5;
+    base_friction = 0.8;
+    friction = base_friction;
+    gravity = base_gravity;
 
     keys = [];
 
@@ -106,12 +109,13 @@ function initialise(){
     max_platform_height_difference = 100;
     max_platform_y = 200;
 
-    platform_seperation_base_multiplier = 50;
+    platform_seperation_base_multiplier = 55;
+    platform_seperation_update_time = 30000;
     max_platform_seperation = 300;
     current_platform_seperation_level = 0;
-    current_min_platform_seperation = 50;
+    next_platform_seperation_time = platform_seperation_update_time;
+    current_min_platform_seperation = 55;
     current_max_platform_seperation = current_min_platform_seperation;
-    platform_seperation_update_time = 30000;
 
     scroll_speed_base = 2;
     max_scroll_speed = 8
@@ -122,7 +126,8 @@ function initialise(){
     last_elapsed_time = 0;
 
     points = 0;
-    points_multiplier = 1;
+    base_points_multiplier = 1;
+    points_multiplier = base_points_multiplier;
 
     background_color = "#00CCCC";
     points_colour = "white";
@@ -135,12 +140,16 @@ function initialise(){
     pause_start_time = 0;
     pause_end_time = 0;
 
+    min_powerup_time = 3;
     max_powerup_time = 6;
+    min_powerup_factor = 1;
+    max_powerup_factor = 10;
     powerup_active = false;
-    powerup_started_time = 0;
-    previous_scroll_speed = scroll_speed_base;
-    next_powerup_in = 0.24;
     powerup_collected = false;
+    powerup_started_time = 0;
+    powerup_scroll_speed_incrementer = 0.24;
+    powerup_scroll_speed_increment_by = 0.02;
+    next_scroll_speed = scroll_speed_base + powerup_scroll_speed_incrementer;
 
     powerup_types = {
         gravity:{
@@ -309,10 +318,12 @@ function render_player(){
 }
 
 function buffer_new_powerups(){
-    //from every 6.4 secs a powerup is generated and 
-    //the next powerup generated will be 0.6sec later of the previous powerup
+    //A new powerup is generated every current_scroll_speed + powerup_scroll_speed_incrementer
+    //where the incrementer gets larger after every powerup generated
+    //Therefore, in terms of time starting from 6.4s a powerup is generated and 
+    //and the next powerup generated will be 0.6s later from the previous powerup
     var current_scroll_speed = scroll_speed_base + elapsed_time/scroll_speed_update_time;
-    if ((previous_scroll_speed+next_powerup_in)<current_scroll_speed){
+    if (current_scroll_speed > next_scroll_speed){
         var rnd_platform = platforms[platforms.length-1];
         var rnd_type = powerup_types_keys[getRandomInt(0, powerup_types_keys.length-1)];
         powerups.push(
@@ -320,12 +331,12 @@ function buffer_new_powerups(){
                 x: getRandomInt(rnd_platform.x, (rnd_platform.x+rnd_platform.width)-powerup_types[rnd_type].width),
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
-                time: getRandomInt(3, max_powerup_time),
-                factor: Math.random()*9+1 
+                time: getRandomInt(min_powerup_time, max_powerup_time),
+                factor: Math.random()*(max_powerup_factor-1) + min_powerup_factor 
             }
         )
-        next_powerup_in += 0.02;
-        previous_scroll_speed = current_scroll_speed;
+        powerup_scroll_speed_incrementer += powerup_scroll_speed_increment_by;
+        next_scroll_speed = current_scroll_speed + powerup_scroll_speed_incrementer;
     }
 }
 
@@ -337,10 +348,10 @@ function remove_elapsed_powerups(){
 
 function apply_gravity(factor){
     if(factor){
-        var dif = 0.8 - 0.5;
-        gravity = 0.8 - ((dif * factor)/10);
+        var dif = base_gravity - base_gravity_min;
+        gravity = base_gravity - ((dif * factor)/10);
     }else{
-        gravity = 0.8;
+        gravity = base_gravity;
     }
 }
 
@@ -348,7 +359,7 @@ function apply_points_multiplier(factor){
     if(factor){
         points_multiplier = factor;
     }else{
-        points_multiplier = 1;
+        points_multiplier = base_points_multiplier;
     }
 }
 
@@ -464,15 +475,15 @@ function buffer_new_platforms(){
         //Checks whether the current max seperation has not reached the maximum
         //and whether 30s has elapsed to increase the seperation limits
         //If then a new seperation level is set and the min and max are set
-        if( 
-            current_max_platform_seperation < max_platform_seperation && 
-            Math.floor(elapsed_time/platform_seperation_update_time) > current_platform_seperation_level
-        ){
-            current_platform_seperation_level = Math.floor(elapsed_time/platform_seperation_update_time);
+        if(current_max_platform_seperation < max_platform_seperation &&  elapsed_time > next_platform_seperation_time){
+            next_platform_seperation_time += platform_seperation_update_time;
             current_min_platform_seperation = current_max_platform_seperation;
-            current_max_platform_seperation = (current_platform_seperation_level+1) * platform_seperation_base_multiplier;
+            current_max_platform_seperation = Math.floor(next_platform_seperation_time/platform_seperation_update_time) * platform_seperation_base_multiplier;
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
+        document.getElementById("min_sep").innerHTML = current_min_platform_seperation;
+        document.getElementById("max_sep").innerHTML = current_max_platform_seperation;
+        document.getElementById("ep_time").innerHTML = x_distance + "  " + elapsed_time;
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
