@@ -36,12 +36,13 @@ $(document).keyup(function(e){
 
     if (game_running && e.keyCode == 66){
         isPaused = !isPaused;
-        if (!isPaused){
+        if (isPaused){
+            render_pause_screen();
+        }else{
             pause_end_time = new Date().getTime();
             time_offset += pause_end_time - pause_start_time;
             powerup_started_time += pause_end_time - pause_start_time;
         }
-
     }
 })
 
@@ -192,9 +193,8 @@ function start_game(){
 }
 
 function render_pause_screen(){
-    ctx.fillStyle= "#b0c2f7";
-    ctx.globalAlpha=0.5; // Half opacity
-    ctx.fillRect(0,0,width,height);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0,0,width, height);
     ctx.fillStyle = text_colour;
     ctx.textAlign="center";
     ctx.font="20px Lucida Console";
@@ -202,13 +202,10 @@ function render_pause_screen(){
 }
 
 function run_game(){
-    if (isPaused){
-        render_pause_screen();
-    }else{
+    if (!isPaused){
         game_loop();
         pause_start_time = new Date().getTime();
     }
-    document.getElementById("ep_time").innerHTML = elapsed_time + "   " + last_elapsed_time;
     if (game_running){
         myReq = requestAnimationFrame(run_game);
     }
@@ -450,7 +447,6 @@ function buffer_new_platforms(){
             current_max_platform_seperation = (current_platform_seperation_level+1) * platform_seperation_base_multiplier;
         }        
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
-        document.getElementById("platform_sep").innerHTML = current_min_platform_seperation + " " + current_max_platform_seperation;
 
         // The height difference between the current and the next platform
         var y_difference = Math.random() * max_platform_height_difference;
@@ -584,7 +580,6 @@ function scroll_world(){
     powerups.map(function(powerup){
         powerup.x = powerup.x - current_speed;
     })
-    document.getElementById("speed").innerHTML = current_speed;
 }
 
 function remove_elapsed_platforms(){
