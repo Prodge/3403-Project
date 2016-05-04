@@ -116,7 +116,7 @@ function initialise(){
     max_platform_seperation = 300;
     current_platform_seperation_level = 0;
     next_platform_seperation_time = platform_seperation_update_time;
-    current_min_platform_seperation = 0;
+    current_min_platform_seperation = 60;
     current_max_platform_seperation = current_min_platform_seperation;
 
     scroll_speed_base = 2;
