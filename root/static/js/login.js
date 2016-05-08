@@ -8,15 +8,11 @@ $(document).ready(function() {
       function(data, status){
         if(data.success){
           document.cookie = "auth_token="+data.token;
-
-          // Toggle visibility of success message
-          // toggle visibility of form
-
+          window.location = "/play";
         }else{
-
-          // add returned message to error message box
-          // toggle visibility of error message
-
+          console.log(data.msg)
+          $('#failure-message').html(' ' + data.msg);
+          $('#failure').show(100);
         }
       });
     e.preventDefault();

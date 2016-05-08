@@ -12,7 +12,7 @@ $(document).ready(function() {
           $('#failure').hide(100);
           $('#success').show(100);
         }else{
-          $('#failure-message').innerHTML = data.msg;
+          $('#failure-message').html(' ' + data.msg);
           $('#failure').show(100);
         }
       });
