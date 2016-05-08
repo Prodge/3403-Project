@@ -87,6 +87,7 @@ app.get('/author', routes.author);
 app.post('/api/signup', user_routes.signup);
 app.post('/api/authenticate', user_routes.authenticate);
 
+app.get('/register', user_routes.register);
 app.get('/login', user_routes.login);
 app.get('/logout', user_routes.logout);
 

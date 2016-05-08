@@ -6,7 +6,6 @@ $(document).ready(function() {
         password: $('#login-password').val(),
       },
       function(data, status){
-        console.log(data)
         if(data.success){
           document.cookie = "auth_token="+data.token;
 

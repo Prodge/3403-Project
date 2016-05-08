@@ -12,3 +12,13 @@ block content
     label(for='login-password') Password:
     input#login-password(type='password', name='password')
     button(type='submit') Login
+
+  div#success(hidden='hidden')
+    p User successfully created.
+    p
+      a(href='/login') click here to login.
+
+  div#failure(hidden='hidden')
+    p User creation failed:
+      span#failure-message
+    p Please try again.

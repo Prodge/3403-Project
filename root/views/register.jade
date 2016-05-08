@@ -1,0 +1,27 @@
+extends base
+
+block extrahead
+  script(src='/js/register.js')
+
+block content
+  if perm_denied
+    p Please register or register to access this page.
+
+  form#register-form
+    label(for='register-name') Username:
+    input#register-name(type='text', name='name')
+    label(for='Register-password') Password:
+    input#register-password(type='password', name='password')
+    button(type='submit') Register
+
+  div#success(hidden='hidden')
+    p User successfully created.
+    p
+      a(href='/login') click here to login.
+
+  div#failure(hidden='hidden')
+    p User creation failed:
+      span#failure-message
+    p Please try again.
+
+

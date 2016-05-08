@@ -57,3 +57,9 @@ exports.logout = function(req, res){
     });
 };
 
+exports.register = function(req, res){
+    context = {
+        title: "Register",
+    };
+    res.render('register', context);
+};
