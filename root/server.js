@@ -54,14 +54,14 @@ app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
 app.get('/play', require_login, routes.game);
 app.get('/author', routes.author);
-
-
-app.post('/api/signup', user_routes.signup);
-app.post('/api/authenticate', user_routes.authenticate);
-
 app.get('/register', user_routes.register);
 app.get('/login', user_routes.login);
 app.get('/logout', user_routes.logout);
+
+// API
+app.post('/api/signup', user_routes.signup);
+app.post('/api/authenticate', user_routes.authenticate);
+
 
 // This is a sample API route that authenticates based on the jwt token
 app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
