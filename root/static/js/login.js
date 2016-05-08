@@ -11,6 +11,7 @@ $(document).ready(function() {
           document.cookie = "auth_token="+data.token;
 
           // Toggle visibility of success message
+          // toggle visibility of form
 
         }else{
 
