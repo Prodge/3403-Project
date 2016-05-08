@@ -4,6 +4,8 @@ block extrahead
   script(src='/js/login.js')
 
 block content
+  if perm_denied
+    p Please login or register to access this page.
   form#login-form
     label(for='login-name') Username:
     input#login-name(type='text', name='name')

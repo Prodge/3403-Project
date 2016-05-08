@@ -26,7 +26,6 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.methodOverride());
-app.use(app.router);
 app.use(express.static(path.join(__dirname, 'static')));
 app.use('/angular', express.static(path.join(__dirname, 'node_modules/angular')));
 app.use('/jquery', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
@@ -42,7 +41,16 @@ if ('development' == app.get('env')) {
 }
 
 require_authentication = function(req, res, next){
+    if(req.user){
+        next();
+    }else{
+        res.redirect('/login?perm_denied=true');
+    }
+}
+
+get_user = function(req, res, next){
     var token = req.cookies.auth_token.split(' ')[1];
+    res.locals.user = undefined;
     if (token) {
         var decoded = jwt.decode(token, config.secret);
         User.findOne({
@@ -50,13 +58,17 @@ require_authentication = function(req, res, next){
         }, function(err, user) {
             if (err) throw err;
             if (user) {
-                next();
+                // Make user accessible to all views
+                res.locals.user = user;
             }
         });
-    }else{
-        res.redirect('/login');
     }
+    next();
 }
+
+app.use(get_user);
+
+app.use(app.router);
 
 // URLs
 app.get('/', require_authentication, routes.game);

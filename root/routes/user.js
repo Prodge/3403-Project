@@ -42,8 +42,10 @@ exports.authenticate = function(req, res){
 
 exports.login = function(req, res){
     res.cookie('auth_token' , 'undefined');
-    res.render('login', {
-        title : "Login",
-    })
+    context = {
+        title: "Login",
+        perm_denied: req.param('perm_denied', false),
+    };
+    res.render('login', context);
 };
 
