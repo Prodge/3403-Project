@@ -11,10 +11,12 @@ var cookieParser    = require('cookie-parser');
 var mongoose        = require('mongoose');
 var morgan          = require('morgan');
 var passport        = require('passport');
-var config          = require('./config/database'); // get db config file
-var User            = require('./app/models/user'); // get the mongoose model
+var config          = require('./config/database');
+var User            = require('./app/models/user');
 var port            = process.env.PORT || 8080;
 var jwt             = require('jwt-simple');
+var app_middleware  = require('./app/middleware')
+var require_login   = app_middleware.require_login
 
 
 app.set('port', process.env.PORT || 3000);
@@ -43,44 +45,14 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-require_authentication = function(req, res, next){
-    if(res.locals.user){
-        next();
-    }else{
-        res.redirect('/login?perm_denied=true');
-    }
-}
-
-get_user = function(req, res, next){
-    console.log('in get user')
-    var token = req.cookies.auth_token.split(' ')[1];
-    res.locals.user = undefined;
-    if (token) {
-        var decoded = jwt.decode(token, config.secret);
-        User.findOne({
-            name: decoded.name
-        }, function(err, user) {
-            if (err) throw err;
-            if (user) {
-                // Make user accessible to all views
-                res.locals.user = user;
-                next();
-            }
-        });
-    }else{
-        next();
-    }
-
-}
-app.use(get_user);
-
+app.use(app_middleware.get_user);
 app.use(app.router);
 
 // URLs
-app.get('/', require_authentication, routes.game);
+app.get('/', require_login, routes.game);
 app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
-app.get('/play', require_authentication, routes.game);
+app.get('/play', require_login, routes.game);
 app.get('/author', routes.author);
 
 
