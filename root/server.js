@@ -53,27 +53,7 @@ require('./config/passport')(passport);
 //var apiRoutes = express.Router();
 
 app.post('/api/signup', user_api.signup);
-
-app.post('/api/authenticate', function(req, res) {
-    // Return the user an authentication token for thier session
-    User.findOne({
-        name: req.body.name
-    }, function(err, user) {
-        if (err) throw err;
-        if (!user) {
-            res.send({success: false, msg: 'Authentication failed. User not found.'});
-        } else {
-            user.comparePassword(req.body.password, function (err, isMatch) {
-                if (isMatch && !err) {
-                    var token = jwt.encode(user, config.secret);
-                    res.json({success: true, token: 'JWT ' + token});
-                } else {
-                    res.send({success: false, msg: 'Authentication failed. Wrong password.'});
-                }
-            });
-        }
-    });
-});
+app.post('/api/authenticate', user_api.authenticate);
 
 app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
     var token = getToken(req.headers);
