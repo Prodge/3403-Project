@@ -35,13 +35,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
+mongoose.connect(config.database);
+require('./config/passport')(passport);
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
 require_authentication = function(req, res, next){
-    if(req.user){
+    if(res.locals.user){
         next();
     }else{
         res.redirect('/login?perm_denied=true');
@@ -49,6 +52,7 @@ require_authentication = function(req, res, next){
 }
 
 get_user = function(req, res, next){
+    console.log('in get user')
     var token = req.cookies.auth_token.split(' ')[1];
     res.locals.user = undefined;
     if (token) {
@@ -60,12 +64,14 @@ get_user = function(req, res, next){
             if (user) {
                 // Make user accessible to all views
                 res.locals.user = user;
+                next();
             }
         });
+    }else{
+        next();
     }
-    next();
-}
 
+}
 app.use(get_user);
 
 app.use(app.router);
@@ -77,19 +83,14 @@ app.get('/theme', routes.theme);
 app.get('/play', require_authentication, routes.game);
 app.get('/author', routes.author);
 
-mongoose.connect(config.database);
-
-require('./config/passport')(passport);
-
-// bundle our routes
-//var apiRoutes = express.Router();
 
 app.post('/api/signup', user_routes.signup);
 app.post('/api/authenticate', user_routes.authenticate);
 
 app.get('/login', user_routes.login);
+app.get('/logout', user_routes.logout);
 
-
+// This is a sample API route that authenticates based on the jwt token
 app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
     var token = getToken(req.headers);
     console.log(token)
@@ -109,7 +110,6 @@ app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), func
         return res.status(403).send({success: false, msg: 'No token provided.'});
     }
 });
-
 getToken = function (headers) {
     if (headers && headers.authorization) {
         var parted = headers.authorization.split(' ');
@@ -123,9 +123,6 @@ getToken = function (headers) {
     }
 };
 
-
-// connect the api routes under /api/*
-//app.use('/api', apiRoutes);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

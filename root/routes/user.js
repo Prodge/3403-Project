@@ -49,3 +49,11 @@ exports.login = function(req, res){
     res.render('login', context);
 };
 
+exports.logout = function(req, res){
+    res.cookie('auth_token' , 'undefined');
+    res.render('logout', {
+        title: 'Logout',
+        user: undefined,
+    });
+};
+
