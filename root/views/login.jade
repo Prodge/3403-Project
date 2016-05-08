@@ -1,0 +1,12 @@
+extends base
+
+block extrahead
+  script(src='/js/login.js')
+
+block content
+  form#login-form
+    label(for='login-name') Username:
+    input#login-name(type='text', name='name')
+    label(for='login-password') Password:
+    input#login-password(type='password', name='password')
+    button(type='submit') Login

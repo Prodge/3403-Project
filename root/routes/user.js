@@ -1,5 +1,6 @@
 var jwt         = require('jwt-simple');
 var User        = require('../app/models/user');
+var config      = require('../config/database'); // get db config file
 
 exports.signup = function(req, res){
     if (!req.body.name || !req.body.password) {
@@ -37,5 +38,12 @@ exports.authenticate = function(req, res){
             });
         }
     });
+};
+
+exports.login = function(req, res){
+    res.cookie('auth_token' , 'undefined');
+    res.render('login', {
+        title : "Login",
+    })
 };
 

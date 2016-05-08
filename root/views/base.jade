@@ -2,13 +2,14 @@ doctype html
 html(lang="en")
 
   head
-    script(src='/js/vendor/jquery/jquery.js')
+    script(src='/jquery/jquery.js')
+    script(src='/angular/angular.js')
     link(rel='stylesheet', href='/css/main.css')
     block extrahead
 
     title= title
 
-  body
+  body()
     #wrapper
       #nav
         block nav
