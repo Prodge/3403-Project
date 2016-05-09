@@ -7,15 +7,21 @@ block content
   if perm_denied
     p Please login or register to access this page.
   form#login-form
-    label(for='login-name') Username:
-    input#login-name(type='text', name='name')
-    br
-    label(for='login-password') Password:
-    input#login-password(type='password', name='password')
-    br
-    button(type='submit') Login
-    p
-      a(href='/register') Register here.
+    table
+      tr
+        td
+          label(for='login-name') Username:
+        td
+          input#login-name(type='text', name='name')
+      tr
+        td
+          label(for='login-password') Password:
+        td
+          input#login-password(type='password', name='password')
+      tr
+        td(colspan=2)
+          a.button(href='/register') Register here
+          button.button(type='submit') Login
 
   div#failure(hidden='hidden')
     p User login failed:
