@@ -4,8 +4,15 @@ var config = require('../config/database');
 
 exports.get_user = function(req, res, next){
     console.log('in get user')
-    var token = req.cookies.auth_token.split(' ')[1];
     res.locals.user = undefined;
+    var cookie = req.cookies.auth_token;
+    var token = undefined;
+    if(cookie){
+        var token_pieces = cookie.split(' ')
+        if(token_pieces.length == 2){
+            token = token_pieces[1];
+        }
+    }
     if (token) {
         var decoded = jwt.decode(token, config.secret);
         User.findOne({
