@@ -5,7 +5,6 @@ block extrahead
     script(src='/js/game.js')
 
 block content
-    h3= title
     #game_resources(hidden='hidden')
       for image in images
         img(id= image)(src='/images/game/#{image}.png')
