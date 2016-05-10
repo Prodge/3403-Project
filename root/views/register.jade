@@ -8,18 +8,25 @@ block content
     p Please register or register to access this page.
 
   form#register-form
-    label(for='register-name') Username:
-    input#register-name(type='text', name='name')
-    br
-    label(for='Register-password') Password:
-    input#register-password(type='password', name='password')
-    br
-    button(type='submit') Register
+    table
+      tr
+        td
+          label(for='register-name') Username:
+        td
+          input#register-name(type='text', name='name')
+      tr
+        td
+          label(for='register-password') Password:
+        td
+          input#register-password(type='password', name='password')
+      tr
+        td(colspan=2)
+          button.button(type='submit') Register
 
   div#success(hidden='hidden')
     p User successfully created.
     p
-      a(href='/login') click here to login.
+      a(href='/login') Click here to Login
 
   div#failure(hidden='hidden')
     p User creation failed:
