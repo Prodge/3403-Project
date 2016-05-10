@@ -15,10 +15,8 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-      - grep
 before_script:
   - sleep 5
 script:
   - npm run coverage
-  - chmod +x show_logs.sh
-  - ./show_logs.sh
+  - sh show_logs.sh
