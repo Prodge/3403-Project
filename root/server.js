@@ -46,10 +46,8 @@ app.use(app_middleware.get_user);
 app.use(app.router);
 
 // URLs
-//app.get('/', require_login, routes.game);
 app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
-//app.get('/play', require_login, routes.game);
 app.get('/author', routes.author);
 app.get('/register', user_routes.register);
 app.get('/login', user_routes.login);
@@ -93,7 +91,8 @@ getToken = function (headers) {
     }
 };
 
-require('./routes/game_and_comments.js')(app);
+require('./routes/game_and_chat.js')(app);
+require('./routes/comments.js')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));

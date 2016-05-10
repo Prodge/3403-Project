@@ -1,28 +1,20 @@
-var Comment = require('../app/models/comment');
+var Chat = require('../app/models/chat');
 var app_middleware  = require('../app/middleware')
 var require_login   = app_middleware.require_login
 const fs = require('fs');
 const path = require('path');
 
-function getComments(res) {
-	Comment
-	  .find()
-	  .sort({created_at: 'desc'})
-          .limit(10)
-          .exec(function (err, comments) {
+function getChats(res) {
+	Chat.find().sort({created_at: 'desc'}).limit(10).exec(function (err, chats) {
         	if (err) res.send(err);
-        	res.json(comments.reverse());
+        	res.json(chats.reverse());
      	});
 };
 
-function getCommentLatest(res){
-	Comment
-	  .find()
-	  .sort({created_at: 'desc'})
-	  .limit(1)
-	  .exec(function (err, comments) {
+function getChatLatest(res){
+	Chat.find().sort({created_at: 'desc'}).limit(1).exec(function (err, chats) {
 	  	if (err) res.send(err);
-		res.json(comments);
+		res.json(chats);
 	});
 }
 
@@ -48,36 +40,25 @@ module.exports = function (app) {
     	});
 // api ---------------------------------------------------------------------
     	// get all todos
-	app.get('/comments/get', function (req, res) {
+	app.get('/chat/get', function (req, res) {
         	// use mongoose to get all todos in the database
-        	getComments(res);
+        	getChats(res);
     	});
 
-	app.get('/comments/getlatest', function(req,res) {
-		getCommentLatest(res);
+	app.get('/chat/getlatest', function(req,res) {
+		getChatLatest(res);
 	});
 
     	// create todo and send back all todos after creation
-	app.post('/comments/create', function (req, res) {
-        	Comment.create({
+	app.post('/chat/create', function (req, res) {
+        	Chat.create({
             		name: res.locals.user.name,
            		thought: req.body.thought
-        	}, function (err, comment) {
+        	}, function (err, chat) {
             		if (err) res.send(err);
-            		getCommentLatest(res);
+            		getChatLatest(res);
        		});
 
-    	});
-
-    // delete a todo
-	app.delete('/comments/delete/:comment_id', function (req, res) {
-        	Comment.remove({
-            		_id: req.params.comment_id
-        	}, function (err, comment) {
-            		if (err)
-                	res.send(err);
-		        getComments(res);
-        	});
     	});
 
 };

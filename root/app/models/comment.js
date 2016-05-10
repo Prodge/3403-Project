@@ -1,20 +1,19 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var commentSchema = new Schema({
+var ncommentSchema = new Schema({
 	name : String,
 	thought: String,
-	created_at: Date,
-	updated_at: Date
+	last_edited: Date,
+	isuser: Boolean
 });
 
-commentSchema.pre('save', function(next) {
-	var currentDate = new Date();
-	this.updated_at = currentDate;
-	if (!this.created_at) this.created_at = currentDate;
+ncommentSchema.pre('save', function(next) {
+	this.last_edited = new Date();
+	this.isuser = false;
 	next();
 });
 
-var Comment = mongoose.model('Comment', commentSchema);
+var Comment = mongoose.model('Comment', ncommentSchema);
 
 module.exports = Comment;

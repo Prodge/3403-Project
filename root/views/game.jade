@@ -3,29 +3,21 @@ extends base
 block extrahead
     link(rel='stylesheet', href='/css/game.css')
     script(src='/js/game.js')
-    script(src='/js/comment_section_module.js')
+    script(src='/js/chat_module.js')
 
 block content
     #game_resources(hidden='hidden')
       for image in images
         img(id= image)(src='/images/game/#{image}.png')
     canvas#game_canvas(width='700px', height='500px')
-    h1 Comments
-    br
-    div(ng-app='actionComment', ng-controller='commentController')
-      p #{user.name}
-      p There are total of {{all_comments.length}} commentsi
-      br
+    h1 Chat Box
+    div(ng-app='gameChat', ng-controller='chatController')
       #chatbox(style='width:500px;height:300px;overflow-y:auto')
-        div(ng-repeat='a_comment in all_comments')
-          p {{a_comment.name}}: {{a_comment.thought}}
-      br
-      br
-      br
-      br
+        div(ng-repeat='one_chat in full_chat')
+          p {{one_chat.name}}: {{one_chat.thought}}
       form
         input(type='text',ng-model='formData.thought')
-        button(ng-click='createComment()', type='submit') Post
+        button(ng-click='createChat()', type='submit') Post
       script.
         pheight = 300;
         function scrollnow(){

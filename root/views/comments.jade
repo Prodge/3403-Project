@@ -1,0 +1,20 @@
+extends base
+
+block extrahead
+    script(src='/js/comments_module.js')
+
+block content
+    h1 Please leave a comment
+    div(ng-app='commentApp', ng-controller='commentController')
+      div(ng-repeat='one_comment in all_comments')
+        p {{one_comment.name}} {{one_comment.thought}}
+        p Last edited at {{one_comment.last_edited}}
+        form(ng-hide="one_comment.isuser === false")
+          input(type='text',ng-model="editform[one_comment.textboxname]")
+          button(ng-click='editComment(one_comment._id)',type='submit') Edit
+          button(ng-click='deleteComment(one_comment._id)') Delete
+        br
+      br
+      form
+        input(type='text',ng-model='formData.thought')
+        button(ng-click='createComment()', type='submit') Post
