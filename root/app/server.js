@@ -1,8 +1,8 @@
 console.log('Starting Server Init')
 
 var express           = require('express')
-var routes            = require('./routes')
-var user_routes       = require('./routes/user')
+var routes            = require('../routes')
+var user_routes       = require('../routes/user')
 var http              = require('http')
 var path              = require('path');
 var app = exports.app = express();
@@ -12,10 +12,10 @@ var mongoose          = require('mongoose');
 var morgan            = require('morgan');
 var passport          = require('passport');
 var config            = require('./config/database');
-var User              = require('./app/models/user');
+var User              = require('./models/user');
 var port              = process.env.PORT || 8080;
 var jwt               = require('jwt-simple');
-var app_middleware    = require('./app/middleware')
+var app_middleware    = require('./middleware')
 var require_login     = app_middleware.require_login
 
 
