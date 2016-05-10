@@ -8,7 +8,7 @@ var server = require('../app/server');
 var port = 8000;
 var base_url = 'http://localhost:' + port;
 
-function contains_base_elements(route, done){
+function contains_base_elements(route){
   request(base_url + route, function (err, res, body){
     expect(body).to.contain('<div id="nav">');
     expect(body).to.contain('<div id="content">');
@@ -19,14 +19,14 @@ function contains_base_elements(route, done){
   });
 }
 
-function returns_ok(route, done){
+function returns_ok(route){
   request(base_url + route, function (err, res, body){
     res.statusCode.should.equal(200);
     done();
   });
 }
 
-function contains_tag(tag, route, done){
+function contains_tag(tag, route){
   request(base_url + route, function (err, res, body){
     expect(body).to.contain('<' + tag);
     expect(body).to.contain('</' + tag + '>');
@@ -34,7 +34,7 @@ function contains_tag(tag, route, done){
   });
 }
 
-function has_title(title, route, done){
+function has_title(title, route){
   request(base_url + route, function (err, res, body){
     expect(body).to.contain('<title>' + title + '</title>');
     done();
@@ -52,16 +52,20 @@ describe('Express Server', function(){
       var route = '/instructions';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        contains_base_elements(route);
+        done();
       });
       it('Should return ok', function(done){
-        returns_ok(route, done);
+        returns_ok(route);
+        done();
       });
       it('Should have the title instructions', function(done){
-        has_title('Instructions', route, done);
+        has_title('Instructions', route);
+        done();
       });
       it('Should should contain a list', function(done){
-        contains_tag('li', route, done);
+        contains_tag('li', route);
+        done();
       });
 
     });
@@ -70,23 +74,27 @@ describe('Express Server', function(){
       var route = '/author';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        contains_base_elements(route);
+        done();
       });
       it('Should return ok', function(done){
-        returns_ok(route, done);
+        returns_ok(route);
+        done();
       });
       it('Should have the title authors', function(done){
-        has_title('Authors', route, done);
+        has_title('Authors', route);
+        done();
       });
       it('Should should contain a table', function(done){
-        contains_tag('table', route, done);
+        contains_tag('table', route);
+        done();
       });
       it('Displays the author names', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('Tim Metcalf');
           expect(body).to.contain('Don Wimodya Athukorala');
-          done();
         });
+        done();
       });
 
     });
@@ -95,16 +103,20 @@ describe('Express Server', function(){
       var route = '/theme';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        contains_base_elements(route);
+        done();
       });
       it('Should return ok', function(done){
-        returns_ok(route, done);
+        returns_ok(route);
+        done();
       });
       it('Should have the title theme', function(done){
-        has_title('Theme', route, done);
+        has_title('Theme', route);
+        done();
       });
       it('Should should contain a paragraph', function(done){
-        contains_tag('p', route, done);
+        contains_tag('p', route);
+        done();
       });
 
     });
@@ -113,28 +125,34 @@ describe('Express Server', function(){
       var route = '/login';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        contains_base_elements(route);
+        done();
       });
       it('Should return ok', function(done){
-        returns_ok(route, done);
+        returns_ok(route);
+        done();
       });
       it('Should have the title login', function(done){
-        has_title('Login', route, done);
+        has_title('Login', route);
+        done();
       });
       it('Should should contain a table', function(done){
-        contains_tag('table', route, done);
+        contains_tag('table', route);
+        done();
       });
       it('Should should contain a submit button', function(done){
-        contains_tag('button', route, done);
+        contains_tag('button', route);
+        done();
       });
       it('contains labels', function(done){
-        contains_tag('label', route, done);
+        contains_tag('label', route);
+        done();
       });
       it('contains input fields', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<input');
-          done();
         });
+        done();
       });
       it('contains key login form text', function(done){
         request(base_url + route, function (err, res, body){
@@ -142,14 +160,14 @@ describe('Express Server', function(){
           expect(body).to.contain('Register');
           expect(body).to.contain('Username');
           expect(body).to.contain('Password');
-          done();
         });
+        done();
       });
       it('should have a password field', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('type="password"');
-          done();
         });
+        done();
       });
 
     });
@@ -158,42 +176,48 @@ describe('Express Server', function(){
       var route = '/register';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        contains_base_elements(route);
+        done();
       });
       it('Should return ok', function(done){
-        returns_ok(route, done);
+        returns_ok(route);
+        done();
       });
       it('Should have the title register', function(done){
-        has_title('Register', route, done);
+        has_title('Register', route);
+        done();
       });
       it('Should should contain a table', function(done){
-        contains_tag('table', route, done);
+        contains_tag('table', route);
+        done();
       });
       it('Should should contain a submit button', function(done){
-        contains_tag('button', route, done);
+        contains_tag('button', route);
+        done();
       });
       it('contains labels', function(done){
-        contains_tag('label', route, done);
+        contains_tag('label', route);
+        done();
       });
       it('contains input fields', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<input');
-          done();
         });
+        done();
       });
       it('contains key register form text', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('Register');
           expect(body).to.contain('Username');
           expect(body).to.contain('Password');
-          done();
         });
+        done();
       });
       it('should have a password field', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('type="password"');
-          done();
         });
+        done();
       });
 
     });
