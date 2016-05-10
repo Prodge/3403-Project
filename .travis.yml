@@ -19,4 +19,3 @@ before_script:
   - sleep 5
 script:
   - npm run coverage
-  - sh show_logs.sh
