@@ -11,7 +11,7 @@ var cookieParser      = require('cookie-parser');
 var mongoose          = require('mongoose');
 var morgan            = require('morgan');
 var passport          = require('passport');
-var config            = require('../config/database');
+var config            = require('.../config/database');
 var User              = require('./models/user');
 var port              = process.env.PORT || 8080;
 var jwt               = require('jwt-simple');
@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 mongoose.connect(config.database);
-require('./config/passport')(passport);
+require('../config/passport')(passport);
 
 // development only
 if ('development' == app.get('env')) {
