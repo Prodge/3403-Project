@@ -29,19 +29,48 @@ describe('Express Server', function(){
     describe('Instructions', function(){
       var route = '/instructions';
 
-      it('stems from the base view', function(done){
+      it('Stems from the base view', function(done){
         contains_base_elements(route, done);
       });
-      it('should have the title instructions', function(done){
+      it('Should have the title instructions', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<title>Instructions</title>');
           done();
         });
       });
-      it('should should contain a list', function(done){
+      it('Should should contain a list', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<li>');
           expect(body).to.contain('</li>');
+          done();
+        });
+      });
+
+    });
+
+    describe('Authors', function(){
+      var route = '/author';
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should have the title authors', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<title>Authors</title>');
+          done();
+        });
+      });
+      it('Should should contain a table', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<table>');
+          expect(body).to.contain('</table>');
+          done();
+        });
+      });
+      it('Displays the author names', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Tim Metcalf');
+          expect(body).to.contain('Don Wimodya Athukorala');
           done();
         });
       });
