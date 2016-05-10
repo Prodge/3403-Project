@@ -5,7 +5,7 @@ var request = require('request');
 
 var server = require('../app/server');
 
-var test_port = 8000;
+var port = 8000;
 
 describe('Array', function() {
   describe('#indexOf()', function () {
@@ -18,18 +18,23 @@ describe('Array', function() {
 
 describe('Server', function(){
   before(function (){
-    server.listen(test_port);
+    server.listen(port);
   })
 
   describe('Instructions', function(){
-
     it('should have the title instructions', function(done){
-      request('http://127.0.0.1:8000/instructions', function (err, res, body){
+      request('http://localhost:'+port+'/instructions', function (err, res, body){
         expect(body).to.contain('<title>Instructions</title>');
         done();
       });
     });
-
+    it('should should contain a list', function(done){
+      request('http://localhost:'+port+'/instructions', function (err, res, body){
+        expect(body).to.contain('<li>');
+        expect(body).to.contain('</li>');
+        done();
+      });
+    });
   });
 
   after(function (){
