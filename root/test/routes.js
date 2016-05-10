@@ -18,6 +18,7 @@ function contains_base_elements(route, done){
     done();
   });
 }
+
 function returns_ok(route, done){
   request(base_url + route, function (err, res, body){
     res.statusCode.should.equal(200);
@@ -25,10 +26,25 @@ function returns_ok(route, done){
   });
 }
 
+function contains_tag(tag, route, done){
+  request(base_url + route, function (err, res, body){
+    expect(body).to.contain('<' + tag);
+    expect(body).to.contain('</' + tag + '>');
+    done();
+  });
+}
+
+function has_title(title, route, done){
+  request(base_url + route, function (err, res, body){
+    expect(body).to.contain('<title>' + title + '</title>');
+    done();
+  });
+}
+
 describe('Express Server', function(){
   before(function (){
     server.listen(port);
-  })
+  });
 
   describe('Routes', function(){
 
@@ -42,17 +58,10 @@ describe('Express Server', function(){
         returns_ok(route, done);
       });
       it('Should have the title instructions', function(done){
-        request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<title>Instructions</title>');
-          done();
-        });
+        has_title('Instructions', route, done);
       });
       it('Should should contain a list', function(done){
-        request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<li>');
-          expect(body).to.contain('</li>');
-          done();
-        });
+        contains_tag('li', route, done);
       });
 
     });
@@ -67,17 +76,10 @@ describe('Express Server', function(){
         returns_ok(route, done);
       });
       it('Should have the title authors', function(done){
-        request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<title>Authors</title>');
-          done();
-        });
+        has_title('Authors', route, done);
       });
       it('Should should contain a table', function(done){
-        request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<table>');
-          expect(body).to.contain('</table>');
-          done();
-        });
+        contains_tag('table', route, done);
       });
       it('Displays the author names', function(done){
         request(base_url + route, function (err, res, body){
@@ -99,15 +101,53 @@ describe('Express Server', function(){
         returns_ok(route, done);
       });
       it('Should have the title theme', function(done){
+        has_title('Theme', route, done);
+      });
+      it('Should should contain a paragraph', function(done){
+        contains_tag('p', route, done);
+      });
+
+    });
+
+    describe('Login', function(){
+      var route = '/login';
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title login', function(done){
+        has_title('Login', route, done);
+      });
+      it('Should should contain a table', function(done){
+        contains_tag('table', route, done);
+      });
+      it('Should should contain a submit button', function(done){
+        contains_tag('button', route, done);
+      });
+      it('contains labels', function(done){
+        contains_tag('label', route, done);
+      });
+      it('contains input fields', function(done){
         request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<title>Theme</title>');
+          expect(body).to.contain('<input');
           done();
         });
       });
-      it('Should should contain a paragraph', function(done){
+      it('contains key login form text', function(done){
         request(base_url + route, function (err, res, body){
-          expect(body).to.contain('<p>');
-          expect(body).to.contain('</p>');
+          expect(body).to.contain('Login');
+          expect(body).to.contain('Register');
+          expect(body).to.contain('Username');
+          expect(body).to.contain('Password');
+          done();
+        });
+      });
+      it('should have a password field', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('type="password"');
           done();
         });
       });
@@ -118,5 +158,5 @@ describe('Express Server', function(){
 
   after(function (){
     server.close();
-  })
+  });
 });
