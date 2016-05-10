@@ -4,6 +4,7 @@ var should = require('chai').should();
 var request = require('request');
 
 var server = require('../app/server');
+var User = require('../app/models/user');
 
 var port = 8000;
 var base_url = 'http://localhost:' + port;
@@ -46,7 +47,7 @@ describe('Express Server', function(){
     server.listen(port);
   });
 
-  describe('Routes', function(){
+  describe('Unprotected Route', function(){
 
     describe('Instructions', function(){
       var route = '/instructions';
@@ -220,6 +221,41 @@ describe('Express Server', function(){
         done();
       });
 
+    });
+
+  });
+
+  describe('Protected Route', function(){
+    before(function (){
+      user = new User({
+          name: 'Tim',
+          password: 'pass'
+      });
+      user.save()
+    });
+
+    describe('API Authenticate', function(){
+      var route = '/api/authenticate'
+
+      it('Returns a token to a valid user', function(done){
+        var options = {
+          url: base_url + route,
+          headers: {
+            'name': 'Tim',
+            'password': 'pass'
+          }
+        }
+        request.post(options, function (err, res, body){
+          expect(body.success).to.be.true;
+          console.log(body)
+          done();
+        });
+      });
+
+    });
+
+    after(function (){
+      User.remove({})
     });
 
   });
