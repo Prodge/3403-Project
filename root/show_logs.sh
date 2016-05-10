@@ -16,3 +16,4 @@ else
     echo
     echo
 fi
+exit 0
