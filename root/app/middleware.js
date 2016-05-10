@@ -33,6 +33,6 @@ exports.require_login = function(req, res, next){
   if(res.locals.user){
     next();
   }else{
-    res.redirect('/login?perm_denied=true');
+    res.redirect('/login?perm_denied=' + req.path);
   }
 }

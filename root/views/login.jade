@@ -6,6 +6,9 @@ block extrahead
 block content
   if perm_denied
     p Please login or register to access this page.
+    #redirect-to(hidden='hidden') #{perm_denied}
+  else
+    #redirect-to(hidden='hidden') /play
   form#login-form
     label(for='login-name') Username:
     input#login-name(type='text', name='name')
