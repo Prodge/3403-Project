@@ -1,5 +1,7 @@
 var server = require('./app/server');
 
-server.server.listen(server.app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+var port = server.app.get('port');
+
+server.server.listen(port, function(){
+  console.log('Express server listening on port ' + port);
 });
