@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  var failed_attempts = 0;
+
   $("#register-form").submit(function(e){
     $.post("/api/signup",
       {
@@ -6,14 +8,18 @@ $(document).ready(function() {
         password: $('#register-password').val(),
       },
       function(data, status){
-        console.log(data)
         if(data.success){
-          $('#register-form').hide(100);
-          $('#failure').hide(100);
-          $('#success').show(100);
+          $('#register-form').hide(toggle_speed);
+          $('#failure').hide(toggle_speed);
+          $('#success').show(toggle_speed);
         }else{
-          $('#failure-message').html(' ' + data.msg);
-          $('#failure').show(100);
+          if(failed_attempts == 0){
+            $('#failure-message').html(' ' + data.msg);
+            $('#failure').show(toggle_speed);
+          }else{
+            fade_pulsate('#failure');
+          }
+          failed_attempts++;
         }
       });
     e.preventDefault();
