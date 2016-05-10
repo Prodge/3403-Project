@@ -15,6 +15,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+      - grep
 before_script:
   - sleep 5
 script:
