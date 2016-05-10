@@ -8,7 +8,7 @@ $(document).ready(function() {
       function(data, status){
         if(data.success){
           document.cookie = "auth_token="+data.token;
-          window.location = "/play";
+          window.location = $('#redirect-to').text();
         }else{
           console.log(data.msg)
           $('#failure-message').html(' ' + data.msg);
