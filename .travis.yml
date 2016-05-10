@@ -19,6 +19,5 @@ before_script:
   - sleep 5
 script:
   - npm run coverage
-after_script:
   - chmod +x show_logs.sh
   - ./show_logs.sh
