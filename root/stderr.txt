@@ -1,0 +1,10 @@
+module.js:440
+    throw err;
+    ^
+
+Error: Cannot find module '/home/mean/wimo/root/app.js'
+    at Function.Module._resolveFilename (module.js:438:15)
+    at Function.Module._load (module.js:386:25)
+    at Function.Module.runMain (module.js:575:10)
+    at startup (node.js:159:18)
+    at node.js:444:3
