@@ -18,7 +18,8 @@ var app_middleware    = require('./middleware')
 var require_login     = app_middleware.require_login
 
 
-app.set('views', __dirname + '../views');
+app.set('views', __dirname + '/../views');
+console.log(app.get('views'))
 app.set('view engine', 'jade');
 
 app.use(express.favicon());
@@ -26,9 +27,9 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.methodOverride());
-app.use(express.static(path.join(__dirname, 'static')));
-app.use('/angular', express.static(path.join(__dirname, 'node_modules/angular')));
-app.use('/jquery', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use(express.static(path.join(__dirname, '../static')));
+app.use('/angular', express.static(path.join(__dirname, '../node_modules/angular')));
+app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
 
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: false }));
