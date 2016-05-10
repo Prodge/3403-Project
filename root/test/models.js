@@ -5,12 +5,13 @@ var should = require('chai').should();
 var User = require('../app/models/user');
 
 describe('User', function(){
-  before(function (){
+  before(function (done){
     user = new User({
         name: 'Tim',
         password: 'pass'
     });
-    user.save()
+    user.save();
+    done();
   });
 
   it('Is be retrivable from the database', function (done){
@@ -43,7 +44,9 @@ describe('User', function(){
     });
   });
 
-  after(function (){
-    User.remove({})
+  after(function (done){
+    User.remove({}, function(){
+      done();
+    });
   });
 });
