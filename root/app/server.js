@@ -5,7 +5,7 @@ var routes            = require('../routes/index')
 var user_routes       = require('../routes/user')
 var http              = require('http')
 var path              = require('path');
-var app = exports.app = express();
+var app               = express();
 var bodyParser        = require('body-parser');
 var cookieParser      = require('cookie-parser');
 var mongoose          = require('mongoose');
@@ -13,13 +13,11 @@ var morgan            = require('morgan');
 var passport          = require('passport');
 var config            = require('../config/database');
 var User              = require('./models/user');
-var port              = process.env.PORT || 8080;
 var jwt               = require('jwt-simple');
 var app_middleware    = require('./middleware')
 var require_login     = app_middleware.require_login
 
 
-app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '../views');
 app.set('view engine', 'jade');
 
@@ -96,5 +94,5 @@ getToken = function (headers) {
   }
 };
 
-var server = exports.server = http.createServer(app);
+var server = module.exports = http.createServer(app);
 
