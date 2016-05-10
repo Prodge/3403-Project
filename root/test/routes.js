@@ -10,7 +10,7 @@ describe('Array', function() {
   });
 });
 
-describe('Instructions', function{
+describe('Instructions', function(){
   it('should return the title instructions', function(){
     console.log(routes.instructions(undefined, undefined))
   });
