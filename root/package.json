@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node start.js",
-    "test": "mocha"
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha -- -R spec"
   },
   "dependencies": {
     "express": "3.2.3",
