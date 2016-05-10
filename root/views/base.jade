@@ -1,5 +1,5 @@
 doctype html
-html(lang="en")
+html(lang="en",ng-app='actionComment')
 
   head
     script(src='/jquery/jquery.js')
@@ -9,7 +9,7 @@ html(lang="en")
 
     title= title
 
-  body()
+  body(ng-controller='commentController')
     #wrapper
       #nav
         block nav
