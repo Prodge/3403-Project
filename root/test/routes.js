@@ -16,25 +16,29 @@ describe('Array', function() {
   });
 });
 
-describe('Server', function(){
+describe('Express Server', function(){
   before(function (){
     server.listen(port);
   })
 
-  describe('Instructions', function(){
-    it('should have the title instructions', function(done){
-      request('http://localhost:'+port+'/instructions', function (err, res, body){
-        expect(body).to.contain('<title>Instructions</title>');
-        done();
+  describe('Routes', function(){
+
+    describe('Instructions', function(){
+      it('should have the title instructions', function(done){
+        request('http://localhost:'+port+'/instructions', function (err, res, body){
+          expect(body).to.contain('<title>Instructions</title>');
+          done();
+        });
+      });
+      it('should should contain a list', function(done){
+        request('http://localhost:'+port+'/instructions', function (err, res, body){
+          expect(body).to.contain('<li>');
+          expect(body).to.contain('</li>');
+          done();
+        });
       });
     });
-    it('should should contain a list', function(done){
-      request('http://localhost:'+port+'/instructions', function (err, res, body){
-        expect(body).to.contain('<li>');
-        expect(body).to.contain('</li>');
-        done();
-      });
-    });
+
   });
 
   after(function (){
