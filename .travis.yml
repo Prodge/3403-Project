@@ -6,3 +6,7 @@ env:
 install:
   - cd root/
   - npm install
+addons:
+  apt:
+    packages:
+    - g++-4.8
