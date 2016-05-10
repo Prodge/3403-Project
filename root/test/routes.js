@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-var shold = require('chai').assert;
+var should = require('chai').should();
 var request = require('request');
 
 var server = require('../app/server');
@@ -8,13 +8,19 @@ var server = require('../app/server');
 var port = 8000;
 var base_url = 'http://localhost:' + port;
 
-function contains_base_elements(url, done){
-  request(base_url + url, function (err, res, body){
+function contains_base_elements(route, done){
+  request(base_url + route, function (err, res, body){
     expect(body).to.contain('<div id="nav">');
     expect(body).to.contain('<div id="content">');
     expect(body).to.contain('<div id="footer">');
     expect(body).to.contain('<head>');
     expect(body).to.contain('jquery.js');
+    done();
+  });
+}
+function returns_ok(route, done){
+  request(base_url + route, function (err, res, body){
+    res.statusCode.should.equal(200);
     done();
   });
 }
@@ -31,6 +37,9 @@ describe('Express Server', function(){
 
       it('Stems from the base view', function(done){
         contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
       });
       it('Should have the title instructions', function(done){
         request(base_url + route, function (err, res, body){
@@ -53,6 +62,9 @@ describe('Express Server', function(){
 
       it('Stems from the base view', function(done){
         contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
       });
       it('Should have the title authors', function(done){
         request(base_url + route, function (err, res, body){
