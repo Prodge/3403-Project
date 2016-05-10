@@ -6,6 +6,9 @@ angular.module('actionComment', [])
 			console.log("im herer");
 			return $http.get('/comments/get');
 		},
+		getLatest : function() {
+			return $http.get('/comments/getlatest');
+		},
 		create : function(todoData) {
 			console.log("create heree");
 			return $http.post('/comments/create', todoData);
@@ -16,8 +19,18 @@ angular.module('actionComment', [])
 	}
 }])
 
-.controller('commentController', ['$scope','$http','commentService', function($scope, $http, commentService) {
+.controller('commentController', ['$scope','$http','commentService','$interval','$document', function($scope, $http, commentService, $interval, $document) {
 	$scope.formData = {};
+	
+	function hellowimo(){
+		commentService.getLatest().success(function(data) {
+			if ($scope.all_comments[$scope.all_comments.length-1]["_id"]!=data[0]["_id"]){
+				$scope.all_comments.push(data[0]);
+			}
+		});
+	}
+
+	$interval(hellowimo, 2500);
 
 	commentService.get().success(function(data) {
 		$scope.all_comments = data;
@@ -27,7 +40,7 @@ angular.module('actionComment', [])
 		if ($scope.formData.thought != undefined) {
 			commentService.create($scope.formData).success(function(data) {
 				$scope.formData = {};
-				$scope.all_comments = data; // assign our new list of todos
+				$scope.all_comments.push(data[0]); // assign our new list of todos
 			});
 		}
 	};
