@@ -1,4 +1,5 @@
 var assert = require('chai').assert;
+var routes = require('../routes/index')
 
 describe('Array', function() {
   describe('#indexOf()', function () {
@@ -9,4 +10,8 @@ describe('Array', function() {
   });
 });
 
-
+describe('Instructions', function{
+  it('should return the title instructions', function(){
+    console.log(routes.instructions(undefined, undefined))
+  });
+});
