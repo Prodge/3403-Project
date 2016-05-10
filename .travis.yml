@@ -15,10 +15,10 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-before-script:
+before_script:
   - sleep 5
 script:
   - npm run coverage
-after-script:
+after_script:
   - chmod +x show_logs.sh
   - ./show_logs.sh
