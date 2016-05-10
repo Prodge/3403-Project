@@ -3,4 +3,5 @@ node_js:
   - "5"
 install:
   - cd root/
+  - npm install -g npm
   - npm install
