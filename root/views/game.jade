@@ -1,11 +1,11 @@
 extends base
 
 block extrahead
-    link(rel='stylesheet', href='/css/game.css')
-    script(src='/js/game.js')
+  link(rel='stylesheet', href='/css/game.css')
+  script(src='/js/game.js')
 
 block content
-    #game_resources(hidden='hidden')
-      for image in images
-        img(id= image)(src='/images/game/#{image}.png')
-    canvas#game_canvas(width='700px', height='500px')
+  #game_resources(hidden='hidden')
+    for image in images
+      img(id=image, src='/images/game/#{image}.png')
+  canvas#game_canvas(width='700px', height='500px')
