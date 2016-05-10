@@ -1,7 +1,11 @@
 var assert = require('chai').assert;
-var routes = require('../routes/index');
-var server = require('../app/server').server;
-var request = require('request')
+var expect = require('chai').expect;
+var shold = require('chai').assert;
+var request = require('request');
+
+var server = require('../app/server');
+
+var test_port = 8000;
 
 describe('Array', function() {
   describe('#indexOf()', function () {
@@ -12,21 +16,22 @@ describe('Array', function() {
   });
 });
 
-describe('server response', function(){
+describe('Server', function(){
   before(function (){
-    server.listen(8000);
-    console.log(server)
+    server.listen(test_port);
   })
-  it('should return the title instructions', function(){
-    console.log('about to test the request')
-    request(server).get('http://127.0.0.1:8000/instructions', function (err, res, body){
-      console.log('test the request')
-      console.log(err)
-      console.log(res)
-      console.log(body)
-      //console.log(routes.instructions(undefined, undefined))
+
+  describe('Instructions', function(){
+
+    it('should have the title instructions', function(done){
+      request('http://127.0.0.1:8000/instructions', function (err, res, body){
+        expect(body).to.contain('<title>Instructions</title>');
+        done();
+      });
     });
+
   });
+
   after(function (){
     server.close();
   })
