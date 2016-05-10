@@ -89,6 +89,31 @@ describe('Express Server', function(){
 
     });
 
+    describe('Theme', function(){
+      var route = '/theme';
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title theme', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<title>Theme</title>');
+          done();
+        });
+      });
+      it('Should should contain a paragraph', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<p>');
+          expect(body).to.contain('</p>');
+          done();
+        });
+      });
+
+    });
+
   });
 
   after(function (){
