@@ -9,8 +9,6 @@ env:
 install:
   - cd root/
   - npm install
-script:
-  - npm run coverage
 addons:
   apt:
     sources:
@@ -19,3 +17,8 @@ addons:
       - g++-4.8
 before-script:
   - sleep 5
+script:
+  - npm run coverage
+after-script:
+  - chmod +x show_logs.sh
+  - ./show_logs.sh
