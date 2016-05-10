@@ -154,6 +154,50 @@ describe('Express Server', function(){
 
     });
 
+    describe('Register', function(){
+      var route = '/register';
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title register', function(done){
+        has_title('Register', route, done);
+      });
+      it('Should should contain a table', function(done){
+        contains_tag('table', route, done);
+      });
+      it('Should should contain a submit button', function(done){
+        contains_tag('button', route, done);
+      });
+      it('contains labels', function(done){
+        contains_tag('label', route, done);
+      });
+      it('contains input fields', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<input');
+          done();
+        });
+      });
+      it('contains key register form text', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Register');
+          expect(body).to.contain('Username');
+          expect(body).to.contain('Password');
+          done();
+        });
+      });
+      it('should have a password field', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('type="password"');
+          done();
+        });
+      });
+
+    });
+
   });
 
   after(function (){
