@@ -4,14 +4,14 @@ angular.module('actionComment', [])
 	return {
 		get : function() {
 			console.log("im herer");
-			return $http.get('/get/comments');
+			return $http.get('/comments/get');
 		},
 		create : function(todoData) {
 			console.log("create heree");
-			return $http.post('/comments', todoData);
+			return $http.post('/comments/create', todoData);
 		},
 		delete : function(id) {
-			return $http.delete('/comments/' + id);
+			return $http.delete('/comments/delete/' + id);
 		}
 	}
 }])
@@ -24,7 +24,7 @@ angular.module('actionComment', [])
 	});
 	
 	$scope.createComment = function() {
-		if ($scope.formData.name != undefined) {
+		if ($scope.formData.thought != undefined) {
 			commentService.create($scope.formData).success(function(data) {
 				$scope.formData = {};
 				$scope.all_comments = data; // assign our new list of todos

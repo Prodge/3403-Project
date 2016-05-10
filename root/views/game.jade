@@ -3,9 +3,27 @@ extends base
 block extrahead
     link(rel='stylesheet', href='/css/game.css')
     script(src='/js/game.js')
+    script(src='/js/comment_section_module.js')
 
 block content
     #game_resources(hidden='hidden')
       for image in images
         img(id= image)(src='/images/game/#{image}.png')
     canvas#game_canvas(width='700px', height='500px')
+    h1 Comments
+    br
+    div(ng-app='actionComment', ng-controller='commentController')
+      p #{user.name}
+      p There are total of {{all_comments.length}} commentsi
+      br
+      div(ng-repeat='a_comment in all_comments')
+        p {{a_comment.name}}: {{a_comment.thought}}
+        p Created at: {{a_comment.created_at}} & Updated at: {{a_comment.updated_at}}
+        button(ng-click='deleteComment(a_comment._id)') Delete
+      br
+      br
+      br
+      br
+      form
+        input(type='text',ng-model='formData.thought')
+        button(ng-click='createComment()', type='submit') Post 
