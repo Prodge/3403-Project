@@ -17,16 +17,12 @@ var port            = process.env.PORT || 8080;
 var jwt             = require('jwt-simple');
 var app_middleware  = require('./app/middleware')
 var require_login   = app_middleware.require_login
-var comments        = require('./routes/comments'); 
-
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.use(express.favicon());
-//app.use(express.logger('dev'));
-//app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'static')));
@@ -97,7 +93,7 @@ getToken = function (headers) {
     }
 };
 
-require('./routes/wimo.js')(app);
+require('./routes/comment_section.js')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
