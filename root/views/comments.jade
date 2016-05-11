@@ -12,14 +12,14 @@ block content
         p {{one_comment.name}}: {{one_comment.thought}}
         time(am-time-ago="one_comment.last_edited")
         div(ng-hide="one_comment.isuser === false")
-          a.showhideme(heref="#") Edit
-          .editcontrols
+          a.editLink(heref="#") Edit
+          .editControls
             form
-              input(type='text',ng-model="editform[one_comment.textboxname]")
+              input(type='text',ng-model="editForm[one_comment.textboxname]")
               button(ng-click='editComment(one_comment._id)',type='submit') Save
           button(ng-click='deleteComment(one_comment._id)') Delete
         br
       br
       form
-        input(type='text',ng-model='formData.thought')
+        input(type='text',ng-model='createForm.thought')
         button(ng-click='createComment()', type='submit') Post
