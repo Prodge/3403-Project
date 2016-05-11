@@ -28,6 +28,8 @@ app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'static')));
 app.use('/angular', express.static(path.join(__dirname, 'node_modules/angular')));
 app.use('/jquery', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use('/angular-moment', express.static(path.join(__dirname, 'node_modules/angular-moment')));
+app.use('/moment', express.static(path.join(__dirname, 'node_modules/moment')));
 
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: false }));

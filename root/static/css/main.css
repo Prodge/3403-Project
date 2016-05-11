@@ -45,3 +45,7 @@ p h3 {
 #th {
  float: left;
 }
+
+.editcontrols {
+    display:none;
+}

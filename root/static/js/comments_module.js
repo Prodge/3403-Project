@@ -1,4 +1,4 @@
-angular.module('commentApp', [])
+angular.module('commentApp', ['angularMoment'])
 
 .factory('commentService', ['$http',function($http) {
 	return {
@@ -19,11 +19,25 @@ angular.module('commentApp', [])
 	}
 }])
 
-.controller('commentController', ['$scope','$http','commentService', function($scope, $http, commentService) {
+.controller('commentController', ['$scope','$http','commentService','$timeout', function($scope, $http, commentService,$timeout) {
 	$scope.formData = {};
-	
+
+	function dothis(){
+		$scope.$watch('$viewContentLoaded',function(){
+			$timeout(showHideStuff,500);
+		});
+	}
+
+	function showHideStuff(){
+		$(".showhideme").click(function(){
+			var parentdiv = $(this).parent().closest('div');
+      parentdiv.find(".editcontrols").toggle();
+		});
+	}
+
 	commentService.get().success(function(data) {
 		$scope.all_comments = loadNames(data);
+		dothis();
 	});
 
 	function loadNames(data){
@@ -40,6 +54,7 @@ angular.module('commentApp', [])
 			commentService.create($scope.formData).success(function(data) {
 				$scope.formData = {};
 				$scope.all_comments = loadNames(data);
+				dothis();
 			});
 		}
 	};
@@ -47,12 +62,14 @@ angular.module('commentApp', [])
 	$scope.editComment = function(id) {
 		commentService.edit(id,$scope.editform).success(function(data) {
 			$scope.all_comments = loadNames(data);
+			dothis();
 		});
 	};
-	
+
 	$scope.deleteComment = function(id) {
 		commentService.delete(id).success(function(data) {
 			$scope.all_comments = loadNames(data);
+			dothis();
 		});
 	};
 }]);
