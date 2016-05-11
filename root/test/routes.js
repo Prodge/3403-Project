@@ -53,7 +53,14 @@ describe('Express Server', function(){
       var route = '/instructions';
 
       it('Stems from the base view', function(done){
-        contains_base_elements(route, done);
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<div id="nav">');
+          expect(body).to.contain('<div id="content">');
+          expect(body).to.contain('<div id="footer">');
+          expect(body).to.contain('<head>');
+          expect(body).to.contain('jquery.js');
+          done();
+        });
       });
       it('Should return ok', function(done){
         returns_ok(route, done);
@@ -123,22 +130,19 @@ describe('Express Server', function(){
         has_title('Login', route, done);
       });
       it('Should should contain a table', function(done){
-        contains_tag('table', route);
-        done();
+        contains_tag('table', route, done);
       });
       it('Should should contain a submit button', function(done){
-        contains_tag('button', route);
-        done();
+        contains_tag('button', route, done);
       });
       it('contains labels', function(done){
-        contains_tag('label', route);
-        done();
+        contains_tag('label', route, done);
       });
       it('contains input fields', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<input');
+          done();
         });
-        done();
       });
       it('contains key login form text', function(done){
         request(base_url + route, function (err, res, body){
