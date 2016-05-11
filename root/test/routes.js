@@ -9,7 +9,7 @@ var User = require('../app/models/user');
 var port = 8000;
 var base_url = 'http://localhost:' + port;
 
-function contains_base_elements(route, done{
+function contains_base_elements(route, done){
   request(base_url + route, function (err, res, body){
     expect(body).to.contain('<div id="nav">');
     expect(body).to.contain('<div id="content">');
