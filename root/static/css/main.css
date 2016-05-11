@@ -5,14 +5,15 @@ body{
     color: #ddd;
 }
 
+/*Layout*/
 #wrapper{
     width: 800px;
     background-color: #444;
     margin: auto;
-    padding: 10px;
+    padding: 20px;
 }
 
-a.button {
+nav a.button {
     display: inline-block;
     cursor: pointer;
     border-style: solid;
@@ -29,21 +30,99 @@ a.button {
     text-decoration: none;
     margin: 5px;
 }
+nav a.button:hover {
+    background-color: #848484;
+}
 
 p h3 {
     color: #eee;
 }
 
 #footer {
-    color: #ccc;
+    color: #888;
 }
 
 #footer #last-modified {
     float: right;
 }
 
-#th {
- float: left;
+/*Forms*/
+form button {
+    float: right;
+}
+
+form th, form td, form tr, form table {
+    border-style: none;
+}
+
+input[type="text"], textarea, input[type="password"], input[type="number"] {
+    background-color: #C8CDD2;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    border: none;
+}
+
+/*Tables*/
+table, tr, td, th{
+    border-collapse: collapse;
+    border-style: solid;
+    border-color: #555;
+    border-width: 1px;
+}
+
+th {
+    text-align: left;
+    color: #ccc;
+}
+
+td {
+    color: #bbb;
+}
+
+td, th {
+    padding: 5px 10px;
+}
+
+hr {
+    background-color: #555;
+    height: 1px;
+    border: 0;
+    margin-right: 5%;
+    margin-left: 5%;
+}
+
+/*Buttons*/
+.button {
+    display: inline-block;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    font-size: 8pt;
+    font-weight: bold;
+    color: #DDD;
+    background: #585860;
+    text-shadow: 0 1px 3px rgba(0,0,0,.4);
+    border-color: #333;
+    font-family: sans-serif;
+    text-decoration: none;
+    margin: 5px;
+}
+
+.button:hover {
+    background-color: #737383;
+}
+
+/*Links*/
+a:link, a:visited {
+    color: #bcbcbc;
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    color: #efefef;
 }
 
 .editControls {

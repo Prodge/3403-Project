@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  var failed_attempts = 0;
+
   $("#login-form").submit(function(e){
     $.post("/api/authenticate",
       {
@@ -8,11 +10,15 @@ $(document).ready(function() {
       function(data, status){
         if(data.success){
           document.cookie = "auth_token="+data.token;
-          window.location = "/play";
+          window.location = $('#redirect-to').text();
         }else{
-          console.log(data.msg)
-          $('#failure-message').html(' ' + data.msg);
-          $('#failure').show(100);
+          if(failed_attempts == 0){
+            $('#failure-message').html(' ' + data.msg);
+            $('#failure').show(toggle_speed);
+          }else{
+            fade_pulsate('#failure');
+          }
+          failed_attempts++;
         }
       });
     e.preventDefault();
