@@ -1,52 +1,67 @@
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var should = require('chai').should();
+var mongoose = require('mongoose');
 
 var User = require('../app/models/user');
 
 describe('User', function(){
-  before(function (done){
-    user = new User({
-        name: 'Tim',
-        password: 'pass'
+  var current_user;
+
+  beforeEach(function (done){
+    mongoose.connection.close(function(){
+      mongoose.connect('mongodb://localhost/test', function(){
+        current_user = new User({
+            name: 'Tim',
+            password: 'pass'
+        });
+        current_user.save(done)
+      });
     });
-    user.save();
-    done();
   });
 
   it('Is be retrivable from the database', function (done){
     User.findOne({
-      name: user.name
-    }, function(err, this_user) {
-      this_user.should.equal(user);
-    });
-    done();
-  });
-  it('Does not store a plain text password', function (){
-    User.findOne({
-      name: user.name
-    }, function(err, this_user) {
-      this_user.password.should.not.equal('pass');
+      name: current_user.name
+    }, function(err, user) {
+      user.name.should.equal(current_user.name);
+      done();
     });
   });
-  it('Can resolve a correct password match', function(){
+  it('Does not store a plain text password', function (done){
     User.findOne({
-      name: user.name
-    }, function(err, this_user) {
-      expect(this_user.comparePassword(user.password)).to.be.true;
+      name: 'Tim'
+    }, function(err, user) {
+      user.password.should.not.equal('pass');
+      done();
     });
   });
-  it('Rejects an incorrect password match', function(){
+  it('Can resolve a correct password match', function(done){
     User.findOne({
-      name: user.name
-    }, function(err, this_user) {
-      expect(this_user.comparePassword('noMatch')).to.be.false;
+      name: current_user.name
+    }, function(err, user) {
+      user.comparePassword('pass', function(err, match){
+        match.should.be.true;
+        expect(err).to.be.null;
+        done();
+      });
+    });
+  });
+  it('Rejects anincorrect password match', function(done){
+    User.findOne({
+      name: current_user.name
+    }, function(err, user) {
+      user.comparePassword('notMatch', function(err, match){
+        match.should.be.false;
+        expect(err).to.be.null;
+        done();
+      });
     });
   });
 
-  after(function (done){
-    User.remove({}, function(){
-      done();
+  afterEach(function (done){
+    User.remove({name: 'Tim'}, function(){
+      mongoose.connection.close(done);
     });
   });
 });

@@ -2,6 +2,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var should = require('chai').should();
 var request = require('request');
+var mongoose = require('mongoose');
 
 var server = require('../app/server');
 var User = require('../app/models/user');
@@ -43,8 +44,11 @@ function has_title(title, route, done){
 }
 
 describe('Express Server', function(){
-  before(function (){
-    server.listen(port);
+  beforeEach(function (done){
+    mongoose.connection.close(function(){
+      server.listen(port);
+      mongoose.connect('mongodb://localhost/test', done);
+    });
   });
 
   describe('Unprotected Route', function(){
@@ -208,6 +212,7 @@ describe('Express Server', function(){
 
   });
 
+  /*
   describe('Protected Route', function(){
     before(function (){
       user = new User({
@@ -242,8 +247,10 @@ describe('Express Server', function(){
     });
 
   });
+  */
 
-  after(function (){
+  afterEach(function (done){
     server.close();
+    mongoose.connection.close(done);
   });
 });
