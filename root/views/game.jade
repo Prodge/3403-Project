@@ -8,7 +8,7 @@ block extrahead
 block content
   #game_resources(hidden='hidden')
     for image in images
-      img(id= image)(src='/images/game/#{image}.png')
+      img(id= image, src='/images/game/#{image}.png')
   canvas#game_canvas(width='700px', height='500px')
   h1 Chat Box
   div(ng-app='gameChat', ng-controller='chatController')
