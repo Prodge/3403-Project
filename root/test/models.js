@@ -2,6 +2,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var should = require('chai').should();
 var mongoose = require('mongoose');
+var config = require('./config')
 
 var User = require('../app/models/user');
 
@@ -9,7 +10,7 @@ describe('User', function(){
   var current_user;
 
   beforeEach(function (done){
-    mongoose.connect('mongodb://localhost/test', function(){
+    mongoose.connect(config.database, function(){
       current_user = new User({
           name: 'Tim',
           password: 'pass'

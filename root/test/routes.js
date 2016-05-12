@@ -3,12 +3,12 @@ var expect = require('chai').expect;
 var should = require('chai').should();
 var request = require('request');
 var mongoose = require('mongoose');
+var config = require('./config')
 
 var server = require('../app/server');
 var User = require('../app/models/user');
 
-var port = 8000;
-var base_url = 'http://localhost:' + port;
+var base_url = config.base_url;
 
 function contains_base_elements(route, done){
   request(base_url + route, function (err, res, body){
@@ -45,8 +45,8 @@ function has_title(title, route, done){
 
 describe('Express Server', function(){
   beforeEach(function (done){
-    server.listen(port);
-    mongoose.connect('mongodb://localhost/test', done);
+    server.listen(config.port);
+    mongoose.connect(config.database, done);
   });
 
   describe('Unprotected Route', function(){
