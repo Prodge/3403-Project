@@ -183,40 +183,40 @@ function initialise(){
   powerups = [
   {
     x: 200,
-      y: 70,
-      type: 'gravity',
-      factor: 5,
-      time: 5,
+    y: 70,
+    type: 'gravity',
+    factor: 5,
+    time: 5,
   },
     ]
 
-      // Initial platforms
-      platforms = [
-      {
-        x: 100,
-        y: 100,
-        width: 400,
-        height: platform_height,
-      },
-      {
-        x: 300,
-        y: 400,
-        width: 200,
-        height: platform_height,
-      },
-      {
-        x: 600,
-        y: 300,
-        width: 200,
-        height: platform_height,
-      },
-      {
-        x: 900,
-        y: 200,
-        width: 200,
-        height: platform_height,
-      },
-      ]
+  // Initial platforms
+  platforms = [
+  {
+    x: 100,
+    y: 100,
+    width: 400,
+    height: platform_height,
+  },
+  {
+    x: 300,
+    y: 400,
+    width: 200,
+    height: platform_height,
+  },
+  {
+    x: 600,
+    y: 300,
+    width: 200,
+    height: platform_height,
+  },
+  {
+    x: 900,
+    y: 200,
+    width: 200,
+    height: platform_height,
+  },
+  ]
 }
 
 function start_game(){
