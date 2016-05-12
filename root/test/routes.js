@@ -231,7 +231,7 @@ describe('Express Server', function(){
 
   });
 
-  describe('Protected Route', function(){
+  describe('API', function(){
     beforeEach(function (done){
       current_user = new User({
           name: 'Tim',
@@ -240,7 +240,7 @@ describe('Express Server', function(){
       current_user.save(done)
     });
 
-    describe('API Authenticate', function(){
+    describe('Authenticate', function(){
       var route = '/api/authenticate'
 
       it('Returns a token to a valid user', function(done){
@@ -293,8 +293,65 @@ describe('Express Server', function(){
 
     });
 
+    describe('signup', function(){
+      var route = '/api/signup'
+
+      it('Enforces unique names', function(done){
+        var options = {
+          url: base_url + route,
+          form: {
+            'name': 'Tim',
+            'password': 'pass_thing'
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.false;
+          body.msg.should.equal('Username already exists.')
+          done();
+        });
+      });
+      it('Requires a username and password', function(done){
+        var options = {
+          url: base_url + route,
+          form: {
+            'name': 'Tim',
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.false;
+          body.msg.should.equal('Please pass name and password.')
+          done();
+        });
+      });
+      it('Creates a user', function(done){
+        var options = {
+          url: base_url + route,
+          form: {
+            'name': 'John',
+            'password': 'pass'
+          }
+        }
+        request.post(options, function (err, res, body){
+          console.log(body);
+          body = JSON.parse(body);
+          body.success.should.be.true;
+          body.msg.should.equal('Successful created new user.')
+          User.findOne({
+            name: options.form.name
+          }, function(err, user) {
+            user.should.not.be.null;
+            user.name.should.equal(options.form.name);
+            done();
+          });
+        });
+      });
+
+    });
+
     afterEach(function (done){
-      User.remove({name: 'Tim'}, function(){
+      User.remove({}, function(){
         mongoose.connection.close(done);
       });
     });
