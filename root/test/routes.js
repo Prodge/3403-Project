@@ -46,6 +46,7 @@ function has_title(title, route, done){
 describe('Express Server', function(){
   beforeEach(function (done){
     server.listen(config.port);
+    console.log('in main before all');
     mongoose.connect(config.database, done);
   });
 
@@ -210,14 +211,14 @@ describe('Express Server', function(){
 
   });
 
-  /*
   describe('Protected Route', function(){
-    before(function (){
-      user = new User({
+    beforeEach(function (done){
+      console.log('in protected route - before all');
+      current_user = new User({
           name: 'Tim',
           password: 'pass'
       });
-      user.save()
+      current_user.save(done)
     });
 
     describe('API Authenticate', function(){
@@ -226,26 +227,44 @@ describe('Express Server', function(){
       it('Returns a token to a valid user', function(done){
         var options = {
           url: base_url + route,
-          headers: {
+          form: {
             'name': 'Tim',
             'password': 'pass'
           }
         }
         request.post(options, function (err, res, body){
+          body = JSON.parse(body);
           expect(body.success).to.be.true;
-          console.log(body)
+          expect(body.token).to.not.be.null;
+          done();
+        });
+      });
+      it('Does not return a token to an invalid user', function(done){
+        var options = {
+          url: base_url + route,
+          form: {
+            'name': 'james',
+            'password': 'pass'
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.false;
+          body.msg.should.contain('User not found')
+          expect(body.token).to.be.undefined;
           done();
         });
       });
 
     });
 
-    after(function (){
-      User.remove({})
+    afterEach(function (done){
+      User.remove({name: 'Tim'}, function(){
+        mongoose.connection.close(done);
+      });
     });
 
   });
-  */
 
   afterEach(function (done){
     server.close();
