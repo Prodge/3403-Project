@@ -105,6 +105,8 @@ p h3 {
 #chat-container input {
     width: 300px;
     margin-right: 15px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 #chatbox {
@@ -113,6 +115,10 @@ p h3 {
     border-style: solid;
     border-color: #555;
     border-width: 1px;
+}
+
+#chatbox p {
+    margin-left: 20px
 }
 
 /*Forms*/
