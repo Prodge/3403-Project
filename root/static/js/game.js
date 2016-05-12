@@ -14,6 +14,10 @@ $(window).load(function(){
   height = canvas.height;
 
   high_score = 0;
+  get_high_score(function(res){
+    high_score = res.highscore;
+  })
+
   character_chosen = 0;
   isPaused = false;
 
@@ -183,40 +187,40 @@ function initialise(){
   powerups = [
   {
     x: 200,
-      y: 70,
-      type: 'gravity',
-      factor: 5,
-      time: 5,
+    y: 70,
+    type: 'gravity',
+    factor: 5,
+    time: 5,
   },
     ]
 
-      // Initial platforms
-      platforms = [
-      {
-        x: 100,
-        y: 100,
-        width: 400,
-        height: platform_height,
-      },
-      {
-        x: 300,
-        y: 400,
-        width: 200,
-        height: platform_height,
-      },
-      {
-        x: 600,
-        y: 300,
-        width: 200,
-        height: platform_height,
-      },
-      {
-        x: 900,
-        y: 200,
-        width: 200,
-        height: platform_height,
-      },
-      ]
+  // Initial platforms
+  platforms = [
+  {
+    x: 100,
+    y: 100,
+    width: 400,
+    height: platform_height,
+  },
+  {
+    x: 300,
+    y: 400,
+    width: 200,
+    height: platform_height,
+  },
+  {
+    x: 600,
+    y: 300,
+    width: 200,
+    height: platform_height,
+  },
+  {
+    x: 900,
+    y: 200,
+    width: 200,
+    height: platform_height,
+  },
+  ]
 }
 
 function start_game(){
@@ -591,6 +595,32 @@ function update_elapsed_time(){
   elapsed_time = time_now - start_time - time_offset;
 }
 
+function get_auth_cookie(){
+  cookies = document.cookie.split(';');
+  cookie = cookies.filter(function(cookie){
+    name = cookie.split('=')[0];
+    return name == 'auth_token'
+  });
+  return cookie[0].split('=')[1];
+}
+
+function get_high_score(callback){
+  $.ajax({
+    url: "/api/get-high-score",
+    headers: {"Authorization": get_auth_cookie()},
+    success: callback
+  });
+}
+
+function set_high_score(score){
+  $.ajax({
+    type: 'POST',
+    url: "/api/set-high-score",
+    headers: {"Authorization": get_auth_cookie()},
+    data: {'highscore': score}
+  });
+}
+
 function game_over(){
   game_running = false;
 
@@ -607,7 +637,13 @@ function game_over(){
   ctx.fillText('Press "2" to start with character TIM!', width/2, height - height/4+20);
   ctx.fillText('Press "3" to start with character WIMO!', width/2, height - height/4+40);
 
-  high_score = points;
+  if(points > high_score){
+    high_score = points;
+    set_high_score(points);
+  }
+  ctx.textAlign="center";
+  ctx.font="17px Lucida Console";
+  ctx.fillText('High Score: ' + high_score + " Points", width/2, height/2+30);
 
   cancelAnimationFrame(myReq);
 }

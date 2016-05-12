@@ -11,10 +11,24 @@ var base_url = config.base_url;
 module.exports = function(){
   beforeEach(function (done){
     current_user = new User({
-        name: 'Tim',
-        password: 'pass'
+      name: 'Tim',
+      password: 'pass',
+      highscore: 100
     });
-    current_user.save(done)
+    current_user.save(function(){
+      var options = {
+        url: base_url + '/api/authenticate',
+        form: {
+          'name': current_user.name,
+          'password': 'pass'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        auth_token = body.token;
+        done();
+      });
+    });
   });
 
   describe('Authenticate', function(){
@@ -121,6 +135,92 @@ module.exports = function(){
           user.name.should.equal(options.form.name);
           done();
         });
+      });
+    });
+
+  });
+
+  describe('Set High Score', function(){
+    var route = '/api/set-high-score'
+
+    it('Updates a given users high score', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'highscore': 200
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.msg.should.equal('Saved high score.');
+        var options = {
+          url: base_url + '/api/get-high-score',
+          headers: {'Authorization': auth_token},
+        }
+        request(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.true;
+          body.highscore.should.equal(200);
+          done();
+        });
+      });
+    });
+    it('Requires a high score param', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'not-a-highscore': 200
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please pass highscore.');
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'highscore': 200
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+
+  });
+
+  describe('Get High Score', function(){
+    var route = '/api/get-high-score'
+
+    it('Returns the current users highscore', function(done){
+      var options = {
+        url: base_url + '/api/get-high-score',
+        headers: {'Authorization': auth_token},
+      }
+      request(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.highscore.should.equal(100);
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
       });
     });
 

@@ -1,0 +1,12 @@
+extends base
+
+block content
+  p The global top 10 players of Action Box!
+  table
+    tr
+      th Name
+      th High Score
+    for this_user in users
+      tr
+        td #{this_user.name}
+        td #{this_user.highscore}
