@@ -137,16 +137,16 @@ describe('Express Server', function(){
       it('Should should contain a submit button', function(done){
         contains_tag('button', route, done);
       });
-      it('contains labels', function(done){
+      it('Contains labels', function(done){
         contains_tag('label', route, done);
       });
-      it('contains input fields', function(done){
+      it('Contains input fields', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<input');
           done();
         });
       });
-      it('contains key login form text', function(done){
+      it('Contains key login form text', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('Login');
           expect(body).to.contain('Register');
@@ -158,6 +158,27 @@ describe('Express Server', function(){
       it('should have a password field', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('type="password"');
+          done();
+        });
+      });
+
+    });
+
+    describe('Logout', function(){
+      var route = '/logout';
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title logout', function(done){
+        has_title('Logout', route, done);
+      });
+      it('Contains a successful logout message', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('successfully logged out');
           done();
         });
       });
@@ -182,16 +203,16 @@ describe('Express Server', function(){
       it('Should should contain a submit button', function(done){
         contains_tag('button', route, done);
       });
-      it('contains labels', function(done){
+      it('Contains labels', function(done){
         contains_tag('label', route, done);
       });
-      it('contains input fields', function(done){
+      it('Contains input fields', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('<input');
           done();
         });
       });
-      it('contains key register form text', function(done){
+      it('Contains key register form text', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('Register');
           expect(body).to.contain('Username');
