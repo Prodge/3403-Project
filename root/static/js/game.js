@@ -22,13 +22,68 @@ $(window).load(function(){
   isPaused = false;
 
   keys = [];
+  last_down_target = null;
+  current_screen = "inital_screen";
 
+  character_pos = [25,245,500];
   dangers = [document.getElementById("danger_1"), document.getElementById("danger_2")];
 
   initialiseCharacterImages();
   initialise();
   draw_initial_screen();
+
+  document.addEventListener("mousedown", function(e){
+    last_down_target = e.target
+    if (e.target==canvas){
+      var mouse_x = e.clientX - canvas.getBoundingClientRect().left;
+      var mouse_y = e.clientY - canvas.getBoundingClientRect().top;
+      if (current_screen === "inital_screen"){
+        if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
+          current_screen = "character_selection";
+          draw_character_selection();
+        }
+      }else if (current_screen === "character_selection"){
+        for(var i=0; i<character_pos.length; i++){
+          if(clickedOn(mouse_x, mouse_y, character_pos[i], 150, 200, 350)){
+            character_chosen = i;
+            current_screen = "game";
+            start_game();
+          }
+        }
+      }else if (current_screen === "game_over"){
+        if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
+          current_screen = "character_selection";
+          draw_character_selection();
+        }
+      }
+    }
+  });
+
+  document.addEventListener("keydown", function(e){
+    if (last_down_target == canvas) keys[e.keyCode] = true;
+  });
+
+  document.addEventListener("keyup", function(e){
+    if (last_down_target == canvas){
+      keys[e.keyCode] = false;
+      if (game_running && e.keyCode == 66){
+        isPaused = !isPaused;
+        if (isPaused){
+          render_pause_screen();
+        }else{
+          pause_end_time = new Date().getTime();
+          time_offset += pause_end_time - pause_start_time;
+          powerup_started_time += pause_end_time - pause_start_time;
+        }
+      }
+    }
+  });
+
 })
+
+function clickedOn(mouse_x, mouse_y, x, y, w, h){
+  return mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h;
+}
 
 function initialiseCharacterImages(){
   characters = [];
@@ -44,30 +99,6 @@ function initialiseCharacterImages(){
   }
 }
 
-// Key listeners
-$(document).keydown(function(e){
-  keys[e.keyCode] = true;
-})
-$(document).keyup(function(e){
-  keys[e.keyCode] = false;
-  var key_to_character = { 49:0, 50:1, 51:2 };
-  if (! game_running && (e.keyCode == 49 || e.keyCode == 50 || e.keyCode == 51)){
-    character_chosen = key_to_character[e.keyCode];
-    start_game();
-  }
-
-  if (game_running && e.keyCode == 66){
-    isPaused = !isPaused;
-    if (isPaused){
-      render_pause_screen();
-    }else{
-      pause_end_time = new Date().getTime();
-      time_offset += pause_end_time - pause_start_time;
-      powerup_started_time += pause_end_time - pause_start_time;
-    }
-  }
-})
-
 $(window).blur(function() {
   if (game_running){
     isPaused = true;
@@ -82,10 +113,24 @@ function draw_initial_screen(){
   ctx.font="30px Lucida Console";
   ctx.fillText('Action Box', width/2, height/4);
 
-  ctx.font="20px Lucida Console";
-  ctx.fillText('Press "1" to start with character AL!', width/2, height/2);
-  ctx.fillText('Press "2" to start with character TIM!', width/2, height/2+30);
-  ctx.fillText('Press "3" to start with character WIMO!', width/2, height/2+60);
+  ctx.fillStyle = "black";
+  ctx.fillRect(width/2 - 150, height-height/3.5-20, 300, 60);
+  ctx.fillStyle = "white";
+  ctx.fillText('Click here to Play', width/2, height- height/4);
+}
+
+function draw_character_selection(){
+  ctx.clearRect(0,0,width, height);
+  ctx.fillStyle = text_colour;
+  ctx.textAlign="center";
+  ctx.font="30px Lucida Console";
+  ctx.fillText('Please select a character to start', width/2, 60);
+  for(var i=0; i<character_pos.length; i++){
+    ctx.drawImage(characters[i]["standing"], character_pos[i], 150, 200, 200);
+  }
+  ctx.fillText('AL', 100, 400);
+  ctx.fillText('TIM', 345, 400);
+  ctx.fillText('WIMO', 600, 400);
 }
 
 function initialise(){
@@ -644,28 +689,25 @@ function set_high_score(score){
 }
 
 function game_over(){
-  game_running = false;
-
-  ctx.clearRect(0,0,width,height);
-
-  ctx.fillStyle = text_colour;
-  ctx.textAlign="center";
-
-  ctx.font="20px Lucida Console";
-  ctx.fillText('You scored ' + points + " Points!", width/2, height/2);
-
-  ctx.font="15px Lucida Console";
-  ctx.fillText('Press "1" to start with character AL!', width/2, height - height/4);
-  ctx.fillText('Press "2" to start with character TIM!', width/2, height - height/4+20);
-  ctx.fillText('Press "3" to start with character WIMO!', width/2, height - height/4+40);
-
   if(points > high_score){
     high_score = points;
     set_high_score(points);
   }
+  game_running = false;
+
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle = text_colour;
   ctx.textAlign="center";
+  ctx.font="20px Lucida Console";
+  ctx.fillText('You scored ' + points + " Points!", width/2, height/2);
   ctx.font="17px Lucida Console";
   ctx.fillText('High Score: ' + high_score + " Points", width/2, height/2+30);
+  ctx.fillStyle = "black";
+  ctx.fillRect(width/2 - 150, height-height/3.5-20, 300, 60);
+  ctx.font="30px Lucida Console";
+  ctx.fillStyle = "white";
+  ctx.fillText('Click here to Restart', width/2, height- height/4);
+  current_screen = "game_over";
 
   cancelAnimationFrame(myReq);
 }
