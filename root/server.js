@@ -18,24 +18,22 @@ var jwt             = require('jwt-simple');
 var app_middleware  = require('./app/middleware')
 var require_login   = app_middleware.require_login
 
-
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.cookieParser());
-app.use(express.methodOverride());
-app.use(express.static(path.join(__dirname, 'static')));
-app.use('/angular', express.static(path.join(__dirname, 'node_modules/angular')));
-app.use('/jquery', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(express.favicon());
+app.use(express.cookieParser());
+app.use(express.methodOverride());
+app.use(express.static(path.join(__dirname, 'static')));
+app.use('/angular', express.static(path.join(__dirname, 'node_modules/angular')));
+app.use('/jquery', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use('/angular-moment', express.static(path.join(__dirname, 'node_modules/angular-moment')));
+app.use('/moment', express.static(path.join(__dirname, 'node_modules/moment')));
 
 mongoose.connect(config.database);
 require('./config/passport')(passport);
@@ -49,10 +47,10 @@ app.use(app_middleware.get_user);
 app.use(app.router);
 
 // URLs
-app.get('/', require_login, routes.game);
+require('./routes/game_and_chat.js')(app);
+require('./routes/comments.js')(app);
 app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
-app.get('/play', require_login, routes.game);
 app.get('/author', routes.author);
 app.get('/register', user_routes.register);
 app.get('/login', user_routes.login);
@@ -61,7 +59,6 @@ app.get('/logout', user_routes.logout);
 // API
 app.post('/api/signup', user_routes.signup);
 app.post('/api/authenticate', user_routes.authenticate);
-
 
 // This is a sample API route that authenticates based on the jwt token
 app.get('/api/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
@@ -96,8 +93,6 @@ getToken = function (headers) {
     }
 };
 
-
 http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
-

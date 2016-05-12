@@ -1,0 +1,25 @@
+extends base
+
+block extrahead
+    script(src='/moment/moment.js')
+    script(src='/angular-moment/angular-moment.js')
+    script(src='/js/comments_module.js')
+
+block content
+    h1 Please leave a comment
+    div(ng-app='commentApp', ng-controller='commentController')
+      div(ng-repeat='one_comment in all_comments')
+        p {{one_comment.name}}: {{one_comment.thought}}
+        time(am-time-ago="one_comment.last_edited")
+        div(ng-hide="one_comment.isuser === false")
+          a.editLink(heref="#") Edit
+          .editControls
+            form
+              input(type='text',ng-model="editForm[one_comment.textboxname]")
+              button(ng-click='editComment(one_comment._id)',type='submit') Save
+          button(ng-click='deleteComment(one_comment._id)') Delete
+        br
+      br
+      form
+        input(type='text',ng-model='createForm.thought')
+        button(ng-click='createComment()', type='submit') Post

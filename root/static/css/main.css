@@ -124,3 +124,7 @@ a:link, a:visited {
 a:hover, a:active {
     color: #efefef;
 }
+
+.editControls {
+    display:none;
+}
