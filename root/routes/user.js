@@ -97,13 +97,27 @@ exports.register = function(req, res){
 
 exports.set_high_score = function(req, res) {
   var token = get_token(req.headers);
+  var highscore = req.body.highscore;
+  if(!highscore){
+    res.send({success: false, msg: 'Please pass highscore.'});
+  }
   get_user(token, function(user){
     if(!user){
       res.send({success: false, msg: 'Invalid token.'});
     }
-    user.highscore = 123;
+    user.highscore = highscore;
     user.save(function(){
       res.send({success: true, msg: 'Saved high score.'});
     });
+  });
+};
+
+exports.get_high_score = function(req, res) {
+  var token = get_token(req.headers);
+  get_user(token, function(user){
+    if(!user){
+      res.send({success: false, msg: 'Invalid token.'});
+    }
+    res.send({success: true, highscore: user.highscore});
   });
 };
