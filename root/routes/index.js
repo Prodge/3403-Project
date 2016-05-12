@@ -22,7 +22,7 @@ exports.leaderboard = function(req, res){
   User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
     context = {
       title: "Leaderboard",
-      users: users,
+      users: users.slice(0,10),
     }
     res.render('leaderboard', context);
   })
