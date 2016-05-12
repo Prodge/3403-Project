@@ -324,7 +324,7 @@ function render_player(){
 function buffer_new_powerups(){
     //A new powerup is generated every current_scroll_speed + powerup_scroll_speed_incrementer
     //where the incrementer gets larger after every powerup generated
-    //Therefore, in terms of time starting from 6.4s a powerup is generated and 
+    //Therefore, in terms of time starting from 6.4s a powerup is generated and
     //and the next powerup generated will be 0.6s later from the previous powerup
     var current_scroll_speed = scroll_speed_base + elapsed_time/scroll_speed_update_time;
     if (current_scroll_speed > next_scroll_speed){
@@ -336,7 +336,7 @@ function buffer_new_powerups(){
                 y: rnd_platform.y - powerup_types[rnd_type].height,
                 type: rnd_type,
                 time: getRandomInt(min_powerup_time, max_powerup_time),
-                factor: Math.random()*(max_powerup_factor-1) + min_powerup_factor 
+                factor: Math.random()*(max_powerup_factor-1) + min_powerup_factor
             }
         )
         powerup_scroll_speed_incrementer += powerup_scroll_speed_increment_by;
@@ -486,7 +486,7 @@ function buffer_new_platforms(){
             if (current_max_platform_seperation > max_platform_seperation){
                 current_max_platform_seperation = max_platform_seperation;
             }
-        }        
+        }
         x_distance = getRandomInt(current_min_platform_seperation, current_max_platform_seperation);
 
         // The height difference between the current and the next platform
@@ -646,7 +646,6 @@ function get_on_canvas_platforms(){
 
 function on_platform(){
     var platform_heights = get_on_canvas_platforms().map(function(platform){
-        //console.log(platform)
         if(
             player.x + player.width > platform.x &&
             player.x < platform.x + platform.width &&

@@ -1,0 +1,21 @@
+language:
+  - node_js
+node_js:
+  - "5"
+services:
+  - mongodb
+env:
+  - CXX=g++-4.8
+install:
+  - cd root/
+  - npm install
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+before_script:
+  - sleep 5
+script:
+  - npm run coverage
