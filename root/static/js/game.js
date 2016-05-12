@@ -14,6 +14,10 @@ $(window).load(function(){
   height = canvas.height;
 
   high_score = 0;
+  get_high_score(function(res){
+    high_score = res.highscore;
+  })
+
   character_chosen = 0;
   isPaused = false;
 
@@ -80,12 +84,6 @@ function draw_initial_screen(){
   ctx.fillText('Press "1" to start with character AL!', width/2, height/2);
   ctx.fillText('Press "2" to start with character TIM!', width/2, height/2+30);
   ctx.fillText('Press "3" to start with character WIMO!', width/2, height/2+60);
-
-  get_high_score(function(res){
-    ctx.textAlign="center";
-    ctx.font="17px Lucida Console";
-    ctx.fillText('High Score: ' + res.highscore + " Points", width/2, height-50);
-  })
 }
 
 function initialise(){
@@ -614,6 +612,15 @@ function get_high_score(callback){
   });
 }
 
+function set_high_score(score){
+  $.ajax({
+    type: 'POST',
+    url: "/api/set-high-score",
+    headers: {"Authorization": get_auth_cookie()},
+    data: {'highscore': score}
+  });
+}
+
 function game_over(){
   game_running = false;
 
@@ -630,12 +637,13 @@ function game_over(){
   ctx.fillText('Press "2" to start with character TIM!', width/2, height - height/4+20);
   ctx.fillText('Press "3" to start with character WIMO!', width/2, height - height/4+40);
 
-
-  get_high_score(function(res){
-    ctx.textAlign="center";
-    ctx.font="17px Lucida Console";
-    ctx.fillText('High Score: ' + res.highscore + " Points", width/2, height/2+30);
-  })
+  if(points > high_score){
+    high_score = points;
+    set_high_score(points);
+  }
+  ctx.textAlign="center";
+  ctx.font="17px Lucida Console";
+  ctx.fillText('High Score: ' + high_score + " Points", width/2, height/2+30);
 
   cancelAnimationFrame(myReq);
 }
