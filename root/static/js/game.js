@@ -23,6 +23,8 @@ $(window).load(function(){
 
   keys = [];
 
+  dangers = [document.getElementById("danger_1"), document.getElementById("danger_2")];
+
   initialiseCharacterImages();
   initialise();
   draw_initial_screen();
@@ -140,6 +142,7 @@ function initialise(){
   text_colour = "white";
   platform_colour = "white";
   player_colour = "black";
+  danger_2_frame_number = 0;
 
   game_running = false;
   time_offset = 0;
@@ -303,6 +306,16 @@ function game_loop(){
   update_points();
   render_points();
 
+  renderDangers();
+
+}
+
+function renderDangers(){
+  ctx.drawImage(dangers[0], 0, 40);
+  for(var i=0; i<6; i++){
+    ctx.drawImage(dangers[1], danger_2_frame_number*128, 0, 128, 25, i*128, height-25, 128, 25);
+  }
+  danger_2_frame_number = danger_2_frame_number===8 ? 0 : danger_2_frame_number+1;
 }
 
 function getRandomInt(min, max) {
@@ -564,7 +577,7 @@ function keep_player_on_canvas(){
 }
 
 function is_player_dead(){
-  return player.y >= height;
+  return player.y >= height || player.x < 10;
 }
 
 function reset_start_time(){
