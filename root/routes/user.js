@@ -102,9 +102,6 @@ exports.set_high_score = function(req, res) {
     res.send({success: false, msg: 'Please pass highscore.'});
   }
   get_user(token, function(user){
-    if(!user){
-      res.send({success: false, msg: 'Invalid token.'});
-    }
     user.highscore = highscore;
     user.save(function(){
       res.send({success: true, msg: 'Saved high score.'});
@@ -115,9 +112,6 @@ exports.set_high_score = function(req, res) {
 exports.get_high_score = function(req, res) {
   var token = get_token(req.headers);
   get_user(token, function(user){
-    if(!user){
-      res.send({success: false, msg: 'Invalid token.'});
-    }
     res.send({success: true, highscore: user.highscore});
   });
 };
