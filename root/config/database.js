@@ -1,4 +1,4 @@
 module.exports = {
-    'secret': 'TimothyAndWimodya',
-    'database': 'mongodb://localhost/node-rest-auth'
+  'secret': 'TimothyAndWimodya',
+  'database': 'mongodb://localhost/node-rest-auth'
 };
