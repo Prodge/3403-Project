@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node start.js",
-    "test": "mocha",
-    "coverage": "istanbul cover _mocha -- -R spec"
+    "test": "mocha --recursive",
+    "coverage": "istanbul cover _mocha -- --recursive"
   },
   "dependencies": {
     "angular": "^1.5.5",
