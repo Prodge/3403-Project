@@ -29,7 +29,7 @@ angular.module('commentApp', ['angularMoment'])
   function toggleEditForm(){
     $(".editLink").click(function(){
       var parentdiv = $(this).parent().closest('div');
-      parentdiv.find(".editControls").toggle();
+      parentdiv.find(".editControls").toggle(toggle_speed);
     });
   }
 

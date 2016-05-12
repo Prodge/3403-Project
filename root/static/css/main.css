@@ -6,7 +6,17 @@ body{
 }
 
 /*Layout*/
-#wrapper{
+#content {
+    width: 700px;
+    padding: 5px 50px;
+}
+
+#heading {
+    width: 750px;
+    padding: 0px 25px;
+}
+
+#wrapper {
     width: 800px;
     background-color: #444;
     margin: auto;
@@ -42,8 +52,47 @@ p h3 {
     color: #888;
 }
 
-#footer #last-modified {
+#footer #last-modified, #footer #user {
     float: right;
+}
+
+#footer table, #footer tr, #footer td {
+    border-style: none;
+}
+
+#footer table {
+    width: 100%;
+}
+
+/*Comments*/
+.comment-box {
+    width: 100%;
+}
+
+.comment-content {
+    width: 80%;
+    margin: auto;
+}
+
+.comment-actions {
+    float: right;
+}
+
+.editControls{
+    height: 50px;
+}
+
+.submit-comment {
+    width: 50%;
+    margin: auto;
+}
+
+.submit-comment a {
+    float: right;
+}
+
+.submit-comment input {
+    width: 250px;
 }
 
 /*Forms*/
@@ -88,8 +137,7 @@ hr {
     background-color: #555;
     height: 1px;
     border: 0;
-    margin-right: 5%;
-    margin-left: 5%;
+    margin: 20px 5%;
 }
 
 /*Buttons*/
