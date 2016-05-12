@@ -8,7 +8,6 @@ var path              = require('path');
 var app               = express();
 var bodyParser        = require('body-parser');
 var cookieParser      = require('cookie-parser');
-var mongoose          = require('mongoose');
 var morgan            = require('morgan');
 var passport          = require('passport');
 var config            = require('../config/database');
@@ -22,6 +21,8 @@ console.log(app.get('views'))
 app.set('view engine', 'jade');
 
 app.use(passport.initialize());
+require('../config/passport')(passport);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -36,8 +37,6 @@ app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/d
 app.use('/angular-moment', express.static(path.join(__dirname, '../node_modules/angular-moment')));
 app.use('/moment', express.static(path.join(__dirname, '../node_modules/moment')));
 
-mongoose.connect(config.database);
-require('../config/passport')(passport);
 
 // development only
 if ('development' == app.get('env')) {
