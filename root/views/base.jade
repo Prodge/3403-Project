@@ -36,12 +36,14 @@ html(lang="en")
       #footer
         block footer
           hr
-          p
-            span#authors By Tim Metcalf and Don Wimodya Athukorala
-            span#last-modified Last modified 22nd Apr.
-          p#Date
-          script.
-            var today = new Date();
-            document.getElementById('Date').innerHTML = today.toDateString();
-          if user
-            p Logged in as: #{user.name}
+          table
+            tr
+              td#authors By Tim Metcalf and Don Wimodya Athukorala
+              td#last-modified Last modified 22nd Apr.
+            tr
+              td#Date
+                script.
+                  var today = new Date();
+                  document.getElementById('Date').innerHTML = today.toDateString();
+              if user
+                td#user Logged in as: #{user.name}
