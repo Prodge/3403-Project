@@ -115,11 +115,6 @@ p h3 {
     border-width: 1px;
 }
 
-#chatbox p {
-    border-top: 1px solid #333;
-
-}
-
 /*Forms*/
 form button {
     float: right;
