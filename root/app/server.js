@@ -60,6 +60,6 @@ app.get('/logout', user_routes.logout);
 app.post('/api/signup', user_routes.signup);
 app.post('/api/authenticate', user_routes.authenticate);
 app.post('/api/set-high-score', passport.authenticate('jwt', { session: false}), user_routes.set_high_score);
-app.post('/api/get-high-score', passport.authenticate('jwt', { session: false}), user_routes.get_high_score);
+app.get('/api/get-high-score', passport.authenticate('jwt', { session: false}), user_routes.get_high_score);
 
 var server = module.exports = http.createServer(app);
