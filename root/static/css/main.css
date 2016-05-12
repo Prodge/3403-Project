@@ -95,6 +95,31 @@ p h3 {
     width: 250px;
 }
 
+/*Chat Box*/
+#chat-container {
+    width: 95%;
+    margin: auto;
+    overflow-y: auto;
+}
+
+#chat-container input {
+    width: 300px;
+    margin-right: 15px;
+}
+
+#chatbox {
+    height: 200px;
+    overflow-y: auto;
+    border-style: solid;
+    border-color: #555;
+    border-width: 1px;
+}
+
+#chatbox p {
+    border-top: 1px solid #333;
+
+}
+
 /*Forms*/
 form button {
     float: right;
