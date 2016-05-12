@@ -65,9 +65,9 @@ angular.module('starter', [])
 
   return {
     login: login,
-    register: register,
-    logout: logout,
-    isAuthenticated: function() {return isAuthenticated;},
+      register: register,
+      logout: logout,
+      isAuthenticated: function() {return isAuthenticated;},
   };
 })
 
