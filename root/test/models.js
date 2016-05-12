@@ -9,14 +9,12 @@ describe('User', function(){
   var current_user;
 
   beforeEach(function (done){
-    mongoose.connection.close(function(){
-      mongoose.connect('mongodb://localhost/test', function(){
-        current_user = new User({
-            name: 'Tim',
-            password: 'pass'
-        });
-        current_user.save(done)
+    mongoose.connect('mongodb://localhost/test', function(){
+      current_user = new User({
+          name: 'Tim',
+          password: 'pass'
       });
+      current_user.save(done)
     });
   });
 

@@ -45,10 +45,8 @@ function has_title(title, route, done){
 
 describe('Express Server', function(){
   beforeEach(function (done){
-    mongoose.connection.close(function(){
-      server.listen(port);
-      mongoose.connect('mongodb://localhost/test', done);
-    });
+    server.listen(port);
+    mongoose.connect('mongodb://localhost/test', done);
   });
 
   describe('Unprotected Route', function(){
