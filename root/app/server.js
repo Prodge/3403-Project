@@ -55,6 +55,7 @@ app.get('/author', routes.author);
 app.get('/register', user_routes.register);
 app.get('/login', user_routes.login);
 app.get('/logout', user_routes.logout);
+app.get('/leaderboard', require_login, routes.leaderboard);
 
 // API
 app.post('/api/signup', user_routes.signup);
