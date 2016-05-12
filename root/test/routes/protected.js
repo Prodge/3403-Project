@@ -78,6 +78,12 @@ module.exports = function(){
           done();
         });
       });
+      it('Requires an active user', function(done){
+        request = require('request');
+        request(base_url + route, function (err, res, body){
+          helpers.has_title('Login', route, function(){done()});
+        });
+      });
 
     });
 
