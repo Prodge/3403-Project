@@ -46,7 +46,6 @@ function has_title(title, route, done){
 describe('Express Server', function(){
   beforeEach(function (done){
     server.listen(config.port);
-    console.log('in main before all');
     mongoose.connect(config.database, done);
   });
 
@@ -213,7 +212,6 @@ describe('Express Server', function(){
 
   describe('Protected Route', function(){
     beforeEach(function (done){
-      console.log('in protected route - before all');
       current_user = new User({
           name: 'Tim',
           password: 'pass'
@@ -239,7 +237,7 @@ describe('Express Server', function(){
           done();
         });
       });
-      it('Does not return a token to an invalid user', function(done){
+      it('Does not return a token to a non-existant user', function(done){
         var options = {
           url: base_url + route,
           form: {
@@ -251,6 +249,22 @@ describe('Express Server', function(){
           body = JSON.parse(body);
           body.success.should.be.false;
           body.msg.should.contain('User not found')
+          expect(body.token).to.be.undefined;
+          done();
+        });
+      });
+      it('Does not return a token given a non valid password', function(done){
+        var options = {
+          url: base_url + route,
+          form: {
+            'name': 'Tim',
+            'password': 'not-the-right-password'
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.false;
+          body.msg.should.contain('Wrong password')
           expect(body.token).to.be.undefined;
           done();
         });
