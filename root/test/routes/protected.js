@@ -105,7 +105,6 @@ module.exports = function(){
       it('Imports the angular comments_module.js', function(done){
         request(base_url + route, function (err, res, body){
           expect(body).to.contain('src="/js/comments_module.js"');
-          console.log(request.defaults);
           done();
         });
       });
