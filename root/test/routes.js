@@ -334,7 +334,6 @@ describe('Express Server', function(){
           }
         }
         request.post(options, function (err, res, body){
-          console.log(body);
           body = JSON.parse(body);
           body.success.should.be.true;
           body.msg.should.equal('Successful created new user.')
@@ -358,8 +357,88 @@ describe('Express Server', function(){
 
   });
 
+  describe('Protected Routes', function(){
+    beforeEach(function (done){
+      token = null;
+      current_user = new User({
+          name: 'Tim',
+          password: 'pass'
+      });
+      current_user.save(function(){
+        var options = {
+          url: base_url + '/api/authenticate',
+          form: {
+            'name': 'Tim',
+            'password': 'pass'
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          token = body.token;
+          var cookie_jar = request.jar();
+          var cookie = request.cookie('auth_token=' + token);
+          cookie_jar.setCookie(cookie, base_url);
+          request = request.defaults({jar: cookie_jar});
+          done();
+        });
+      });
+    });
+
+    describe('Play', function(){
+      var route = '/play'
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title Play Action Box', function(done){
+        has_title('Play Action Box', route, done);
+      });
+      it('Should should contain a canvas', function(done){
+        contains_tag('canvas', route, done);
+      });
+      it('Has a form for chat', function(done){
+        contains_tag('form', route, done);
+      });
+      it('Can be accessed from the root url', function(done){
+        has_title('Play Action Box', '/', done);
+      });
+      it('Has a chat box', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Chat Box');
+          expect(body).to.contain('ng-app="gameChat"');
+          expect(body).to.contain('id="chatbox"');
+          done();
+        });
+      });
+      it('Imports game.js', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('src="/js/game.js"');
+          done();
+        });
+      });
+      it('Imports the angular chat_module.js', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('src="/js/chat_module.js"');
+          done();
+        });
+      });
+
+    });
+
+    afterEach(function (done){
+      User.remove({}, function(){
+        done();
+      });
+    });
+
+  });
+
   afterEach(function (done){
     server.close();
     mongoose.connection.close(done);
   });
+
 });
