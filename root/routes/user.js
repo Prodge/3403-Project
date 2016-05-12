@@ -2,6 +2,37 @@ var jwt         = require('jwt-simple');
 var User        = require('../app/models/user');
 var config      = require('../config/database'); // get db config file
 
+function get_token(headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+function get_user(token, callback){
+  if (token) {
+    var decoded = jwt.decode(token, config.secret);
+    User.findOne({
+      name: decoded.name
+    }, function(err, user) {
+      if (err) throw err;
+      if (user){
+        callback(user);
+      } else {
+        callback(false);
+      }
+    });
+  } else {
+    callback(false);
+  }
+}
+
 exports.signup = function(req, res){
   if (!req.body.name || !req.body.password) {
     res.json({success: false, msg: 'Please pass name and password.'});
@@ -62,4 +93,17 @@ exports.register = function(req, res){
     title: "Register",
   };
   res.render('register', context);
+};
+
+exports.set_high_score = function(req, res) {
+  var token = get_token(req.headers);
+  get_user(token, function(user){
+    if(!user){
+      res.send({success: false, msg: 'Invalid token.'});
+    }
+    user.highscore = 123;
+    user.save(function(){
+      res.send({success: true, msg: 'Saved high score.'});
+    });
+  });
 };
