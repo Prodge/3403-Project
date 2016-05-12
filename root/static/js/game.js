@@ -109,7 +109,7 @@ function initialise(){
   friction = base_friction;
   gravity = base_gravity;
 
-  platform_height = 20;
+  platform_height = 30;
   min_platform_width = 75;
   max_platform_width = 200;
   max_platform_height_difference = 100;
@@ -125,7 +125,7 @@ function initialise(){
 
   scroll_speed_base = 2;
   max_scroll_speed = 8
-    scroll_speed_update_time = 27500;
+  scroll_speed_update_time = 27500;
 
   start_time = new Date().getTime();
   elapsed_time = 0;
@@ -310,11 +310,8 @@ function getRandomInt(min, max) {
 }
 
 function render_player(){
-  var powerup_tag = "";
-  if (powerup_active){
-    powerup_tag = "_powerup";
-  }
-  if (Math.floor(player.vel_y) != 0){
+  var powerup_tag = powerup_active ? "_powerup" : "";
+  if (isPlayerJumping()){
     ctx.drawImage(characters[player.character]["jumping"+powerup_tag], player.x, player.y, player.width, player.height);
   }else if (Math.round(player.vel_x) === 0){
     ctx.drawImage(characters[player.character]["standing"+powerup_tag], player.x, player.y, player.width, player.height);
@@ -323,6 +320,18 @@ function render_player(){
   }else if (Math.round(player.vel_x) > 0){
     ctx.drawImage(characters[player.character]["running_right"+powerup_tag], player.x, player.y, player.width, player.height);
   }
+}
+
+function isPlayerJumping(){
+  for(var i=0; i<platforms.length; i++){
+    var player_y = player.y + player.height;
+    if(
+       (player_y === platforms[i].y || player_y === platforms[i].y+gravity) &&
+       (Math.floor(player.vel_y) === 0)
+    )
+    return false;
+  }
+  return true;
 }
 
 function buffer_new_powerups(){
