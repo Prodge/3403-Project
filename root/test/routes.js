@@ -428,6 +428,36 @@ describe('Express Server', function(){
 
     });
 
+    describe('Comments', function(){
+      var route = '/comments'
+
+      it('Stems from the base view', function(done){
+        contains_base_elements(route, done);
+      });
+      it('Should return ok', function(done){
+        returns_ok(route, done);
+      });
+      it('Should have the title Comments', function(done){
+        has_title('Comments', route, done);
+      });
+      it('Has a form for submitting comments', function(done){
+        contains_tag('form', route, done);
+      });
+      it('Has a post button', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Post');
+          done();
+        });
+      });
+      it('Imports the angular comments_module.js', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('src="/js/comments_module.js"');
+          done();
+        });
+      });
+
+    });
+
     afterEach(function (done){
       User.remove({}, function(){
         done();
