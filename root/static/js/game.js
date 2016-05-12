@@ -182,12 +182,15 @@ function initialise(){
   base_points_multiplier = 1;
   points_multiplier = base_points_multiplier;
 
-  background_color = "#00CCCC";
+  background_color = "rbg(0,255,0)";
+  current_bg_colors = [0, 255, 0];
+  bg_colour_position = 2;
   points_colour = "white";
   text_colour = "white";
   platform_colour = "white";
   player_colour = "black";
   danger_2_frame_number = 0;
+  bg_next_update_time = 2000;
 
   game_running = false;
   time_offset = 0;
@@ -302,7 +305,7 @@ function game_loop(){
    */
 
   ctx.clearRect(0,0,width, height);
-  ctx.fillStyle = background_color;
+  ctx.fillStyle = getBackgroundColour();
   ctx.fillRect(0,0,width,height);
 
   update_elapsed_time();
@@ -353,6 +356,19 @@ function game_loop(){
 
   renderDangers();
 
+}
+
+function getBackgroundColour(){
+  if(elapsed_time >= bg_next_update_time){
+    if (bg_colour_position === 2){
+      current_bg_colors[2] += 1;
+      if (current_bg_colors[2] === 255) bg_colour_position =1;
+    }else{
+      current_bg_colors[1] -= 1;
+    }
+    bg_next_update_time = elapsed_time + 400
+  }
+  return "rgb("+current_bg_colors[0]+","+current_bg_colors[1]+","+current_bg_colors[2]+")";
 }
 
 function renderDangers(){
