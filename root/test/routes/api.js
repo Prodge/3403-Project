@@ -198,6 +198,34 @@ module.exports = function(){
 
   });
 
+  describe('Get High Score', function(){
+    var route = '/api/get-high-score'
+
+    it('Returns the current users highscore', function(done){
+      var options = {
+        url: base_url + '/api/get-high-score',
+        headers: {'Authorization': auth_token},
+      }
+      request(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.highscore.should.equal(100);
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+
+  });
+
   afterEach(function (done){
     User.remove({}, function(){
       done();
