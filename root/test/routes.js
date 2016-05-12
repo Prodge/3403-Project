@@ -352,7 +352,7 @@ describe('Express Server', function(){
 
     afterEach(function (done){
       User.remove({}, function(){
-        mongoose.connection.close(done);
+        done();
       });
     });
 
