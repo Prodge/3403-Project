@@ -1,12 +1,19 @@
-/*
- *
- * Action Box
- *
- * A game by Tim Metcalf
- *
- */
+////////////////////////////
+//                        //
+//     Action Box         //
+//                        //
+//                        //
+//       GAME BY          //
+//                        //
+//     TIM METCALF        //
+//    DON ATHUKORALA      //
+//                        //
+////////////////////////////
 
-// Canvas Props
+///////////////////////////////////////////
+//     O N   C A N V A S   L O A D      //
+//////////////////////////////////////////
+
 $(window).load(function(){
   canvas = document.getElementById('game_canvas');
   ctx = canvas.getContext('2d');
@@ -32,6 +39,72 @@ $(window).load(function(){
   draw_initial_screen();
 })
 
+function clickedOn(mouse_x, mouse_y, x, y, w, h){
+  return mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h;
+}
+
+///////////////////////////////////////////
+//     E V E N T  L I S T E N E R S     //
+//////////////////////////////////////////
+
+$(document).mousedown(function(e){
+  last_down_target = e.target
+  if (e.target==canvas){
+    var mouse_x = e.clientX - canvas.getBoundingClientRect().left;
+    var mouse_y = e.clientY - canvas.getBoundingClientRect().top;
+    if (current_screen === "inital_screen"){
+      if(clickedOn(mouse_x, mouse_y, width/2 - 100, height-height/4-35, 200, 60)){
+        current_screen = "character_selection";
+        draw_character_selection();
+      }
+    }else if (current_screen === "character_selection"){
+      for(var i=0; i<character_pos.length; i++){
+        if(clickedOn(mouse_x, mouse_y, character_pos[i], 150, 200, 350)){
+          character_chosen = i;
+          current_screen = "game";
+          start_game();
+        }
+      }
+    }else if (current_screen === "game_over"){
+      if(clickedOn(mouse_x, mouse_y, width/2 - 100, height-height/4-35, 200, 60)){
+        current_screen = "character_selection";
+        draw_character_selection();
+      }
+    }
+  }
+});
+
+$(document).keydown(function(e){
+  if (last_down_target == canvas) keys[e.keyCode] = true;
+});
+
+$(document).keyup(function(e){
+  if (last_down_target == canvas){
+    keys[e.keyCode] = false;
+    if (game_running && e.keyCode == 66){
+      isPaused = !isPaused;
+      if (isPaused){
+        draw_pause_screen();
+      }else{
+        pause_end_time = new Date().getTime();
+        time_offset += pause_end_time - pause_start_time;
+        powerup_started_time += pause_end_time - pause_start_time;
+      }
+    }
+  }
+});
+
+$(window).blur(function() {
+  if (game_running){
+    isPaused = true;
+    draw_pause_screen();
+  }
+});
+
+///////////////////////////////////////////
+// I M A G E   I N I T I L I Z A T I O N //
+//////////////////////////////////////////
+
 function initialiseCharacterImages(){
   characters = [];
   var character_names = ["al", "tim", "wimo"];
@@ -53,73 +126,20 @@ function initialiseDangerImages(){
   });
 }
 
-function clickedOn(mouse_x, mouse_y, x, y, w, h){
-  return mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h;
-}
-
-$(document).mousedown(function(e){
-  last_down_target = e.target
-  if (e.target==canvas){
-    var mouse_x = e.clientX - canvas.getBoundingClientRect().left;
-    var mouse_y = e.clientY - canvas.getBoundingClientRect().top;
-    if (current_screen === "inital_screen"){
-      if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
-        current_screen = "character_selection";
-        draw_character_selection();
-      }
-    }else if (current_screen === "character_selection"){
-      for(var i=0; i<character_pos.length; i++){
-        if(clickedOn(mouse_x, mouse_y, character_pos[i], 150, 200, 350)){
-          character_chosen = i;
-          current_screen = "game";
-          start_game();
-        }
-      }
-    }else if (current_screen === "game_over"){
-      if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
-        current_screen = "character_selection";
-        draw_character_selection();
-      }
-    }
-  }
-});
-
-$(document).keydown(function(e){
-  if (last_down_target == canvas) keys[e.keyCode] = true;
-});
-
-$(document).keyup(function(e){
-  if (last_down_target == canvas){
-    keys[e.keyCode] = false;
-    if (game_running && e.keyCode == 66){
-      isPaused = !isPaused;
-      if (isPaused){
-        render_pause_screen();
-      }else{
-        pause_end_time = new Date().getTime();
-        time_offset += pause_end_time - pause_start_time;
-        powerup_started_time += pause_end_time - pause_start_time;
-      }
-    }
-  }
-});
-
-$(window).blur(function() {
-  if (game_running){
-    isPaused = true;
-    render_pause_screen();
-  }
-});
+///////////////////////////////////////////
+//           S C R E E N S              //
+//////////////////////////////////////////
 
 function draw_initial_screen(){
   ctx.fillStyle = text_colour;
   ctx.textAlign="center";
-
-  ctx.font="30px Lucida Console";
-  ctx.fillText('Action Box', width/2, height/4);
-
-  ctx.fillStyle = "black";
-  ctx.fillRect(width/2 - 150, height-height/3.5-20, 300, 60);
+  ctx.font="bold 40px Arial";
+  ctx.fillText('Welcome to Action Box!!!', width/2, height/5);
+  ctx.font="italic 20px Arial";
+  ctx.fillText('Can you push the limit?', width/2, height/4+20);
+  ctx.fillStyle = "#737A7F";
+  ctx.fillRect(width/2 - 100, height-height/4-35, 200, 60);
+  ctx.font="caption";
   ctx.fillStyle = "white";
   ctx.fillText('Click here to Play', width/2, height- height/4);
 }
@@ -128,20 +148,47 @@ function draw_character_selection(){
   ctx.clearRect(0,0,width, height);
   ctx.fillStyle = text_colour;
   ctx.textAlign="center";
-  ctx.font="30px Lucida Console";
-  ctx.fillText('Please select a character to start', width/2, 60);
+  ctx.font="bold 35px Arial";
+  ctx.fillText('Please click on a character to start', width/2, 60);
   for(var i=0; i<character_pos.length; i++){
     ctx.drawImage(characters[i]["standing"], character_pos[i], 150, 200, 200);
   }
-  ctx.fillText('AL', 100, 400);
-  ctx.fillText('TIM', 345, 400);
-  ctx.fillText('WIMO', 600, 400);
+  ctx.fillText('Al', 100, 400);
+  ctx.fillText('Tim', 345, 400);
+  ctx.fillText('Wimo', 600, 400);
 }
 
+function draw_pause_screen(){
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.fillRect(0,0,width, height);
+  ctx.fillStyle = text_colour;
+  ctx.textAlign="center";
+  ctx.font="bold 20px Arial";
+  ctx.fillText('Press "B" to resume', width/2, height/2);
+}
+
+function draw_game_over(){
+  ctx.clearRect(0,0,width,height);
+  ctx.fillStyle = text_colour;
+  ctx.textAlign="center";
+  ctx.font="bold 40px Arial";
+  ctx.fillText('Game Over!!!', width/2, height/5);
+  ctx.font="bold 30px Arial";
+  ctx.fillText('You scored ' + points + " Points!", width/2, height/2-40);
+  ctx.font="bold 20px Arial";
+  ctx.fillText('High Score: ' + high_score + " Points", width/2, height/2);
+  ctx.fillStyle = "#737A7F";
+  ctx.fillRect(width/2 - 100, height-height/4-35, 200, 60);
+  ctx.font="caption";
+  ctx.fillStyle = "white";
+  ctx.fillText('Click here to Restart', width/2, height- height/4);
+}
+
+//////////////////////////////////////////////////
+// V A R I A B L E   I N I T I L I Z A T I O N //
+////////////////////////////////////////////////
+
 function initialise(){
-  /*
-   * Initialises game variables to global scope
-   */
   isPaused = false;
 
   player = {
@@ -193,7 +240,6 @@ function initialise(){
   rgb_operation = "add";
   bg_next_update_time = 2000;
   current_rgb = [116, 206, 117];
-  background_color = "rbg(116,206,116)";
   points_colour = "white";
   text_colour = "white";
   platform_colour = "white";
@@ -283,19 +329,14 @@ function initialise(){
   ]
 }
 
+///////////////////////////////////////////
+//          G A M E   L O O P           //
+//////////////////////////////////////////
+
 function start_game(){
   initialise();
   game_running = true;
   run_game();
-}
-
-function render_pause_screen(){
-  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-  ctx.fillRect(0,0,width, height);
-  ctx.fillStyle = text_colour;
-  ctx.textAlign="center";
-  ctx.font="20px Lucida Console";
-  ctx.fillText('Press "B" to resume', width/2, height/2);
 }
 
 function run_game(){
@@ -309,10 +350,6 @@ function run_game(){
 }
 
 function game_loop(){
-  /*
-   * The main loop for the game
-   */
-
   ctx.clearRect(0,0,width, height);
   ctx.fillStyle = getBackgroundColour();
   ctx.fillRect(0,0,width,height);
@@ -367,6 +404,14 @@ function game_loop(){
 
 }
 
+///////////////////////////////////////////
+//    H E L P E R   F U N C T I O N S   //
+//////////////////////////////////////////
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function getBackgroundColour(){
   if(elapsed_time >= bg_next_update_time){
     if (current_rgb[rgb_position]===max_rgb_value){
@@ -382,6 +427,22 @@ function getBackgroundColour(){
   return "rgb("+current_rgb[0]+","+current_rgb[1]+","+current_rgb[2]+")";
 }
 
+function isPlayerJumping(){
+  for(var i=0; i<platforms.length; i++){
+    var player_y = player.y + player.height;
+    if(
+       (player_y === platforms[i].y || player_y === platforms[i].y+gravity) &&
+       (Math.floor(player.vel_y) === 0)
+    )
+    return false;
+  }
+  return true;
+}
+
+///////////////////////////////////////////
+//           R E N D E R S              //
+//////////////////////////////////////////
+
 function renderDangers(){
   ctx.drawImage(dangers[0], 0, 40);
   var frame_width = dangers[1].naturalWidth / danger_total_frames;
@@ -393,10 +454,6 @@ function renderDangers(){
     );
   }
   danger_current_frame = danger_current_frame === danger_total_frames-1 ? 0 : danger_current_frame+1;
-}
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function render_player(){
@@ -412,17 +469,53 @@ function render_player(){
   }
 }
 
-function isPlayerJumping(){
-  for(var i=0; i<platforms.length; i++){
-    var player_y = player.y + player.height;
-    if(
-       (player_y === platforms[i].y || player_y === platforms[i].y+gravity) &&
-       (Math.floor(player.vel_y) === 0)
-    )
-    return false;
-  }
-  return true;
+function render_powerups(){
+  powerups.map(function(powerup){
+    ctx.fillStyle = powerup_types[powerup.type].colour;
+    ctx.fillRect(powerup.x,powerup.y,powerup_types[powerup.type].width,powerup_types[powerup.type].height);
+    ctx.fillStyle = "white";
+    ctx.textAlign="center";
+    ctx.font="11px Arial";
+    ctx.fillText(powerup.factor.toFixed(1),powerup.x+(powerup_types[powerup.type].width/2),powerup.y+(powerup_types[powerup.type].height/2));
+  })
 }
+
+function render_platforms(){
+  platforms.map(function(platform){
+    ctx.fillStyle = platform_colour;
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+  })
+}
+
+function render_points(){
+  ctx.font="20px Arial";
+  ctx.fillStyle = points_colour;
+  ctx.textAlign="start";
+  ctx.fillText("High Score: " + high_score, 0, 30);
+  ctx.textAlign="end";
+  ctx.fillText("Current Score: " + points, width, 30);
+  if (!powerup_collected){
+    ctx.fillText("Powerup Collected: None", width, 60);
+  }else{
+    ctx.fillText("Powerup Collected: " + powerup_types[powerup_collected.type].label, width, 60);
+  }
+}
+
+function render_powerup_timer(){
+  var current_time = new Date().getTime();
+  var time = Math.round( (powerup_started_time + (powerup_active.time*1000) - current_time) /1000 );
+
+  ctx.font="20px Arial";
+  ctx.fillStyle = points_colour;
+  ctx.textAlign="end";
+  ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
+  ctx.fillText("Multiplier: " + powerup_active.factor.toFixed(1), width, 120);
+  ctx.fillText("Time Left: " + time, width, 150);
+}
+
+////////////////////////////////////////////
+//           P O W E R U P S             //
+//////////////////////////////////////////
 
 function buffer_new_powerups(){
   //A new powerup is generated every current_scroll_speed + powerup_scroll_speed_incrementer
@@ -451,6 +544,39 @@ function remove_elapsed_powerups(){
   powerups = powerups.filter(function(powerup){
     return powerup.x > 0;
   });
+}
+
+function get_colliding_powerup(){
+  for (var i=0; i<powerups.length; i++){
+    powerup = powerups[i];
+    if(
+        player.x + player.width/2 > powerup.x &&
+        player.x + player.width/2 < powerup.x + powerup_types[powerup.type].width &&
+        player.y + player.height/2 > powerup.y &&
+        player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
+      ){
+        //every powerup collected replaces the previous powerup
+        powerup_collected = powerups[i];
+        powerups.splice(powerups[i],1);
+        return true;
+      }
+  }
+  return false;
+}
+
+function apply_powerup(){
+  if(!get_colliding_powerup() && !powerup_collected){
+    return
+  }
+  //if powerup collected is activated then
+  if (keys[65]){
+    powerup_active = powerup_collected;
+    powerup_started_time = new Date().getTime();
+
+    // Call powerup type function with factor to apply the powerup
+    powerup_types[powerup.type].func(powerup_active.factor);
+    powerup_collected = false;
+  }
 }
 
 function apply_gravity(factor){
@@ -482,24 +608,6 @@ function apply_random(factor){
   powerup_types[powerup_active.type].func(powerup_active.factor);
 }
 
-function get_colliding_powerup(){
-  for (var i=0; i<powerups.length; i++){
-    powerup = powerups[i];
-    if(
-        player.x + player.width/2 > powerup.x &&
-        player.x + player.width/2 < powerup.x + powerup_types[powerup.type].width &&
-        player.y + player.height/2 > powerup.y &&
-        player.y + player.height/2 < powerup.y + powerup_types[powerup.type].height
-      ){
-        //every powerup collected replaces the previous powerup
-        powerup_collected = powerups[i];
-        powerups.splice(powerups[i],1);
-        return true;
-      }
-  }
-  return false;
-}
-
 function check_powerup_expired(){
   var current_time = new Date().getTime();
   if(powerup_started_time + powerup_active.time * 1000 < current_time){
@@ -509,52 +617,9 @@ function check_powerup_expired(){
 
 }
 
-function render_powerup_timer(){
-  var current_time = new Date().getTime();
-  var time = Math.round( (powerup_started_time + (powerup_active.time*1000) - current_time) /1000 );
-
-  ctx.font="20px Lucida Console";
-  ctx.fillStyle = points_colour;
-  ctx.textAlign="end";
-  ctx.fillText("Powerup Active: " + powerup_types[powerup_active.type].label, width, 90);
-  ctx.fillText("Multiplier: " + powerup_active.factor.toFixed(1), width, 120);
-  ctx.fillText("Time Left: " + time, width, 150);
-}
-
-function apply_powerup(){
-  if(!get_colliding_powerup() && !powerup_collected){
-    return
-  }
-  //if powerup collected is activated then
-  if (keys[65]){
-    powerup_active = powerup_collected;
-    powerup_started_time = new Date().getTime();
-
-    // Call powerup type function with factor to apply the powerup
-    powerup_types[powerup.type].func(powerup_active.factor);
-    powerup_collected = false;
-  }
-}
-
-function render_powerups(){
-  powerups.map(function(powerup){
-    ctx.fillStyle = powerup_types[powerup.type].colour;
-    ctx.fillRect(
-      powerup.x,
-      powerup.y,
-      powerup_types[powerup.type].width,
-      powerup_types[powerup.type].height
-      );
-    ctx.fillStyle = "white";
-    ctx.textAlign="center";
-    ctx.font="11px Lucida Console";
-    ctx.fillText(
-      powerup.factor.toFixed(1),
-      powerup.x+(powerup_types[powerup.type].width/2),
-      powerup.y+(powerup_types[powerup.type].height/2)
-      );
-  })
-}
+///////////////////////////////////////////
+//           P L A T F O R M            //
+//////////////////////////////////////////
 
 function buffer_new_platforms(){
   /*
@@ -624,139 +689,6 @@ function buffer_new_platforms(){
 
 }
 
-function update_player_from_input(){
-  if (keys[39]) {
-    // right arrow
-    if (player.vel_x < player.speed) {
-      player.vel_x++;
-    }
-  }
-
-  if (keys[37]) {
-    // left arrow
-    if (player.vel_x > -player.speed) {
-      player.vel_x--;
-    }
-  }
-}
-
-function keep_player_on_canvas(){
-  if (player.x >= (width-player.width)) {
-    player.x = width-player.width;
-  }
-  if (player.x <= 0) {
-    player.x = 0;
-  }
-  if (player.y <= 0){
-    player.y = 0;
-  }
-
-}
-
-function is_player_dead(){
-  return player.y >= height || player.x < 10;
-}
-
-function reset_start_time(){
-  start_time = new Date().getTime()
-}
-
-function render_platforms(){
-  platforms.map(function(platform){
-    ctx.fillStyle = platform_colour;
-    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-  })
-}
-
-function update_points(){
-  var time_difference = elapsed_time - last_elapsed_time;
-  points = points + ( (time_difference / 10) * points_multiplier );
-  points = parseInt(points);
-}
-
-function render_points(){
-  ctx.font="20px Lucida Console";
-  ctx.fillStyle = points_colour;
-  ctx.textAlign="start";
-  ctx.fillText("High Score: " + high_score, 0, 30);
-  ctx.textAlign="end";
-  ctx.fillText("Current Score: " + points, width, 30);
-  if (!powerup_collected){
-    ctx.fillText("Powerup Collected: None", width, 60);
-  }else{
-    ctx.fillText("Powerup Collected: " + powerup_types[powerup_collected.type].label, width, 60);
-  }
-}
-
-function update_elapsed_time(){
-  var time_now = new Date().getTime();
-  last_elapsed_time = elapsed_time;
-  elapsed_time = time_now - start_time - time_offset;
-}
-
-function get_auth_cookie(){
-  cookies = document.cookie.split(';');
-  cookie = cookies.filter(function(cookie){
-    name = cookie.split('=')[0];
-    return name == 'auth_token'
-  });
-  return cookie[0].split('=')[1];
-}
-
-function get_high_score(callback){
-  $.ajax({
-    url: "/api/get-high-score",
-    headers: {"Authorization": get_auth_cookie()},
-    success: callback
-  });
-}
-
-function set_high_score(score){
-  $.ajax({
-    type: 'POST',
-    url: "/api/set-high-score",
-    headers: {"Authorization": get_auth_cookie()},
-    data: {'highscore': score}
-  });
-}
-
-function game_over(){
-  if(points > high_score){
-    high_score = points;
-    set_high_score(points);
-  }
-  game_running = false;
-
-  ctx.clearRect(0,0,width,height);
-  ctx.fillStyle = text_colour;
-  ctx.textAlign="center";
-  ctx.font="20px Lucida Console";
-  ctx.fillText('You scored ' + points + " Points!", width/2, height/2);
-  ctx.font="17px Lucida Console";
-  ctx.fillText('High Score: ' + high_score + " Points", width/2, height/2+30);
-  ctx.fillStyle = "black";
-  ctx.fillRect(width/2 - 150, height-height/3.5-20, 300, 60);
-  ctx.font="30px Lucida Console";
-  ctx.fillStyle = "white";
-  ctx.fillText('Click here to Restart', width/2, height- height/4);
-  current_screen = "game_over";
-
-  cancelAnimationFrame(myReq);
-}
-
-function scroll_world(){
-  var current_speed =  scroll_speed_base + elapsed_time/scroll_speed_update_time;
-  if (current_speed > max_scroll_speed){
-    current_speed = max_scroll_speed;
-  }
-  platforms.map(function(platform){
-    platform.x = platform.x - current_speed;
-  })
-  powerups.map(function(powerup){
-    powerup.x = powerup.x - current_speed;
-  })
-}
-
 function remove_elapsed_platforms(){
   platforms = platforms.filter(function(platform){
     return platform.x + platform.width > 0
@@ -800,4 +732,110 @@ function on_platform(){
   }else{
     return false;
   }
+}
+
+///////////////////////////////////////////
+//    G A M E   P R O G R E S S I O N   //
+//////////////////////////////////////////
+
+function scroll_world(){
+  var current_speed =  scroll_speed_base + elapsed_time/scroll_speed_update_time;
+  if (current_speed > max_scroll_speed){
+    current_speed = max_scroll_speed;
+  }
+  platforms.map(function(platform){
+    platform.x = platform.x - current_speed;
+  })
+  powerups.map(function(powerup){
+    powerup.x = powerup.x - current_speed;
+  })
+}
+
+function update_player_from_input(){
+  if (keys[39]) {
+    // right arrow
+    if (player.vel_x < player.speed) {
+      player.vel_x++;
+    }
+  }
+
+  if (keys[37]) {
+    // left arrow
+    if (player.vel_x > -player.speed) {
+      player.vel_x--;
+    }
+  }
+}
+
+function keep_player_on_canvas(){
+  if (player.x >= (width-player.width)) {
+    player.x = width-player.width;
+  }
+  if (player.x <= 0) {
+    player.x = 0;
+  }
+  if (player.y <= 0){
+    player.y = 0;
+  }
+}
+
+function is_player_dead(){
+  return player.y >= height || player.x < 10;
+}
+
+function update_points(){
+  var time_difference = elapsed_time - last_elapsed_time;
+  points = points + ( (time_difference / 10) * points_multiplier );
+  points = parseInt(points);
+}
+
+function update_elapsed_time(){
+  var time_now = new Date().getTime();
+  last_elapsed_time = elapsed_time;
+  elapsed_time = time_now - start_time - time_offset;
+}
+
+///////////////////////////////////////////
+//         H I G H S C O R E            //
+//////////////////////////////////////////
+
+function get_auth_cookie(){
+  cookies = document.cookie.split(';');
+  cookie = cookies.filter(function(cookie){
+    name = cookie.split('=')[0];
+    return name == 'auth_token'
+  });
+  return cookie[0].split('=')[1];
+}
+
+function get_high_score(callback){
+  $.ajax({
+    url: "/api/get-high-score",
+    headers: {"Authorization": get_auth_cookie()},
+    success: callback
+  });
+}
+
+function set_high_score(score){
+  $.ajax({
+    type: 'POST',
+    url: "/api/set-high-score",
+    headers: {"Authorization": get_auth_cookie()},
+    data: {'highscore': score}
+  });
+}
+
+///////////////////////////////////////////
+//           G A M E   E N D            //
+//////////////////////////////////////////
+
+function game_over(){
+  if(points > high_score){
+    high_score = points;
+    set_high_score(points);
+  }
+  game_running = false;
+  current_screen = "game_over";
+  draw_game_over();
+  cancelAnimationFrame(myReq);
 }
