@@ -243,7 +243,6 @@ function initialise(){
   points_colour = "white";
   text_colour = "white";
   platform_colour = "white";
-  player_colour = "black";
   danger_current_frame = 0;
   danger_total_frames = 19;
 
