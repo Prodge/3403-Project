@@ -24,66 +24,13 @@ $(window).load(function(){
   keys = [];
   last_down_target = null;
   current_screen = "inital_screen";
-
   character_pos = [25,245,500];
-  dangers = [document.getElementById("danger_1"), document.getElementById("danger_2")];
 
   initialiseCharacterImages();
+  initialiseDangerImages();
   initialise();
   draw_initial_screen();
-
-  document.addEventListener("mousedown", function(e){
-    last_down_target = e.target
-    if (e.target==canvas){
-      var mouse_x = e.clientX - canvas.getBoundingClientRect().left;
-      var mouse_y = e.clientY - canvas.getBoundingClientRect().top;
-      if (current_screen === "inital_screen"){
-        if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
-          current_screen = "character_selection";
-          draw_character_selection();
-        }
-      }else if (current_screen === "character_selection"){
-        for(var i=0; i<character_pos.length; i++){
-          if(clickedOn(mouse_x, mouse_y, character_pos[i], 150, 200, 350)){
-            character_chosen = i;
-            current_screen = "game";
-            start_game();
-          }
-        }
-      }else if (current_screen === "game_over"){
-        if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
-          current_screen = "character_selection";
-          draw_character_selection();
-        }
-      }
-    }
-  });
-
-  document.addEventListener("keydown", function(e){
-    if (last_down_target == canvas) keys[e.keyCode] = true;
-  });
-
-  document.addEventListener("keyup", function(e){
-    if (last_down_target == canvas){
-      keys[e.keyCode] = false;
-      if (game_running && e.keyCode == 66){
-        isPaused = !isPaused;
-        if (isPaused){
-          render_pause_screen();
-        }else{
-          pause_end_time = new Date().getTime();
-          time_offset += pause_end_time - pause_start_time;
-          powerup_started_time += pause_end_time - pause_start_time;
-        }
-      }
-    }
-  });
-
 })
-
-function clickedOn(mouse_x, mouse_y, x, y, w, h){
-  return mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h;
-}
 
 function initialiseCharacterImages(){
   characters = [];
@@ -98,6 +45,64 @@ function initialiseCharacterImages(){
     characters.push(dict);
   }
 }
+
+function initialiseDangerImages(){
+  dangers = [];
+  $('[id^="danger_"]').each(function() {
+    dangers.push(this);
+  });
+}
+
+function clickedOn(mouse_x, mouse_y, x, y, w, h){
+  return mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h;
+}
+
+$(document).mousedown(function(e){
+  last_down_target = e.target
+  if (e.target==canvas){
+    var mouse_x = e.clientX - canvas.getBoundingClientRect().left;
+    var mouse_y = e.clientY - canvas.getBoundingClientRect().top;
+    if (current_screen === "inital_screen"){
+      if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
+        current_screen = "character_selection";
+        draw_character_selection();
+      }
+    }else if (current_screen === "character_selection"){
+      for(var i=0; i<character_pos.length; i++){
+        if(clickedOn(mouse_x, mouse_y, character_pos[i], 150, 200, 350)){
+          character_chosen = i;
+          current_screen = "game";
+          start_game();
+        }
+      }
+    }else if (current_screen === "game_over"){
+      if(clickedOn(mouse_x, mouse_y, width/2 - 150, height-height/3.5-20, 300, 60)){
+        current_screen = "character_selection";
+        draw_character_selection();
+      }
+    }
+  }
+});
+
+$(document).keydown(function(e){
+  if (last_down_target == canvas) keys[e.keyCode] = true;
+});
+
+$(document).keyup(function(e){
+  if (last_down_target == canvas){
+    keys[e.keyCode] = false;
+    if (game_running && e.keyCode == 66){
+      isPaused = !isPaused;
+      if (isPaused){
+        render_pause_screen();
+      }else{
+        pause_end_time = new Date().getTime();
+        time_offset += pause_end_time - pause_start_time;
+        powerup_started_time += pause_end_time - pause_start_time;
+      }
+    }
+  }
+});
 
 $(window).blur(function() {
   if (game_running){
@@ -182,15 +187,19 @@ function initialise(){
   base_points_multiplier = 1;
   points_multiplier = base_points_multiplier;
 
-  background_color = "rbg(0,255,0)";
-  current_bg_colors = [0, 255, 0];
-  bg_colour_position = 2;
+  max_rgb_value = 206;
+  min_rgb_value = 116;
+  rgb_position = 2;
+  rgb_operation = "add";
+  bg_next_update_time = 2000;
+  current_rgb = [116, 206, 117];
+  background_color = "rbg(116,206,116)";
   points_colour = "white";
   text_colour = "white";
   platform_colour = "white";
   player_colour = "black";
-  danger_2_frame_number = 0;
-  bg_next_update_time = 2000;
+  danger_current_frame = 0;
+  danger_total_frames = 19;
 
   game_running = false;
   time_offset = 0;
@@ -360,23 +369,30 @@ function game_loop(){
 
 function getBackgroundColour(){
   if(elapsed_time >= bg_next_update_time){
-    if (bg_colour_position === 2){
-      current_bg_colors[2] += 1;
-      if (current_bg_colors[2] === 255) bg_colour_position =1;
-    }else{
-      current_bg_colors[1] -= 1;
+    if (current_rgb[rgb_position]===max_rgb_value){
+      rgb_operation = "subtract";
+      rgb_position = rgb_position===0 ? 2 : rgb_position-1;
+    }else if (current_rgb[rgb_position]===min_rgb_value){
+      rgb_operation = "add";
+      rgb_position = rgb_position===0 ? 2 : rgb_position-1;
     }
-    bg_next_update_time = elapsed_time + 400
+    current_rgb[rgb_position] = rgb_operation==="add" ? current_rgb[rgb_position]+1 : current_rgb[rgb_position]-1
+    bg_next_update_time = elapsed_time + 100
   }
-  return "rgb("+current_bg_colors[0]+","+current_bg_colors[1]+","+current_bg_colors[2]+")";
+  return "rgb("+current_rgb[0]+","+current_rgb[1]+","+current_rgb[2]+")";
 }
 
 function renderDangers(){
   ctx.drawImage(dangers[0], 0, 40);
-  for(var i=0; i<6; i++){
-    ctx.drawImage(dangers[1], danger_2_frame_number*128, 0, 128, 25, i*128, height-25, 128, 25);
+  var frame_width = dangers[1].naturalWidth / danger_total_frames;
+  var frame_height = dangers[1].naturalHeight;
+  for(var i=0; i<Math.ceil(width/frame_width); i++){
+    ctx.drawImage(
+        dangers[1], danger_current_frame*frame_width, 20, frame_width, frame_height-20,
+        i*frame_width, height-30, frame_width, 30
+    );
   }
-  danger_2_frame_number = danger_2_frame_number===8 ? 0 : danger_2_frame_number+1;
+  danger_current_frame = danger_current_frame === danger_total_frames-1 ? 0 : danger_current_frame+1;
 }
 
 function getRandomInt(min, max) {
