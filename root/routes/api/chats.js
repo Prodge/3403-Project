@@ -1,9 +1,5 @@
-var Chat = require('../app/models/chat');
-var app_middleware  = require('../app/middleware')
-var passport          = require('passport');
-var require_login   = app_middleware.require_login
-const fs = require('fs');
-const path = require('path');
+var passport = require('passport');
+var Chat     = require('../../app/models/chat');
 
 function getChats(res) {
    Chat.find().sort({created_at: 'desc'}).limit(10).exec(function (err, chats) {
@@ -19,21 +15,7 @@ function getChatLatest(res){
    });
 }
 
-function loadPage(res) {
-   var images = fs.readdirSync(path.join(__dirname, '../static/images/game')).map(function(image){
-      return image.substring(0, image.length - 4);
-   })
-   res.render('game', {title : "Play Action Box",images : images})
-}
-
 module.exports = function (app) {
-   app.get('/', require_login, function (req, res) {
-      loadPage(res);
-   });
-
-   app.get('/play', require_login, function (req, res) {
-      loadPage(res);
-   });
 
    app.get('/api/chat-get',passport.authenticate('jwt', {session: false}), function (req, res) {
       getChats(res);

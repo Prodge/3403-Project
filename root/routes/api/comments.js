@@ -1,7 +1,5 @@
-var Comment = require('../app/models/comment');
-var app_middleware  = require('../app/middleware')
-var passport          = require('passport');
-var require_login   = app_middleware.require_login
+var passport = require('passport');
+var Comment  = require('../../app/models/comment');
 
 function getComments(res) {
   Comment.find(function (err, comments) {
@@ -15,9 +13,6 @@ function getComments(res) {
 };
 
 module.exports = function (app) {
-  app.get('/comments', require_login, function (req, res) {
-    res.render('comments',{title: "Comments"});
-  });
 
   app.get('/api/comments-get', passport.authenticate('jwt', {session: false}), function (req, res) {
       getComments(res);
