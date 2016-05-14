@@ -1,8 +1,15 @@
 var Comment = require('../app/models/comment');
 var app_middleware  = require('../app/middleware')
 var require_login   = app_middleware.require_login
-const fs = require('fs');
-const path = require('path');
+var http              = require('http')
+var path              = require('path');
+var bodyParser        = require('body-parser');
+var cookieParser      = require('cookie-parser');
+var passport          = require('passport');
+var config            = require('../config/database');
+var User              = require('../app/models/user');
+var jwt               = require('jwt-simple');
+require('../config/passport')(passport);
 
 function getComments(res) {
   Comment.find(function (err, comments) {
@@ -20,7 +27,7 @@ module.exports = function (app) {
     res.render('comments',{title: "Comments"});
   });
 
-  app.get('/api/comments-get', function (req, res) {
+  app.get('/api/comments-get',passport.authenticate('jwt', { session: false}), function (req, res) {
     getComments(res);
   });
 

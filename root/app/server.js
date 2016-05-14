@@ -15,6 +15,7 @@ var User              = require('./models/user');
 var jwt               = require('jwt-simple');
 var app_middleware    = require('./middleware')
 var require_login     = app_middleware.require_login
+var Comment = require('./models/comment');
 
 app.set('views', __dirname + '/../views');
 console.log(app.get('views'))
@@ -46,9 +47,22 @@ if ('development' == app.get('env')) {
 app.use(app_middleware.get_user);
 app.use(app.router);
 
+/**
+function getComments(res) {
+  Comment.find(function (err, comments) {
+    if (err) res.send(err);
+    //if logged in user owns comment
+    for (var i=0;i<comments.length;i++){
+      comments[i]["isuser"] = res.locals.user.name === comments[i]["name"];
+    }
+    res.json(comments);
+  });
+};
+**/
+
 // URLs
 require('../routes/game_and_chat.js')(app);
-require('../routes/comments.js')(app);
+require('../routes/comments.js')(app );
 app.get('/instructions', routes.instructions);
 app.get('/theme', routes.theme);
 app.get('/author', routes.author);
@@ -62,5 +76,8 @@ app.post('/api/signup', user_routes.signup);
 app.post('/api/authenticate', user_routes.authenticate);
 app.post('/api/set-high-score', passport.authenticate('jwt', { session: false}), user_routes.set_high_score);
 app.get('/api/get-high-score', passport.authenticate('jwt', { session: false}), user_routes.get_high_score);
+//app.get('/api/comments-get', passport.authenticate('jwt', { session: false}), function (req, res) {
+//    getComments(res);
+//});
 
 var server = module.exports = http.createServer(app);
