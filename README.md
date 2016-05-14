@@ -2,7 +2,7 @@
 ## Instructions to deploy
 These instructions have been validated for Ubuntu 14.04 LTS and Ubuntu 16.04 LTS distributions.
 
-- ssh into the ubuntu server
+- Login to the ubuntu server
 ```
 ssh user@xxx.xxx.xxx.xxx
 ```
