@@ -13,7 +13,6 @@ sudo apt-get upgrade
 ```
 sudo adduser mean
 ```
-- testing
   - Grant the new user sudo privileges
 ```
 sudo visudo
