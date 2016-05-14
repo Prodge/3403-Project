@@ -39,7 +39,7 @@ Run coverage:
 ```
 npm run coverage
 ```
-Run the server in the background, forever provides an easy solution:
+For running the server in the background, forever provides an easy solution:
 ```
 sudo npm -g install forever
 ```
