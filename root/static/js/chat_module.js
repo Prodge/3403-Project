@@ -1,10 +1,24 @@
 angular.module('gameChat', [])
 
 .factory('chatService', ['$http',function($http) {
+  function getSendHeader(){
+    cookies = document.cookie.split(';');
+    cookie = cookies.filter(function(cookie){
+      name = cookie.split('=')[0];
+      return name == 'auth_token'
+    });
+    return {headers: {'Authorization':cookie[0].split('=')[1]}};
+  }
   return {
-    get : function() {return $http.get('/chat/get');},
-getLatest : function() {return $http.get('/chat/getlatest');},
-create : function(formData) {return $http.post('/chat/create', formData);}
+    get : function() {
+      return $http.get('/api/chat-get', getSendHeader());
+    },
+    getLatest : function() {
+      return $http.get('/api/chat-getlatest', getSendHeader());
+    },
+    create : function(formData) {
+      return $http.post('/api/chat-create', formData, getSendHeader());
+    }
   }
 }])
 
