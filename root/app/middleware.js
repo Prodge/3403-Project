@@ -1,5 +1,5 @@
-var jwt = require('jwt-simple');
-var User = require('./models/user'); // get the mongoose model
+var jwt    = require('jwt-simple');
+var User   = require('./models/user');
 var config = require('../config/database');
 
 exports.get_user = function(req, res, next){
