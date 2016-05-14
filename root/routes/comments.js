@@ -1,15 +1,7 @@
 var Comment = require('../app/models/comment');
 var app_middleware  = require('../app/middleware')
-var require_login   = app_middleware.require_login
-var http              = require('http')
-var path              = require('path');
-var bodyParser        = require('body-parser');
-var cookieParser      = require('cookie-parser');
 var passport          = require('passport');
-var config            = require('../config/database');
-var User              = require('../app/models/user');
-var jwt               = require('jwt-simple');
-require('../config/passport')(passport);
+var require_login   = app_middleware.require_login
 
 function getComments(res) {
   Comment.find(function (err, comments) {
@@ -27,11 +19,11 @@ module.exports = function (app) {
     res.render('comments',{title: "Comments"});
   });
 
-  app.get('/api/comments-get',passport.authenticate('jwt', { session: false}), function (req, res) {
-    getComments(res);
+  app.get('/api/comments-get', passport.authenticate('jwt', {session: false}), function (req, res) {
+      getComments(res);
   });
 
-  app.post('/api/comments-create', function (req, res) {
+  app.post('/api/comments-create',passport.authenticate('jwt', { session: false}), function (req, res) {
     Comment.create({
       name: res.locals.user.name,
       thought: req.body.thought
@@ -41,7 +33,7 @@ module.exports = function (app) {
     });
   });
 
-  app.put('/api/comments-edit:comment_id', function (req, res) {
+  app.put('/api/comments-edit:comment_id',passport.authenticate('jwt', { session: false}), function (req, res) {
     Comment.findById(req.params.comment_id, function (err, comments){
       if (err) res.send(err);
       comments.thought = req.body["A"+req.params.comment_id];
@@ -52,7 +44,7 @@ module.exports = function (app) {
     });
   });
 
-  app.delete('/api/comments-delete:comment_id', function (req, res) {
+  app.delete('/api/comments-delete:comment_id',passport.authenticate('jwt', { session: false}), function (req, res) {
     Comment.remove({_id: req.params.comment_id}, function (err, comment) {
       if (err) res.send(err);
       getComments(res);

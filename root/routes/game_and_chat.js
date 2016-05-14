@@ -1,5 +1,6 @@
 var Chat = require('../app/models/chat');
 var app_middleware  = require('../app/middleware')
+var passport          = require('passport');
 var require_login   = app_middleware.require_login
 const fs = require('fs');
 const path = require('path');
@@ -34,15 +35,15 @@ module.exports = function (app) {
       loadPage(res);
    });
 
-   app.get('/api/chat-get', function (req, res) {
+   app.get('/api/chat-get',passport.authenticate('jwt', {session: false}), function (req, res) {
       getChats(res);
    });
 
-   app.get('/api/chat-getlatest', function(req,res) {
+   app.get('/api/chat-getlatest',passport.authenticate('jwt', {session: false}), function(req,res) {
       getChatLatest(res);
    });
 
-   app.post('/api/chat-create', function (req, res) {
+   app.post('/api/chat-create',passport.authenticate('jwt', {session: false}), function (req, res) {
       Chat.create({name: res.locals.user.name,thought: req.body.thought}, function (err, chat) {
          if (err) res.send(err);
          getChatLatest(res);
