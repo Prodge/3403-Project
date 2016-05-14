@@ -27,27 +27,27 @@ npm install
 
 
 ## Running the server
-To attatch the server to your current shell:
+Attatch the server to your current shell:
 ```
 npm start
 ```
-To run tests:
+Run tests:
 ```
 npm test
 ```
-To run coverage:
+Run coverage:
 ```
-num run coverage
+npm run coverage
 ```
-To run the server in the background, forever provides an easy solution:
+Run the server in the background, forever provides an easy solution:
 ```
 sudo npm -g install forever
 ```
-To start the server with forever:
+- Start the server with forever:
 ```
 sudo forever start start.js
 ```
-To stop the server with forever:
+- Stop the server with forever:
 ```
 sudo forever stop start.js
 ```
