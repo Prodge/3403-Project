@@ -1,0 +1,117 @@
+extends base
+
+block content
+  h4 Design Choices
+  p The method by which to perform user authentication was a significant design decision.
+    |  It was decided that authentication would performed by two different methods.
+  p For user protected pages an auth_token cookie is retrieved and decoded with JWT.
+    |  This cookie is saved upon user login.
+    |  If this cookie correctly responds to a user object then the user is deemed authenticated via the get_user custom middleware.
+  p API endpoints are protected with the passport JWT strategy.
+    |  Upon performing an API call from the client side, the auth_token cookie is extracted and passed as a header for the api request.
+    |  The passport JWT strategy middleware handles authentication of the user.
+  p It was decided that Jade would be used as the view engine due to the views for this website largely being un-complicated.
+    |  As a result, expressing markup with jade is more readable and concise than HTML.
+    |  Jade also allows for abstraction through blocks and has allowed this website's html to be largely defined in a base view, thus removing any duplicated markup.
+  p Angular is used on the comments page and chat section under the game.
+    |  This choice was made as a result of angular's concise structure for defining dynamic page elements.
+  p Mocha was chosen as the test framework after heavily considering vows because of it's larger expanse of features.
+    |  One of which being its widespread addoption which lead to Istanbul being easily integrated to provide coverage reports.
+  p For a more controlled development methodology git was chosen to be used as the version control system.
+    |  This also enabled the use of GitHub for creating and managing pull requests.
+    |  TravisCI was further integrated as result of the use of GitHub which enabled a deeper integration of testing within the development process due to the automated testing and feedback.
+
+  h4 Difficulties
+  p The largest difficulty encountered with this project was the nature of asynchronous code.
+    |  Neither team member has experience in managing asynchronous code and the development style of using callbacks.
+    |  This was most present in tests as there are many cases where asynchronous functions are used and if not accounted for correctly, the tests will pass.
+    |  This is due to Mocha proceeding to the next test before assertions have taken place.
+    |  Initially this caused tests to be written incorrectly and return with false passes.
+  p In addition to this, neither team member has previously had any experience with any of the 4 attributes of the MEAN stack.
+    |  This caused difficulties initially as progress was slow as the new technologies has to be learnt.
+
+  h4 Libraries
+  table
+    tr
+      th Library
+      th Description
+    tr
+      td
+        a(href='https://angularjs.org/') angular
+      td Used for single page dynamic content such as chat.
+    tr
+      td
+        a(href='https://github.com/urish/angular-moment') angular-moment
+      td Integrates user-friendly formatted strings from moment with angular.
+    tr
+      td
+        a(href='https://github.com/ncb000gt/node.bcrypt.js') bcrypt
+      td Passwords are hashed using the brcrypt hashing function before they are stored.
+    tr
+      td
+        a(href='https://github.com/expressjs/body-parser') body-parser
+      td Express middleware used for parsing JSON.
+    tr
+      td
+        a(href='http://chaijs.com/') chai
+      td Used in tests for natural language assertions.
+    tr
+      td
+        a(href='https://github.com/expressjs/cookie-parser') cookie-parser
+      td Express middleware used for parsing cookies.
+    tr
+      td
+        a(href='http://expressjs.com/') express
+      td Allows for setting up middlewares to respond to requests, create a routing table and dynamically render html.
+    tr
+      td
+        a(href='https://github.com/gotwarlost/istanbul') istanbul
+      td Creates a coverage report from a mocha test run.
+    tr
+      td
+        a(href='http://jade-lang.com/') jade
+      td Used as the view engine. A content forward alternative to HTML.
+    tr
+      td
+        a(href='https://jquery.com/') jquery
+      td Simplified DOM queries and manipulation.
+    tr
+      td
+        a(href='https://github.com/hokaccha/node-jwt-simple') jwt-simple
+      td Used for encoding and decoding the user authorization token.
+    tr
+      td
+        a(href='https://github.com/expressjs/method-override') method-override
+      td Express middleware for using HTTP verbs where the client doesn't support them.
+    tr
+      td
+        a(href='https://mochajs.org/') mocha
+      td The test framework used for this project. Provides an expressive, accessible base for BDD/TDD.
+    tr
+      td
+        a(href='http://momentjs.com/') moment
+      td User-friendly formatted date strings.
+    tr
+      td
+        a(href='https://www.mongodb.com/') mongodb
+      td The database used for the website.
+    tr
+      td
+        a(href='http://mongoosejs.com/') mongoose
+      td Object schema definition and query front end for MongoDB.
+    tr
+      td
+        a(href='https://github.com/expressjs/morgan') morgan
+      td Express middleware for logging.
+    tr
+      td
+        a(href='http://passportjs.org/') passport
+      td Middleware used for simplified authentication based on authorization tokens stored in the header.
+    tr
+      td
+        a(href='https://github.com/themikenicholson/passport-jwt') passport-jwt
+      td A passport strategy for authenticating with a JSON web token.
+    tr
+      td
+        a(href='https://github.com/request/request') request
+      td A simplified HTTP request client used for testing routes.
