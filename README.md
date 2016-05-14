@@ -21,7 +21,7 @@ git clone https://github.com/Prodge/3403-Project.git; cd 3403-Project/
 ```
 npm install
 ```
-That's it!
+####That's it!
 
 ## Running the server
 ```
