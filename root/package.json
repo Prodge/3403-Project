@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node start.js",
-    "test": "mocha --recursive",
-    "coverage": "istanbul cover _mocha -- --recursive"
+    "test": "mocha --recursive --timeout 10000",
+    "coverage": "istanbul cover _mocha -- --recursive --timeout 10000"
   },
   "dependencies": {
     "angular": "^1.5.5",

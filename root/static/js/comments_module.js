@@ -1,18 +1,26 @@
 angular.module('commentApp', ['angularMoment'])
 
 .factory('commentService', ['$http',function($http) {
+  function getSendHeader(){
+    cookies = document.cookie.split(';');
+    cookie = cookies.filter(function(cookie){
+      name = cookie.split('=')[0];
+      return name == 'auth_token'
+    });
+    return {headers: {'Authorization':cookie[0].split('=')[1]}};
+  }
   return {
     get : function() {
-      return $http.get('/comments/get');
+      return $http.get('/api/comments-get', getSendHeader());
     },
     create : function(formdata) {
-      return $http.post('/comments/create', formdata);
+      return $http.post('/api/comments-create', formdata, getSendHeader());
     },
     edit : function(id,formdata) {
-      return $http.put('/comments/edit/' + id, formdata);
+      return $http.put('/api/comments-edit' + id, formdata, getSendHeader());
     },
     delete : function(id) {
-      return $http.delete('/comments/delete/' + id);
+      return $http.delete('/api/comments-delete' + id, getSendHeader());
     }
   }
 }])

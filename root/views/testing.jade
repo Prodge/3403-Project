@@ -1,0 +1,67 @@
+extends base
+
+block content
+  p This project contians over 80 tests that cover above 80% of the server side codebase.
+
+  h4 Framework
+  p
+    a(href='https://mochajs.org/') Mocha
+    |   is used as the test framework for writing the tests for this website.
+  p Mocha encourages a BDD (behaviour driven development) form of testing.
+    |  This is brought about by each test case describing an characteristic of the object being tested.
+    |  The test case then performs the required assertions to confirt that this property is true.
+    |  Test cases are inherently short through the construct of each test case describing a single attribute.
+
+  p Test construction in Mocha is very expressive and is driven by natural language.
+    |  This allows for easily accessible and understandable test cases.
+    a(href='http://chaijs.com/')  Chai
+    |  has been used to provide a feature rich assertion library for the test cases.
+    |  Chai further extends the expressive nature provided by Mocha into the test cases.
+    |  Chai provides 'expect' and 'should' in addition to the standard 'assert'.
+    |  This allows for assertions such as
+    i  'candy'.should.contain('and');
+    |   and
+    i   expect(res.success).to.be.true;.
+    |   These natural language driven assertions provided by Chai make test cases very easy to understand.
+
+  h4 Implementation
+  p Tests in this project are written with a BDD\TDD approach.
+    |  A test for an object's property should be completed before or while development of that property is in place.
+    |  This allows for requirements of an object to be defined before the object has even been written.
+    |  As the object is written and these properties are constructed on the object the tests will assert whether the object has indeed met the requirements.
+
+  p Test cases target mainly server side code and are seperated into models and routes.
+    |  Through testing these two components, the views, middleware and other server side components are indirectly tested.
+    |  Route test cases are further split into protected, unprotected and API routes.
+    |  This structure is used as all route tests have a common setup and teardown of running and stopping the express server.
+    |  They then further each have unique setup teardown functions.
+    |  For example, protected route test cases require a user to be created and an auth_token cookie to be injected into all requests.
+
+  h4 Workflow Integration
+  p The
+    i   npm test
+    |   command has been setup to run all tests in the
+    a(href='https://github.com/Prodge/3403-Project/tree/master/root/test')  test/
+    |   directory recursivley.
+    |  This allows for the entire test backlog to be run constantly as changes are being made.
+    |  Mocha also allows for specific test scripts files or individual tests to be run if this is more appropriate.
+  p
+    a(href='https://github.com/gotwarlost/istanbul') Istanbul
+    |   is used to generate test coverage reports and has been setup to run with
+    i   npm run coverage.
+    |   Istanbul provudes a detailed line by line report of the codebase and an overall coverage percentage.
+    |  This percentage is used to ensure coverage does not ever significantly drop as new features are added as they should be mostly covered before the feature is merged.
+
+  p  This project is developed with git on
+    a(href='https://github.com/Prodge/3403-Project')  GitHub
+    |   and no code is pushed directly to the master branch.
+    |  Instead every change reqiures its own branch which is then merged into master via a peer reviewed pull request.
+    |  This provided the ability to have automated test integration via
+    a(href='https://travis-ci.org/Prodge/3403-Project/builds')  TravisCI.
+  p  Travis is linked with the GitHub repository and runs the entire test backlog in a fresh docker container upon every push to any branch as well as on every pull request.
+    |  Travis integrates with GitHub Pull requests by displaying a test status and link to the test output on every pull request page.
+    |  An example of this can be seen
+    a(href='https://github.com/Prodge/3403-Project/pull/28')  here
+    |   (click 'view details' on the merge commit. (These are displayed more prominantly in an open PR)).
+    |  Travis runs the coverage npm target and therefore provides a coverage status on every test output.
+    |  Overall Travis deepens test integration within the development workflow for this project as every change requires tests to be passing and coverage to be adequate before it can be reviewed and merged.
