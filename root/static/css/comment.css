@@ -1,0 +1,31 @@
+
+.comment-box {
+    width: 100%;
+}
+
+.comment-content {
+    width: 80%;
+    margin: auto;
+}
+
+.comment-actions {
+    float: right;
+}
+
+.editControls{
+    height: 50px;
+    display:none;
+}
+
+.submit-comment {
+    width: 50%;
+    margin: auto;
+}
+
+.submit-comment a {
+    float: right;
+}
+
+.submit-comment input {
+    width: 250px;
+}

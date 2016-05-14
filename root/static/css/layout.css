@@ -1,0 +1,18 @@
+
+#content {
+    width: 700px;
+    padding: 5px 50px;
+}
+
+#heading {
+    width: 750px;
+    padding: 0px 25px;
+}
+
+#wrapper {
+    width: 800px;
+    background-color: #444;
+    margin: auto;
+    padding: 20px;
+}
+
