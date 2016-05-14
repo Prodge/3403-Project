@@ -1,4 +1,5 @@
 # Action Box
+[View on GitHub](https://github.com/Prodge/3403-Project)
 ## Instructions to deploy
 These instructions have been validated for Ubuntu 14.04 LTS and Ubuntu 16.04 LTS distributions.
 
