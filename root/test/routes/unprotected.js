@@ -34,6 +34,51 @@ module.exports = function(){
 
   });
 
+  describe('Testing', function(){
+    var route = '/testing';
+
+    it('Stems from the base view', function(done){
+      helpers.contains_base_elements(route, request, done);
+    });
+    it('Should return ok', function(done){
+      helpers.returns_ok(route, request, done);
+    });
+    it('Should have the title Testing', function(done){
+      helpers.has_title('Testing', route, request, done);
+    });
+    it('Should should contain paragraphs', function(done){
+      helpers.contains_tag('p', route, request, done);
+    });
+    it('Should should contain sub headings', function(done){
+      helpers.contains_tag('h4', route, request, done);
+    });
+
+  });
+
+  describe('Architecture', function(){
+    var route = '/architecture';
+
+    it('Stems from the base view', function(done){
+      helpers.contains_base_elements(route, request, done);
+    });
+    it('Should return ok', function(done){
+      helpers.returns_ok(route, request, done);
+    });
+    it('Should have the title Architecture', function(done){
+      helpers.has_title('Architecture', route, request, done);
+    });
+    it('Should should contain paragraphs', function(done){
+      helpers.contains_tag('p', route, request, done);
+    });
+    it('Should should contain sub headings', function(done){
+      helpers.contains_tag('h4', route, request, done);
+    });
+    it('Should should contain a table', function(done){
+      helpers.contains_tag('table', route, request, done);
+    });
+
+  });
+
   describe('Authors', function(){
     var route = '/author';
 
