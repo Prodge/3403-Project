@@ -2,14 +2,13 @@
 
 body{
     background-color: #333;
-    color: #ddd;
+    color: #ccc;
     font-family: "Lucida Console", Monaco, monospace;
 }
 
-p h3 {
+h3 {
     color: #eee;
 }
-
 
 /*Layout*/
 #content {
@@ -27,6 +26,16 @@ p h3 {
     background-color: #444;
     margin: auto;
     padding: 20px;
+}
+
+/*Links*/
+a:link, a:visited {
+    color: #ccf;
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    color: #fff;
 }
 
 /*Nav Bar*/
@@ -112,6 +121,7 @@ nav .dropdown:hover .drop-content {
 
 .editControls{
     height: 50px;
+    display:none;
 }
 
 .submit-comment {
@@ -218,18 +228,4 @@ hr {
 
 .button:hover {
     background-color: #737383;
-}
-
-/*Links*/
-a:link, a:visited {
-    color: #bcbcbc;
-    text-decoration: none;
-}
-
-a:hover, a:active {
-    color: #efefef;
-}
-
-.editControls {
-    display:none;
 }
