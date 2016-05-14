@@ -28,3 +28,25 @@ exports.leaderboard = function(req, res){
   })
 
 }
+
+exports.testing = function(req, res){
+  User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
+    context = {
+      title: "Testing",
+      users: users.slice(0,10),
+    }
+    res.render('testing', context);
+  })
+
+}
+
+exports.architecture = function(req, res){
+  User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
+    context = {
+      title: "Architecture",
+      users: users.slice(0,10),
+    }
+    res.render('architecture', context);
+  })
+
+}
