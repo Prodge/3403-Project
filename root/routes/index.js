@@ -78,21 +78,23 @@ module.exports = function (app){
   });
 
   app.get('/testing', function(req, res){
-  User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
-    context = {
-      title: "Testing",
-      users: users.slice(0,10),
-    }
-    res.render('testing', context);
+    User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
+      context = {
+        title: "Testing",
+        users: users.slice(0,10),
+      }
+      res.render('testing', context);
+    });
   });
 
   app.get('/architecture', function(req, res){
-  User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
-    context = {
-      title: "Architecture",
-      users: users.slice(0,10),
-    }
-    res.render('architecture', context);
+    User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
+      context = {
+        title: "Architecture",
+        users: users.slice(0,10),
+      }
+      res.render('architecture', context);
+    });
   });
 
 }
