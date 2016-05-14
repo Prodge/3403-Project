@@ -20,10 +20,13 @@ html(lang="en")
               a.button(href='/instructions') Instructions
               a.button(href='/leaderboard') Leaderboard
               a.button(href='/comments') Comments
-              a.button(href='/author') Author
-              a.button(href='/theme') Theme
-              a.button(href='/testing') Testing
-              a.button(href='/architecture') Architecture
+              .dropdown
+                a.button.drop-btn(href='#') Meta
+                .drop-content
+                  a(href='/author') Author
+                  a(href='/theme') Theme
+                  a(href='/testing') Testing
+                  a(href='/architecture') Architecture
               if user
                 a.button(href='/logout') Logout
               else
