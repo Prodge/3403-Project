@@ -1,24 +1,25 @@
 # Action Box
 ## Instructions to deploy
-These instructions have been validated for Ubuntu 14.04 LTS and Ubuntu 16.04 LTS distributions
-1. ssh into the ubuntu server
+These instructions have been validated for Ubuntu 14.04 LTS and Ubuntu 16.04 LTS distributions.
+
+- ssh into the ubuntu server
 ```
 ssh user@xxx.xxx.xxx.xxx
 ```
-2. Update packages
+- Update packages
 ```
 sudo apt-get update
 sudo apt-get upgrade
 ```
-3. Install package dependencies
+- Install package dependencies
 ```
 sudo apt-get install nodejs npm nodejs-legacy g++-4.8 mongodb git
 ```
-4. Clone the 3403 Project github repository
+- Clone the 3403 Project github repository
 ```
 git clone https://github.com/Prodge/3403-Project.git; cd 3403-Project/
 ```
-5. Install dependencies
+- Install dependencies
 ```
 npm install
 ```
@@ -46,7 +47,7 @@ sudo npm -g install forever
 sudo forever start start.js
 ```
 
--- To stop the server with forever
+- To stop the server with forever
 ```
 sudo forever stop start.js
 ```
