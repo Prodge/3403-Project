@@ -34,15 +34,15 @@ module.exports = function (app) {
       loadPage(res);
    });
 
-   app.get('/chat/get', function (req, res) {
+   app.get('/api/chat-get', function (req, res) {
       getChats(res);
    });
 
-   app.get('/chat/getlatest', function(req,res) {
+   app.get('/api/chat-getlatest', function(req,res) {
       getChatLatest(res);
    });
 
-   app.post('/chat/create', function (req, res) {
+   app.post('/api/chat-create', function (req, res) {
       Chat.create({name: res.locals.user.name,thought: req.body.thought}, function (err, chat) {
          if (err) res.send(err);
          getChatLatest(res);

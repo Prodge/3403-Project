@@ -2,18 +2,10 @@ angular.module('commentApp', ['angularMoment'])
 
 .factory('commentService', ['$http',function($http) {
   return {
-    get : function() {
-      return $http.get('/comments/get');
-    },
-    create : function(formdata) {
-      return $http.post('/comments/create', formdata);
-    },
-    edit : function(id,formdata) {
-      return $http.put('/comments/edit/' + id, formdata);
-    },
-    delete : function(id) {
-      return $http.delete('/comments/delete/' + id);
-    }
+    get : function() {return $http.get('/api/comments-get');},
+    create : function(formdata) {return $http.post('/api/comments-create', formdata);},
+    edit : function(id,formdata) {return $http.put('/api/comments-edit' + id, formdata);},
+    delete : function(id) {return $http.delete('/api/comments-delete' + id);}
   }
 }])
 

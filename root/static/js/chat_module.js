@@ -2,9 +2,9 @@ angular.module('gameChat', [])
 
 .factory('chatService', ['$http',function($http) {
   return {
-    get : function() {return $http.get('/chat/get');},
-getLatest : function() {return $http.get('/chat/getlatest');},
-create : function(formData) {return $http.post('/chat/create', formData);}
+    get : function() {return $http.get('/api/chat-get');},
+    getLatest : function() {return $http.get('/api/chat-getlatest');},
+    create : function(formData) {return $http.post('/api/chat-create', formData);}
   }
 }])
 
