@@ -37,6 +37,57 @@ module.exports = function(){
       });
     });
 
+    describe('Homepage', function(){
+      var route = '/'
+
+      it('Stems from the base view', function(done){
+        helpers.contains_base_elements(route, request, done);
+      });
+      it('Should return ok', function(done){
+        helpers.returns_ok(route, request, done);
+      });
+      it('Should have the title Play Action Box', function(done){
+        helpers.has_title('Play Action Box', route, request, done);
+      });
+      it('Should should contain a canvas', function(done){
+        helpers.contains_tag('canvas', route, request, done);
+      });
+      it('Has a form for chat', function(done){
+        helpers.contains_tag('form', route, request, done);
+      });
+      it('Can be accessed from the root url', function(done){
+        helpers.has_title('Play Action Box', '/', function(){done()});
+      });
+      it('Has a chat box', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Chat Box');
+          expect(body).to.contain('ng-app="gameChat"');
+          expect(body).to.contain('id="chatbox"');
+          done();
+        });
+      });
+      it('Imports game.js', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('src="/js/game.js"');
+          done();
+        });
+      });
+      it('Imports the angular chat_module.js', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('src="/js/chat_module.js"');
+          done();
+        });
+      });
+      it('Requires an active user', function(done){
+        request = require('request');
+        request(base_url + route, function (err, res, body){
+          helpers.has_title('Login', route, function(){done()});
+        });
+      });
+
+    });
+
+
     describe('Play', function(){
       var route = '/play'
 
