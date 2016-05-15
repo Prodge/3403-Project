@@ -1,12 +1,15 @@
 var passport = require('passport');
 var Comment  = require('../../app/models/comment');
+var jwt    = require('jwt-simple');
+var User   = require('../../app/models/user');
+var config = require('../../config/database');
 
-function getComments(res) {
+function getComments(res, username) {
   Comment.find(function (err, comments) {
     if (err) res.send(err);
     //if logged in user owns comment
     for (var i=0;i<comments.length;i++){
-      comments[i]["isuser"] = res.locals.user.name === comments[i]["name"];
+      comments[i]["isuser"] = username === comments[i]["name"];
     }
     res.json(comments);
   });
@@ -15,16 +18,20 @@ function getComments(res) {
 module.exports = function (app) {
 
   app.get('/api/comments-get', passport.authenticate('jwt', {session: false}), function (req, res) {
-      getComments(res);
+      var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+      User.findOne({name: decoded.name}, function(err, user) {
+        getComments(res, user.name);
+      })
   });
 
   app.post('/api/comments-create',passport.authenticate('jwt', { session: false}), function (req, res) {
-    Comment.create({
-      name: res.locals.user.name,
-      thought: req.body.thought
-    }, function (err, comment) {
-      if (err) res.send(err);
-      getComments(res);
+    var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+    User.findOne({name: decoded.name}, function(err, user) {
+      if (err) throw err;
+      Comment.create({name:user.name , thought: req.body.thought}, function (err, comment) {
+         if (err) res.send(err);
+         getComments(res, user.name);
+      });
     });
   });
 
@@ -34,15 +41,18 @@ module.exports = function (app) {
       comments.thought = req.body["A"+req.params.comment_id];
       comments.save(function (err) {
         if (err) res.end(err);
-        getComments(res);
+        getComments(res, comments.name);
       });
     });
   });
 
   app.delete('/api/comments-delete:comment_id',passport.authenticate('jwt', { session: false}), function (req, res) {
-    Comment.remove({_id: req.params.comment_id}, function (err, comment) {
-      if (err) res.send(err);
-      getComments(res);
+    var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+    User.findOne({name: decoded.name}, function(err, user) {
+      Comment.remove({_id: req.params.comment_id}, function (err, comment) {
+        if (err) res.send(err);
+        getComments(res, user.name);
+      });
     });
   });
 };

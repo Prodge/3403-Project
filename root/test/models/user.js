@@ -2,9 +2,9 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 var should = require('chai').should();
 var mongoose = require('mongoose');
-var config = require('./config')
+var config = require('./../config')
 
-var User = require('../app/models/user');
+var User = require('../../app/models/user');
 
 describe('User', function(){
   var current_user;
