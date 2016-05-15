@@ -2,4 +2,4 @@
 # Pulls the coverage report from the server
 
 mkdir coverage
-scp -r root@188.166.233.19:/home/mean/$1/root/coverage/* coverage/
+scp -r root@188.166.233.19:/home/mean/$1/coverage/* coverage/

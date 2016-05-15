@@ -19,7 +19,7 @@ ssh root@188.166.233.19 << EOF
 
     # Run node sever in background
     su mean
-    cd ~/$USER/root
+    cd ~/$USER
     PORT=$PORT npm start > stdout.txt 2> stderr.txt &
 
     # End Session

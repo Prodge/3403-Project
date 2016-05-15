@@ -6,4 +6,4 @@
 #   Push everything:
 #       sh quick_push ./ tim
 
-scp -r $1* root@188.166.233.19:/home/mean/$2/root/$1
+scp -r $1* root@188.166.233.19:/home/mean/$2/$1

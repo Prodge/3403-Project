@@ -35,7 +35,6 @@ ssh root@188.166.233.19 << EOF
     git pull origin $BRANCH
 
     # Run node sever in background
-    cd root
     rm stdout.txt stderr.txt
     PORT=$PORT npm start > stdout.txt 2> stderr.txt &
 
