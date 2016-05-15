@@ -7,7 +7,6 @@ services:
 env:
   - CXX=g++-4.8
 install:
-  - cd root/
   - npm install
 addons:
   apt:
