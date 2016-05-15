@@ -1,5 +1,8 @@
 var passport = require('passport');
 var Comment  = require('../../app/models/comment');
+var jwt    = require('jwt-simple');
+var User   = require('../../app/models/user');
+var config = require('../../config/database');
 
 function getComments(res) {
   Comment.find(function (err, comments) {
@@ -19,12 +22,13 @@ module.exports = function (app) {
   });
 
   app.post('/api/comments-create',passport.authenticate('jwt', { session: false}), function (req, res) {
-    Comment.create({
-      name: res.locals.user.name,
-      thought: req.body.thought
-    }, function (err, comment) {
-      if (err) res.send(err);
-      getComments(res);
+    var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+    User.findOne({name: decoded.name}, function(err, user) {
+      if (err) throw err;
+      Comment.create({name:user.name , thought: req.body.thought}, function (err, comment) {
+         if (err) res.send(err);
+         getComments(res);
+      });
     });
   });
 

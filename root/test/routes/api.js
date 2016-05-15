@@ -4,6 +4,8 @@ var should = require('chai').should();
 var request = require('request');
 
 var User = require('../../app/models/user');
+var Chat = require('../../app/models/chat');
+var Comment = require('../../app/models/comment');
 var config = require('../config')
 
 var base_url = config.base_url;
@@ -16,17 +18,29 @@ module.exports = function(){
       highscore: 100
     });
     current_user.save(function(){
-      var options = {
-        url: base_url + '/api/authenticate',
-        form: {
-          'name': current_user.name,
-          'password': 'pass'
-        }
-      }
-      request.post(options, function (err, res, body){
-        body = JSON.parse(body);
-        auth_token = body.token;
-        done();
+      current_chat = new Chat({
+        name: 'Tim',
+        thought: 'Hello'
+      });
+      current_chat.save(function(){
+        current_comment = new Chat({
+          name: 'Wimo',
+          thought: 'Hey Bud'
+        });
+        current_comment.save(function(){
+          var options = {
+            url: base_url + '/api/authenticate',
+            form: {
+              'name': current_user.name,
+              'password': 'pass'
+            }
+          }
+          request.post(options, function (err, res, body){
+            body = JSON.parse(body);
+            auth_token = body.token;
+            done();
+          });
+        });
       });
     });
   });
@@ -226,9 +240,86 @@ module.exports = function(){
 
   });
 
+  describe('API Chats', function(){
+
+    it('Returns last chats', function(done){
+      var options = {
+        url: base_url + '/api/chat-get',
+        headers: {'Authorization': auth_token},
+      }
+      request(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.length.should.equal(2);
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/chat-get',
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/chat-getlatest',
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Create a new chat thought and returns the latest', function(done){
+      var options = {
+        url: base_url + '/api/chat-create',
+        headers: {'Authorization': auth_token},
+        form: {
+          'thought': 'Hello'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.length.should.equal(1);
+        expect(body[0].name).to.equal('Tim');
+        expect(body[0].thought).to.equal('Hello');
+        var options = {
+          url: base_url + '/api/chat-getlatest',
+          headers: {'Authorization': auth_token},
+        }
+        request(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.length.should.equal(1);
+          expect(body[0].name).to.equal('Tim');
+          expect(body[0].thought).to.equal('Hello');
+          done();
+        });
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/chat-create',
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'thought':'Hello'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+  });
   afterEach(function (done){
     User.remove({}, function(){
-      done();
+      Chat.remove({}, function(){
+        Comment.remove({}, function(){
+          done();
+        });
+      });
     });
   });
 
