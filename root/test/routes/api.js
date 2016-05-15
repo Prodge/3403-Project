@@ -23,7 +23,7 @@ module.exports = function(){
         thought: 'Hello'
       });
       current_chat.save(function(){
-        current_comment = new Chat({
+        current_comment = new Comment({
           name: 'Wimo',
           thought: 'Hey Bud'
         });
@@ -249,7 +249,7 @@ module.exports = function(){
       }
       request(options, function (err, res, body){
         body = JSON.parse(body);
-        body.length.should.equal(2);
+        body.length.should.equal(1);
         done();
       });
     });
@@ -313,6 +313,106 @@ module.exports = function(){
       });
     });
   });
+
+  describe('API Comments', function(){
+
+    it('Returns all comments', function(done){
+      var options = {
+        url: base_url + '/api/comments-get',
+        headers: {'Authorization': auth_token},
+      }
+      request(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.length.should.equal(1);
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/comments-get',
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Create a new comment, edit and delete', function(done){
+      var options = {
+        url: base_url + '/api/comments-create',
+        headers: {'Authorization': auth_token},
+        form: {
+          'thought': 'Hello World 2'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.length.should.equal(2);
+        expect(body[1].name).to.equal('Tim');
+        expect(body[1].thought).to.equal('Hello World 2');
+        var options = {
+          url: base_url + '/api/comments-edit' + body[1]._id,
+          headers: {'Authorization': auth_token},
+          form: {
+            'thought': 'Hello World 1'
+          }
+        }
+        request.put(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.length.should.equal(2);
+          var options = {
+            url: base_url + '/api/comments-delete' + body[1]._id,
+            headers: {'Authorization': auth_token},
+          }
+          request.delete(options, function (err, res, body){
+            body = JSON.parse(body);
+            body.length.should.equal(1);
+            expect(body[0].name).to.equal('Wimo');
+            expect(body[0].thought).to.equal('Hey Bud');
+            done();
+          });
+        });
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/comments-create',
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'thought':'Hello'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/comments-edit548498494545',
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'thought':'Hello'
+        }
+      }
+      request.put(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + '/api/comments-delete14148948919',
+        headers: {'Authorization': auth_token + 'test'},
+      }
+      request.delete(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+
+  });
+
   afterEach(function (done){
     User.remove({}, function(){
       Chat.remove({}, function(){
