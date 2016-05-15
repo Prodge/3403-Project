@@ -27,6 +27,7 @@ npm install
 Attatch the server to your current shell:
 ```
 npm start
+PORT=3001 npm start #specify a port
 ```
 Run tests:
 ```
