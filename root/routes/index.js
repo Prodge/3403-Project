@@ -33,9 +33,9 @@ module.exports = function (app){
     })
   });
 
-  app.get('/author', function(req, res){
-    res.render('author', {
-      title: "Authors",
+  app.get('/about-us', function(req, res){
+    res.render('about_us', {
+      title: "About Us",
     })
   });
 
