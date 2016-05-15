@@ -79,8 +79,8 @@ module.exports = function(){
 
   });
 
-  describe('Authors', function(){
-    var route = '/author';
+  describe('About Us', function(){
+    var route = '/about-us';
 
     it('Stems from the base view', function(done){
       helpers.contains_base_elements(route, request, done);
@@ -88,8 +88,8 @@ module.exports = function(){
     it('Should return ok', function(done){
       helpers.returns_ok(route, request, done);
     });
-    it('Should have the title authors', function(done){
-      helpers.has_title('Authors', route, request, done);
+    it('Should have the title About Us', function(done){
+      helpers.has_title('About Us', route, request, done);
     });
     it('Should should contain a table', function(done){
       helpers.contains_tag('table', route, request, done);

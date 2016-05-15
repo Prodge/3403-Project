@@ -23,10 +23,10 @@ html(lang="en")
               .dropdown
                 a.button.drop-btn(href='#') Meta
                 .drop-content
-                  a(href='/author') Author
                   a(href='/theme') Theme
                   a(href='/testing') Testing
                   a(href='/architecture') Architecture
+                  a(href='/about-us') About Us
               if user
                 a.button(href='/logout') Logout
               else
@@ -44,11 +44,13 @@ html(lang="en")
           table
             tr
               td#authors By Tim Metcalf and Don Wimodya Athukorala
-              td#last-modified Last modified 22nd Apr.
+              td#last-modified Last modified:
             tr
               td#Date
-                script.
-                  var today = new Date();
-                  document.getElementById('Date').innerHTML = today.toDateString();
               if user
                 td#user Logged in as: #{user.name}
+  script.
+    var today = new Date();
+    document.getElementById('Date').innerHTML = today.toDateString();
+    var last_mod = new Date(document.lastModified);
+    document.getElementById('last-modified').innerHTML += " " + last_mod.toDateString();
