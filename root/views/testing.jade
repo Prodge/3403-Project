@@ -1,7 +1,20 @@
 extends base
 
 block content
-  p This project contians over 80 tests that cover above 80% of the server side codebase.
+  h4 Implementation
+  p Tests in this project are written with a BDD\TDD approach.
+    |  A test for an object's property should be completed before or while development of that property is in place.
+    |  This allows for requirements of an object to be defined before the object has even been written.
+    |  As the object is written and these properties are constructed on the object the tests will assert whether the object has indeed met the requirements.
+
+  p Test cases target mainly server side code and are seperated into models and routes.
+    |  Through testing these two components, the views, middleware and other server side components are indirectly tested.
+    |  Route test cases are further split into protected, unprotected and API routes.
+    |  This structure is used as all route tests have a common setup and teardown of running and stopping the express server.
+    |  They then further each have unique setup teardown functions.
+    |  For example, protected route test cases require a user to be created and an auth_token cookie to be injected into all requests.
+  p This project contians over 100 tests that cover above 96%% of the server side codebase.
+    |  The untested lines are predominantly those returning database errors which for the most part are very difficult to simulate.
 
   h4 Framework
   p
@@ -23,19 +36,6 @@ block content
     |   and
     i   expect(res.success).to.be.true;.
     |   These natural language driven assertions provided by Chai make test cases very easy to understand.
-
-  h4 Implementation
-  p Tests in this project are written with a BDD\TDD approach.
-    |  A test for an object's property should be completed before or while development of that property is in place.
-    |  This allows for requirements of an object to be defined before the object has even been written.
-    |  As the object is written and these properties are constructed on the object the tests will assert whether the object has indeed met the requirements.
-
-  p Test cases target mainly server side code and are seperated into models and routes.
-    |  Through testing these two components, the views, middleware and other server side components are indirectly tested.
-    |  Route test cases are further split into protected, unprotected and API routes.
-    |  This structure is used as all route tests have a common setup and teardown of running and stopping the express server.
-    |  They then further each have unique setup teardown functions.
-    |  For example, protected route test cases require a user to be created and an auth_token cookie to be injected into all requests.
 
   h4 Workflow Integration
   p The
