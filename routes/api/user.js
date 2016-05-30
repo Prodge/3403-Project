@@ -110,9 +110,9 @@ module.exports = function(app){
         if (req.body.email) user.email = req.body.email;
         user.save(function(err) {
           if (err) {
-	    var err_msg = 'Email already exists!';
-	    if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
-	    res.send({success: false, msg: err_msg});
+            var err_msg = 'Email already exists!';
+            if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
+            res.send({success: false, msg: err_msg});
           }
           res.send({success: true, msg: 'User updated!'});
         });

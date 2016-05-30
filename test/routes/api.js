@@ -314,7 +314,7 @@ module.exports = function(){
         }
         request.post(options, function (err, res, body){
           body = JSON.parse(body);
-          //body.success.should.be.false;
+          body.success.should.be.false;
           body.msg.should.equal('Email already exists!');
           User.findOne({
             name: 'Tim'
