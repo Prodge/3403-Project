@@ -16,7 +16,13 @@ var UserSchema = new Schema({
     type: Number,
     default: 0,
     required: true
-  }
+  },
+  email:{
+    type: String,
+    unique: true,
+    required: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+  },
 });
 
 UserSchema.pre('save', function (next) {

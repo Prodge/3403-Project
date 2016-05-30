@@ -4,6 +4,7 @@ block extrahead
   link(rel='stylesheet', href='/css/game.css')
   script(src='/js/game.js')
   script(src='/js/chat_module.js')
+  script(src='/js/chat_box_scroll.js')
 
 block content
   #game_resources(hidden='hidden')
@@ -18,13 +19,3 @@ block content
     form
       input(type='text',ng-model='createForm.thought')
       a(ng-click='createChat()', type='submit').button Post
-    script.
-      previous_scroll_height = 300;
-      function scrollnow(){
-        if($('#chatbox').prop('scrollHeight')>previous_scroll_height){
-          $('#chatbox').scrollTop($('#chatbox').prop('scrollHeight'));
-          previous_scroll_height = $('#chatbox').prop('scrollHeight');
-        }
-        window.requestAnimationFrame(scrollnow);
-      }
-      scrollnow();

@@ -33,7 +33,7 @@ angular.module('gameChat', [])
     });
   }
 
-  $interval(refreshChat, 2500);
+  $interval(refreshChat, 1000);
 
   chatService.get().success(function(data) {
     $scope.full_chat = data;
