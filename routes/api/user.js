@@ -48,11 +48,8 @@ module.exports = function(app){
       });
       newUser.save(function(err) {
         if (err) {
-	  if (err.hasOwnProperty['errors']){
-	    err_msg = err['errors']['email']['message'];
-	  }else{
-	    err_msg = 'Username/Email already exists';
-	  }
+          var err_msg = 'Username/Email already exists';
+          if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
           return res.json({success: false, msg: err_msg});
         }
         res.json({success: true, msg: 'Successful created new user.'});

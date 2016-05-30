@@ -133,6 +133,25 @@ module.exports = function(){
         done();
       });
     });
+    it('Requires a valid email', function(done){
+      var options = {
+        url: base_url + route,
+        form: {
+          'name': 'Bala',
+	  'password': 'pass12',
+	  'email': 's112ssd'
+        }
+      }
+      request.post(options, function (err, res, body){
+        User.find(function (err, users){
+	  console.log(users);
+        });
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please fill a valid email address');
+        done();
+      });
+    });
     it('Creates a user', function(done){
       var options = {
         url: base_url + route,
@@ -183,6 +202,21 @@ module.exports = function(){
         body = JSON.parse(body);
         body.success.should.be.false;
         body.msg.should.equal('Please enter current password')
+        done();
+      });
+    });
+    it('Invalid password', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'current_password': 'passdfdfdf'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Authentication failed. Wrong password')
         done();
       });
     });
