@@ -90,7 +90,7 @@ module.exports = function(app){
       User.findOne({name: decoded.name}, function(err, user) {
         user.comparePassword(req.body.current_password, function (err, isMatch) {
           if (isMatch && !err) {
-            res.send({success: true, msg: 'User updated!'});
+            res.send({success: true, msg: 'Valid user!'});
           } else {
             res.send({success: false, msg: 'Authentication failed. Wrong password'});
           }
