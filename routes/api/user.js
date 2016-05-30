@@ -81,6 +81,45 @@ module.exports = function(app){
     });
   });
 
+  app.post('/api/validate-user', passport.authenticate('jwt', { session: false}), function(req, res){
+    var token = get_token(req.headers);
+    if (!req.body.current_password) {
+      res.send({success: false, msg: 'Please enter current password'});
+    }else{
+      var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+      User.findOne({name: decoded.name}, function(err, user) {
+        user.comparePassword(req.body.current_password, function (err, isMatch) {
+          if (isMatch && !err) {
+            res.send({success: true, msg: 'User updated!'});
+          } else {
+            res.send({success: false, msg: 'Authentication failed. Wrong password'});
+          }
+        });
+      });
+    }
+  });
+
+  app.post('/api/profile-update', passport.authenticate('jwt', { session: false}), function(req, res){
+    var token = get_token(req.headers);
+    if (!req.body.password && !req.body.email) {
+      res.send({success: false, msg: 'Please enter a field'});
+    }else{
+      var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+      User.findOne({name: decoded.name}, function(err, user) {
+        if (req.body.password) user.password = req.body.password;
+        if (req.body.email) user.email = req.body.email;
+        user.save(function(err) {
+          if (err) {
+	    var err_msg = 'Email already exists!';
+	    if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
+	    res.send({success: false, msg: err_msg});
+          }
+          res.send({success: true, msg: 'User updated!'});
+        });
+      });
+    }
+  });
+
   app.post('/api/set-high-score', passport.authenticate('jwt', { session: false}), function(req, res){
     var token = get_token(req.headers);
     var highscore = req.body.highscore;
