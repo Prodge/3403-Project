@@ -105,18 +105,19 @@ module.exports = function(app){
   app.post('/api/check-other-high-scores', passport.authenticate('jwt', { session: false}), function(req, res){
     var token = get_token(req.headers);
     if (!token) return false;
+    var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
     var highscore = req.body.highscore;
     var transporter = nodemailer.createTransport('smtps://action.box.game%40gmail.com:ActionBox12@smtp.gmail.com');
     User.find(function (err, users) {
       if (err) res.send(err);
       for (var i=0; i<users.length; i++){
         var user = users[i];
-	if (highscore > user.highscore && user.name!=res.locals.user.name && user.highscore!=0){
+	if (highscore > user.highscore && user.name!=decoded.name && user.highscore!=0){
 	  var data = {
     	    from: '"Action Box"<action.box.game@gmail.com>', // sender address 
     	    to: user.email, // list of receivers 
     	    subject: 'Your Action Box game highscore has been defeated', // Subject line 
-    	    text: user.name + ' you have been beaten by ' + res.locals.user.name + ' with a highscore of ' + highscore
+    	    text: user.name + ' you have been beaten by ' + decoded.name + ' with a highscore of ' + highscore
 	  };
 	  transporter.sendMail(data, function(error, info){
     	    if(error) return console.log(error);

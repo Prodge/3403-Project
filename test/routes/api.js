@@ -244,6 +244,48 @@ module.exports = function(){
 
   });
 
+  describe('Check other High Score', function(){
+    var route = '/api/check-other-high-scores'
+
+    it('Checks highscore and emails other users', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'highscore': 200
+        }
+      }
+      current_user = new User({
+        name: 'Wimo',
+        password: 'pass12',
+        email: 'wimo1234@gmail.com',
+        highscore: 100
+      });
+      current_user.save(function(){
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.true;
+          body.msg.should.equal('Checked high score');
+	  done();
+        });
+      });
+    });
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'highscore': 200
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+
+  });
+
   describe('API Chats', function(){
 
     it('Returns last chats', function(done){
