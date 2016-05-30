@@ -327,20 +327,18 @@ module.exports = function(){
       });
     });
     it('Existing email update', function(done){
-      var options = {
-        url: base_url + '/api/signup',
-        form: {
-          'name': 'John',
-          'password': 'pass',
-	      'email': 'john124@gmail.com'
-        }
-      }
-      request.post(options, function (err, res, body){
-        options = {
+      current_user = new User({
+        name: 'Geviz',
+        password: 'pass12',
+        email: 'gadolboy@email.com',
+        highscore: 100
+      });
+      current_user.save(function(){
+        var options = {
           url: base_url + route,
           headers: {'Authorization': auth_token},
           form: {
-            'email': 'john124@gmail.com'
+            'email': 'gadolboy@email.com'
           }
         }
         request.post(options, function (err, res, body){
