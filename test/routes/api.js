@@ -143,9 +143,6 @@ module.exports = function(){
         }
       }
       request.post(options, function (err, res, body){
-        User.find(function (err, users){
-	  console.log(users);
-        });
         body = JSON.parse(body);
         body.success.should.be.false;
         body.msg.should.equal('Please fill a valid email address');
@@ -350,12 +347,7 @@ module.exports = function(){
           body = JSON.parse(body);
           body.success.should.be.false;
           body.msg.should.equal('Email already exists!');
-          User.findOne({
-            name: 'Tim'
-          }, function(err, user) {
-            user.email.should.not.equal(options.form.email);
-            done();
-          });
+          done();
         });
       });
     });
