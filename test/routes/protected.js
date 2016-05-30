@@ -215,6 +215,50 @@ module.exports = function(){
 
     });
 
+    describe('My Profile', function(){
+      var route = '/profile';
+
+      it('Stems from the base view', function(done){
+        helpers.contains_base_elements(route, request, done);
+      });
+      it('Should return ok', function(done){
+        helpers.returns_ok(route, request, done);
+      });
+      it('Should have the title update my profile', function(done){
+        helpers.has_title('Update my profile', route, request, done);
+      });
+      it('Should should contain a table', function(done){
+        helpers.contains_tag('table', route, request, done);
+      });
+      it('Should should contain a submit button', function(done){
+        helpers.contains_tag('button', route, request, done);
+      });
+      it('Contains labels', function(done){
+        helpers.contains_tag('label', route, request, done);
+      });
+      it('Contains input fields', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('<input');
+          done();
+        });
+      });
+      it('Contains key register form text', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('Current Password');
+          expect(body).to.contain('Password');
+          expect(body).to.contain('Email');
+          done();
+        });
+      });
+      it('should have a password field', function(done){
+        request(base_url + route, function (err, res, body){
+          expect(body).to.contain('type="password"');
+          done();
+        });
+      });
+
+    });
+
     afterEach(function (done){
       User.remove({}, function(){
         done();
