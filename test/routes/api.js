@@ -301,7 +301,7 @@ module.exports = function(){
         form: {
           'name': 'John',
           'password': 'pass',
-	  'email': 'john124@gmail.com'
+	      'email': 'john124@gmail.com'
         }
       }
       request.post(options, function (err, res, body){

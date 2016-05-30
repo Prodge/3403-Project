@@ -91,7 +91,7 @@ module.exports = function(app){
         user.comparePassword(req.body.current_password, function (err, isMatch) {
           if (isMatch && !err) {
             res.send({success: true, msg: 'Valid user!'});
-          } else {
+          }else{
             res.send({success: false, msg: 'Authentication failed. Wrong password'});
           }
         });
@@ -153,16 +153,19 @@ module.exports = function(app){
         var user = users[i];
         if (highscore > user.highscore && user.name!=decoded.name && user.highscore!=0){
           var data = {
-            from: '"Action Box"<action.box.game@gmail.com>', // sender address 
-            to: user.email, // list of receivers 
-            subject: 'Your Action Box game highscore has been defeated', // Subject line 
+            from: '"Action Box"<action.box.game@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: 'Your Action Box game highscore has been defeated', // Subject line
             text: user.name + ' you have been beaten by ' + decoded.name + ' with a highscore of ' + highscore
           };
-	  transporter.sendMail(data, function(error, info){
-    	    if(error) return console.log(error);
-    	    console.log('Message sent: ' + info.response);
-	  });
-	}
+	      transporter.sendMail(data, function(error, info){
+            if(error){
+              console.log(error);
+            }else{
+              console.log('Message sent: ' + info.response);
+            }
+	      });
+        }
       }
       res.send({success: true, msg: 'Checked high score'});
     });
