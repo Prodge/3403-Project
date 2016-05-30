@@ -15,6 +15,7 @@ module.exports = function(){
     current_user = new User({
       name: 'Tim',
       password: 'pass',
+      email: 'tim1234@gmail.com',
       highscore: 100
     });
     current_user.save(function(){
@@ -53,7 +54,7 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'Tim',
-          'password': 'pass'
+          'password': 'pass',
         }
       }
       request.post(options, function (err, res, body){
@@ -68,7 +69,7 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'james',
-          'password': 'pass'
+          'password': 'pass',
         }
       }
       request.post(options, function (err, res, body){
@@ -84,7 +85,7 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'Tim',
-          'password': 'not-the-right-password'
+          'password': 'not-the-right-password',
         }
       }
       request.post(options, function (err, res, body){
@@ -106,13 +107,14 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'Tim',
-          'password': 'pass_thing'
+          'password': 'pass_thing',
+	  'email': 'tim124@gmail.com'
         }
       }
       request.post(options, function (err, res, body){
         body = JSON.parse(body);
         body.success.should.be.false;
-        body.msg.should.equal('Username already exists.')
+        body.msg.should.equal('Username/Email already exists')
         done();
       });
     });
@@ -121,12 +123,13 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'Tim',
+	  'email': 'tim124@gmail.com'
         }
       }
       request.post(options, function (err, res, body){
         body = JSON.parse(body);
         body.success.should.be.false;
-        body.msg.should.equal('Please pass name and password.')
+        body.msg.should.equal('Please enter the required fields')
         done();
       });
     });
@@ -135,7 +138,8 @@ module.exports = function(){
         url: base_url + route,
         form: {
           'name': 'John',
-          'password': 'pass'
+          'password': 'pass',
+	  'email': 'john124@gmail.com'
         }
       }
       request.post(options, function (err, res, body){

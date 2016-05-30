@@ -13,7 +13,8 @@ describe('User', function(){
     mongoose.connect(config.database, function(){
       current_user = new User({
           name: 'Tim',
-          password: 'pass'
+          password: 'pass',
+          email: 'tim@gmail.com'
       });
       current_user.save(done)
     });
