@@ -6,6 +6,7 @@ html(lang="en")
     script(src='/angular/angular.js')
     link(rel='stylesheet', href='/css/main.css')
     script(src='/js/global.js')
+    script(src='/js/dynamic_modified_date.js')
     block extrahead
 
     title= title
@@ -49,8 +50,3 @@ html(lang="en")
               td#Date
               if user
                 td#user Logged in as: #{user.name}
-  script.
-    var today = new Date();
-    document.getElementById('Date').innerHTML = today.toDateString();
-    var last_mod = new Date(document.lastModified);
-    document.getElementById('last-modified').innerHTML += " " + last_mod.toDateString();

@@ -6,6 +6,7 @@ $(document).ready(function() {
       {
         name: $('#register-name').val(),
         password: $('#register-password').val(),
+        email: $('#register-email').val(),
       },
       function(data, status){
         if(data.success){

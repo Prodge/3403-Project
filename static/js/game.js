@@ -824,12 +824,22 @@ function set_high_score(score){
   });
 }
 
+function check_other_highscores(score){
+  $.ajax({
+    type: 'POST',
+    url: "/api/check-other-high-scores",
+    headers: {"Authorization": get_auth_cookie()},
+    data: {'highscore': score}
+  });
+}
+
 ///////////////////////////////////////////
 //           G A M E   E N D            //
 //////////////////////////////////////////
 
 function game_over(){
   if(points > high_score){
+    check_other_highscores(points);
     high_score = points;
     set_high_score(points);
   }

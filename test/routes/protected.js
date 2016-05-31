@@ -15,6 +15,7 @@ module.exports = function(){
       current_user = new User({
         name: 'Tim',
         password: 'pass',
+        email: 'tim12345@gmail.com',
         highscore: 100
       });
       current_user.save(function(){
@@ -198,6 +199,7 @@ module.exports = function(){
         other_user = new User({
           name: 'John',
           password: 'pass',
+	  email: 'john12345@gmail.com',
           highscore: 200
         });
         other_user.save(function(){
