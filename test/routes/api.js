@@ -326,29 +326,6 @@ module.exports = function(){
         });
       });
     });
-    it('Existing email update', function(done){
-      current_user = new User({
-        name: 'Geviz',
-        password: 'pass12',
-        email: 'gadolboy@email.com',
-        highscore: 100
-      });
-      current_user.save(function(){
-        var options = {
-          url: base_url + route,
-          headers: {'Authorization': auth_token},
-          form: {
-            'email': 'gadolboy@email.com'
-          }
-        }
-        request.post(options, function (err, res, body){
-          body = JSON.parse(body);
-          body.success.should.be.false;
-          body.msg.should.equal('Email already exists!');
-          done();
-        });
-      });
-    });
   });
 
   describe('Set High Score', function(){
