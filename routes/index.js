@@ -67,6 +67,10 @@ module.exports = function (app){
     });
   });
 
+  app.get('/profile', require_login, function (req, res) {
+    res.render('profile', {title: "Update my profile"});
+  });
+
   app.get('/leaderboard', function(req, res){
     User.find().sort({ highscore: 'descending' }).exec(function(err, users) {
       context = {

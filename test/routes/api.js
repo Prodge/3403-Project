@@ -133,6 +133,22 @@ module.exports = function(){
         done();
       });
     });
+    it('Requires a valid email', function(done){
+      var options = {
+        url: base_url + route,
+        form: {
+          'name': 'Bala',
+	  'password': 'pass12',
+	  'email': 's112ssd'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please fill a valid email address');
+        done();
+      });
+    });
     it('Creates a user', function(done){
       var options = {
         url: base_url + route,
@@ -156,6 +172,183 @@ module.exports = function(){
       });
     });
 
+  });
+
+  describe('validate-user', function(){
+    var route = '/api/validate-user'
+
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'current_password': 'pass'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Requires a password', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please enter current password')
+        done();
+      });
+    });
+    it('Invalid password', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'current_password': 'passdfdfdf'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Authentication failed. Wrong password')
+        done();
+      });
+    });
+    it('Checks passes', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'current_password': 'pass'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.msg.should.equal('Valid user!')
+        done();
+      });
+    });
+
+  });
+
+  describe('profile-update', function(){
+    var route = '/api/profile-update'
+
+    it('Requires a valid user auth token', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token + 'test'},
+        form: {
+          'password': 'pass'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body.should.equal('Unauthorized');
+        done();
+      });
+    });
+    it('Requires atleast one field', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please enter a field')
+        done();
+      });
+    });
+    it('Password update', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'password': '1234'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.msg.should.equal('User updated!')
+        User.findOne({
+          name: 'Tim'
+        }, function(err, user) {
+          user.comparePassword(options.form.password, function (err, isMatch) {
+	    isMatch.should.be.true;
+	    expect(err).to.be.null;
+            done();
+	  });
+        });
+      });
+    });
+    it('Email update', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'email': 'timbo@hotmail.com'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.true;
+        body.msg.should.equal('User updated!');
+        User.findOne({
+          name: 'Tim'
+        }, function(err, user) {
+          user.email.should.equal(options.form.email);
+          done();
+        });
+      });
+    });
+    it('Invalid email update', function(done){
+      var options = {
+        url: base_url + route,
+        headers: {'Authorization': auth_token},
+        form: {
+          'email': 'tisdssdsds'
+        }
+      }
+      request.post(options, function (err, res, body){
+        body = JSON.parse(body);
+        body.success.should.be.false;
+        body.msg.should.equal('Please fill a valid email address');
+        User.findOne({
+          name: 'Tim'
+        }, function(err, user) {
+          user.email.should.not.equal(options.form.email);
+          done();
+        });
+      });
+    });
+    it('Existing email update', function(done){
+      current_user = new User({
+        name: 'Geviz',
+        password: 'pass12',
+        email: 'gadolboy@email.com',
+        highscore: 100
+      });
+      current_user.save(function(){
+        var options = {
+          url: base_url + route,
+          headers: {'Authorization': auth_token},
+          form: {
+            'email': 'gadolboy@email.com'
+          }
+        }
+        request.post(options, function (err, res, body){
+          body = JSON.parse(body);
+          body.success.should.be.false;
+          body.msg.should.equal('Email already exists!');
+          done();
+        });
+      });
+    });
   });
 
   describe('Set High Score', function(){

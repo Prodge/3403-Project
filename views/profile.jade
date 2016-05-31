@@ -1,0 +1,46 @@
+extends base
+
+block extrahead
+  script(src='/js/profile_edit.js')
+
+block content
+  if perm_denied
+    p Please register or register to access this page.
+
+  form#validate-user
+    table
+      tr
+        td
+          label(for='current_password') Current Password:
+        td
+          input#current_password(type='password', name='current_password')
+      tr
+        td(colspan=2)
+          button.button(type='submit') Check
+
+  form#profile-update-form(hidden='hidden')
+    p Please enter the field(s) you want to update and then press 'Update'
+    table
+      tr
+        td
+          label(for='profile-password') Password:
+        td
+          input#profile-password(type='password', name='password')
+      tr
+        td
+          label(for='profile-email') Email:
+        td
+          input#profile-email(type='text', name='email')
+      tr
+        td(colspan=2)
+          button.button(type='submit') Update
+
+  div#success(hidden='hidden')
+    p Your profile has been updated!
+
+  div#failure(hidden='hidden')
+    p Update failed:
+      span#failure-message
+    p Please try again.
+
+

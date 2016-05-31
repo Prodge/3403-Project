@@ -48,11 +48,8 @@ module.exports = function(app){
       });
       newUser.save(function(err) {
         if (err) {
-	  if (err.hasOwnProperty['errors']){
-	    err_msg = err['errors']['email']['message'];
-	  }else{
-	    err_msg = 'Username/Email already exists';
-	  }
+          var err_msg = 'Username/Email already exists';
+          if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
           return res.json({success: false, msg: err_msg});
         }
         res.json({success: true, msg: 'Successful created new user.'});
@@ -79,6 +76,45 @@ module.exports = function(app){
         });
       }
     });
+  });
+
+  app.post('/api/validate-user', passport.authenticate('jwt', { session: false}), function(req, res){
+    var token = get_token(req.headers);
+    if (!req.body.current_password) {
+      res.send({success: false, msg: 'Please enter current password'});
+    }else{
+      var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+      User.findOne({name: decoded.name}, function(err, user) {
+        user.comparePassword(req.body.current_password, function (err, isMatch) {
+          if (isMatch && !err) {
+            res.send({success: true, msg: 'Valid user!'});
+          }else{
+            res.send({success: false, msg: 'Authentication failed. Wrong password'});
+          }
+        });
+      });
+    }
+  });
+
+  app.post('/api/profile-update', passport.authenticate('jwt', { session: false}), function(req, res){
+    var token = get_token(req.headers);
+    if (!req.body.password && !req.body.email) {
+      res.send({success: false, msg: 'Please enter a field'});
+    }else{
+      var decoded = jwt.decode(req.headers.authorization.substring(4), config.secret);
+      User.findOne({name: decoded.name}, function(err, user) {
+        if (req.body.password) user.password = req.body.password;
+        if (req.body.email) user.email = req.body.email;
+        user.save(function(err) {
+          if (err) {
+            var err_msg = 'Email already exists!';
+            if (err['errors'] != undefined) err_msg = err['errors']['email']['message'];
+            return res.send({success: false, msg: err_msg});
+          }
+          res.send({success: true, msg: 'User updated!'});
+        });
+      });
+    }
   });
 
   app.post('/api/set-high-score', passport.authenticate('jwt', { session: false}), function(req, res){
@@ -112,18 +148,21 @@ module.exports = function(app){
       if (err) res.send(err);
       for (var i=0; i<users.length; i++){
         var user = users[i];
-	if (highscore > user.highscore && user.name!=decoded.name && user.highscore!=0){
-	  var data = {
-    	    from: '"Action Box"<action.box.game@gmail.com>', // sender address 
-    	    to: user.email, // list of receivers 
-    	    subject: 'Your Action Box game highscore has been defeated', // Subject line 
-    	    text: user.name + ' you have been beaten by ' + decoded.name + ' with a highscore of ' + highscore
-	  };
-	  transporter.sendMail(data, function(error, info){
-    	    if(error) return console.log(error);
-    	    console.log('Message sent: ' + info.response);
-	  });
-	}
+        if (highscore > user.highscore && user.name!=decoded.name && user.highscore!=0){
+          var data = {
+            from: '"Action Box"<action.box.game@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: 'Your Action Box game highscore has been defeated', // Subject line
+            text: user.name + ' you have been beaten by ' + decoded.name + ' with a highscore of ' + highscore
+          };
+	      transporter.sendMail(data, function(error, info){
+            if(error){
+              console.log(error);
+            }else{
+              console.log('Message sent: ' + info.response);
+            }
+	      });
+        }
       }
       res.send({success: true, msg: 'Checked high score'});
     });
