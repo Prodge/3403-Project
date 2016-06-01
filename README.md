@@ -1,6 +1,5 @@
-# Action Box
+# Action Box  ![Build Status](https://api.travis-ci.org/Prodge/3403-Project.svg)
 [View on GitHub](https://github.com/Prodge/3403-Project)
-BUild Status: ![Build Status](https://api.travis-ci.org/Prodge/3403-Project.svg)
 ## Instructions to deploy
 These instructions have been validated for Ubuntu 14.04 LTS and Ubuntu 16.04 LTS distributions.
 
